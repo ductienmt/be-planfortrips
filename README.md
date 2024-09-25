@@ -16,7 +16,7 @@
 
 ### Backend:
 - **JDK**: Phiên bản 21
-- **Maven** hoặc **Gradle** (tùy thuộc vào việc bạn sử dụng công cụ quản lý dự án nào).
+- **Maven**
 
 ### Frontend:
 - **React**: Phiên bản 18
