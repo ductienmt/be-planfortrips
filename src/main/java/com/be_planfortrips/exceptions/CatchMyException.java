@@ -1,7 +1,7 @@
-package com.be_planfortrips.exception;
+package com.be_planfortrips.exceptions;
 
 
-import com.be_planfortrips.dto.response.ApiResponse;
+import com.be_planfortrips.dtos.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
