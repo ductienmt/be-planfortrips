@@ -1,4 +1,4 @@
-package com.be_planfortrips.dto.response;
+package com.be_planfortrips.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
