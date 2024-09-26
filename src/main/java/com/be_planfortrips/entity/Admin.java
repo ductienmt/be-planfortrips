@@ -1,4 +1,5 @@
-package com.be_planfortrips.models;
+package com.be_planfortrips.entity;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +14,13 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
-public class TicketClass {
-@Id@GeneratedValue(strategy = GenerationType.IDENTITY)Long id;String className;String description;int classPrice;
+public class Admin {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+    String userName;
+    String password;
+    String fullName;
+    String email;
+
 }

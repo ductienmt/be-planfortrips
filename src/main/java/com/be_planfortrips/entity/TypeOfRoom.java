@@ -1,4 +1,4 @@
-package com.be_planfortrips.models;
+package com.be_planfortrips.entity;
 
 public enum TypeOfRoom {
     VIP,NORMAL

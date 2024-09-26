@@ -1,5 +1,9 @@
-package com.be_planfortrips.models;
-import jakarta.persistence.*;
+package com.be_planfortrips.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,13 +14,10 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
-public class TypeEnterpriseDetail {
+public class TypeEnterprise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    String name;
+    String nameType;
     String description;
-    @ManyToOne
-    @JoinColumn(name = "id_typeEnterprise")
-    TypeEnterprise typeEnterprise;
 }

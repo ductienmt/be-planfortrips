@@ -1,5 +1,4 @@
-package com.be_planfortrips.models;
-
+package com.be_planfortrips.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,15 +9,14 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SocialAccount {
+
+public class TypeEnterpriseDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    String provider;
-    String providerId;
-    String email;
     String name;
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    User user;
+    String description;
+    @ManyToOne
+    @JoinColumn(name = "id_typeEnterprise")
+    TypeEnterprise typeEnterprise;
 }

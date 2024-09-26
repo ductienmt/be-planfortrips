@@ -1,4 +1,4 @@
-package com.be_planfortrips.models;
+package com.be_planfortrips.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

@@ -1,4 +1,4 @@
-package com.be_planfortrips.models;
+package com.be_planfortrips.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +13,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
-public class Payment {
-@Id@GeneratedValue Long id; String paymentMethod;Double amount;Status status;
+public class Service {
+    @Id@GeneratedValue(strategy = GenerationType.IDENTITY)Long id;String serviceName;Double price;
 }
