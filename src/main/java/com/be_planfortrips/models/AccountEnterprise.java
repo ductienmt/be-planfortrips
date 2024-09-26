@@ -25,8 +25,9 @@ public class AccountEnterprise extends BaseEntity{
     String phoneNumber;
     String address;
     boolean status;
-    @OneToMany
-    List<EnterpriseImage> enterpriseImages;
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    Image image;
 //    @OneToMany
 //    List<Hotel> hotels;
 }

@@ -21,7 +21,5 @@ public class Image {
     List<HotelImage> hotelImages;
     @OneToMany(cascade = CascadeType.REMOVE)
     List<RoomImage> roomImages;
-    @OneToMany
-    List<EnterpriseImage> enterpriseImages;
 
 }
