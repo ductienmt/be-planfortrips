@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Checkin extends BaseEntity{
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)Long id;
-    @ManyToOne@JoinColumn(name = "image_id",columnDefinition = "varchar(20)")Image image;
+    @ManyToOne@JoinColumn(name = "image_id")Image image;
     @ManyToOne@JoinColumn(name = "city_id",columnDefinition = "varchar(20)") City city;
     @Column(columnDefinition = "varchar(200)") String name;
     @Column(columnDefinition = "text") String address;
