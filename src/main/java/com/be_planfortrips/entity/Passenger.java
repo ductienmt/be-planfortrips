@@ -1,4 +1,5 @@
 package com.be_planfortrips.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,6 +14,16 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class Passenger {
-    @Id@GeneratedValue(strategy = GenerationType.IDENTITY)Long id;String passengerName;
-    Date birthDay;boolean gender;String citizenCard;String phoneNumber;String email;@OneToOne @JoinColumn(name = "booking_id") BookingPlane bookingPlane;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+    String passengerName;
+    Date birthDate;
+    String gender;
+    String citizenCardId;
+    String phoneNumber;
+    String email;
+    @OneToOne
+    @JoinColumn(name = "booking_id")
+    BookingPlane bookingPlane;
 }
