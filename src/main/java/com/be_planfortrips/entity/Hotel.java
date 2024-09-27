@@ -1,4 +1,5 @@
 package com.be_planfortrips.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,7 +13,7 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
-public class Hotel extends BaseEntity{
+public class Hotel extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -25,5 +26,5 @@ public class Hotel extends BaseEntity{
     String description;
     int rating;
     @OneToMany(cascade = CascadeType.REMOVE)
-    List<HotelImage> hotelImages ;
+    List<HotelImage> hotelImages;
 }

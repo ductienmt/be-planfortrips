@@ -1,4 +1,5 @@
 package com.be_planfortrips.entity;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -13,5 +14,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class Payment {
-@Id@GeneratedValue Long id; String paymentMethod;Double amount;Status status;
+    @Id
+    @GeneratedValue
+    Long id;
+    String paymentMethod;
+    Double amount;
+    Status status;
 }
