@@ -1,4 +1,5 @@
 package com.be_planfortrips.entity;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,5 +15,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class Service {
-    @Id@GeneratedValue(strategy = GenerationType.IDENTITY)Long id;String serviceName;Double price;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+    String serviceName;
+    Double price;
 }

@@ -17,7 +17,6 @@ public class User extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-
     String userName;
     String phoneNumber;
     String gender;
