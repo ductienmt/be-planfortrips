@@ -17,11 +17,11 @@ public class AccountEnterprise extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Column(name = "username", length = 20)
+    @Column(name = "username", length = 20, unique = true)
     String username;
     @Column(name = "password", length = 200)
     String password;
-    @Column(name = "email", length = 200)
+    @Column(name = "email", length = 200,unique = true)
     String email;
     @Column(name = "enterprisename", length = Integer.MAX_VALUE)
     String enterpriseName;
@@ -29,13 +29,19 @@ public class AccountEnterprise extends BaseEntity{
     String representative;
     @Column(name = "taxcode", length = 20)
     String taxCode;
-    @Column(name = "phonenumber", length = 15)
+    @Column(name = "phonenumber", length = 15,unique = true)
     String phoneNumber;
     @Column(name = "address", length = Integer.MAX_VALUE)
     String address;
     @ColumnDefault("true")
     @Column(name = "status")
     boolean status;
-    @OneToMany
-    List<EnterpriseImage> enterpriseImages;
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    Image image;
+    @ManyToOne
+    @JoinColumn(name = "type_detail_id")
+    TypeEnterpriseDetail typeEnterpriseDetail;
+//    @OneToMany
+//    List<Hotel> hotels;
 }
