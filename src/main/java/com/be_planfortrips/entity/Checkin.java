@@ -18,7 +18,7 @@ public class Checkin extends BaseEntity{
     @ManyToOne@JoinColumn(name = "city_id",columnDefinition = "varchar(20)") City city;
     @Column(columnDefinition = "varchar(200)") String name;
     @Column(columnDefinition = "text") String address;
-    @Column(columnDefinition = "decimal(0,6)") Double latitude;
-    @Column(columnDefinition = "decimal(9,6)") Double longitude;
-    @Column(columnDefinition = "decimal(10,2)") Double payFee;
+    Double latitude;
+    Double longitude;
+    Double payFee;
 }

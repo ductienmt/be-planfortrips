@@ -15,8 +15,8 @@ import java.util.List;
 public class City {
     @Id@Column(columnDefinition = "varchar(20)") String id;@ManyToOne@JoinColumn(name = "area_id",columnDefinition = "varchar(20)") Area area;
     @Column(columnDefinition = "varchar(50)") String nameCity;@Column(columnDefinition = "text") String description;
-    @Column(columnDefinition = "decimal(0,6)") Double latitude;
-    @Column(columnDefinition = "decimal(9,6)") Double longitude;
+    Double latitude;
+    Double longitude;
     @OneToMany
     List<Checkin> checkins;
 }
