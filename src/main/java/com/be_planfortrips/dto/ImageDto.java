@@ -8,5 +8,4 @@ import java.time.LocalDateTime;
 public class ImageDto {
     private Integer id;
     private String url;
-    private LocalDateTime createAt;
 }

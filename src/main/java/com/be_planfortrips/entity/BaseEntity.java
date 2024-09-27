@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 public class BaseEntity {
     @Column(name = "create_at")
     private LocalDateTime createAt;
+
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 

@@ -1,4 +1,5 @@
 package com.be_planfortrips.entity;
+
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,8 +15,16 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class Area {
-    @Id@Column(columnDefinition = "varchar(20)") String id;@Column(columnDefinition = "varchar(50)")
-    String name;@Column(columnDefinition = "text")String description;
+    @Id
+    @Column(length = 20)
+    String id;
+
+    @Column(name = "name", length = 50)
+    String name;
+
+    @Column(name = "description", length = Integer.MAX_VALUE)
+    String description;
+
     @OneToMany
     List<City> cities;
 }

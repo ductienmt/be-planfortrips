@@ -1,17 +1,19 @@
 package com.be_planfortrips.dto;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class HotelDto {
-    private Integer id;
-    private Integer enterpriseId;
-    private String address;
-    private String phoneNumber;
-    private String description;
-    private String rating;
-    private LocalDateTime createAt;
-    private Integer imageId;
+    Integer enterpriseId;
+    String address;
+    String phoneNumber;
+    String description;
+    Integer rating;
+    LocalDateTime createAt;
+    Integer imageId;
 }

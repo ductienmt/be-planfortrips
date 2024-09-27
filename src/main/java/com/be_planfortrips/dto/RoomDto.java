@@ -1,17 +1,19 @@
 package com.be_planfortrips.dto;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoomDto {
-    private Integer id;
-    private String roomName;
-    private Double price;
-    private Integer hotelId;
-    private String typeOfRoom;
-    private String description;
-    private Integer maxSize;
-    private Integer imageId;
-    private String rating;
-    private Boolean isAvailable;
+    String roomName;
+    Double price;
+    Integer hotelId;
+    String typeOfRoom;
+    String description;
+    Integer maxSize;
+    Integer imageId;
+    Integer rating;
+    Boolean isAvailable;
 }
