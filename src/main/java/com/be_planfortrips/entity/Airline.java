@@ -17,12 +17,21 @@ public class Airline {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    @Column(name = "airline_name", length = 100)
     String airlineName;
+
+    @Column(name = "airline_code", length = 5)
     String airlineCode;
-    String countryAirline;
-    @ManyToOne
+
+    @Column(name = "airline_country", length = 100)
+    String airlineCountry;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enterprise_id")
     AccountEnterprise accountEnterprise;
+
     @OneToMany
     List<Airplane> airplanes;
 }

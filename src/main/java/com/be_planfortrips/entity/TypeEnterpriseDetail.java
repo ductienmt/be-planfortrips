@@ -14,9 +14,14 @@ public class TypeEnterpriseDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    @Column(name = "name", length = 50)
     String name;
+
+    @Column(name = "description", length = Integer.MAX_VALUE)
     String description;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_typeEnterprise")
     TypeEnterprise typeEnterprise;
 }

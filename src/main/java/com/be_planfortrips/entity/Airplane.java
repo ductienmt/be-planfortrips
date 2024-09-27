@@ -17,11 +17,17 @@ public class Airplane {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    @Column(name = "model", length = 50)
     String model;
+
+    @Column(name = "seat_capacity")
     int seatLimit;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "airline_id")
     Airline airline;
+
     @OneToMany
     List<Flight> flights;
 }

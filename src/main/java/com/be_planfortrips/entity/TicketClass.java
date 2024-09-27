@@ -1,11 +1,9 @@
 package com.be_planfortrips.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @AllArgsConstructor
@@ -17,8 +15,16 @@ import lombok.experimental.FieldDefaults;
 public class TicketClass {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "class_id", nullable = false)
     Long id;
+
+    @Column(name = "class_name", length = 50)
     String className;
+
+    @Column(name = "description", length = Integer.MAX_VALUE)
     String description;
+
+    @ColumnDefault("1")
+    @Column(name = "class_price")
     int classPrice;
 }

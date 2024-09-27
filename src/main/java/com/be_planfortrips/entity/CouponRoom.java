@@ -15,10 +15,12 @@ public class CouponRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @ManyToOne
-    @JoinColumn(name = "coupon_id")
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "coupon_id", nullable = false)
     Coupon coupon;
-    @ManyToOne
-    @JoinColumn(name = "room_id")
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "room_id", nullable = false)
     Room room;
 }

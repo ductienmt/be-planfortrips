@@ -1,10 +1,12 @@
 package com.be_planfortrips.dto;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TypeEnterpriseDto {
-    private String id;
-    private String nameType;
-    private String description;
+    String nameType;
+    String description;
 }

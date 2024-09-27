@@ -6,10 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AirportDto {
-    String airportName;
-    String airportCode;
-    String city;
-    String address;
-    String country;
+public class CouponRoomDto {
+    Integer couponId;
+    Integer roomId;
 }

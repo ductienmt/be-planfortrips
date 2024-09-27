@@ -1,10 +1,10 @@
 package com.be_planfortrips.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -15,9 +15,15 @@ import lombok.experimental.FieldDefaults;
 
 public class Payment {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    @Column(name = "payment_method", nullable = false, length = 50)
     String paymentMethod;
-    Double amount;
+
+    @Column(name = "amount", precision = 10, scale = 2)
+    BigDecimal amount;
+
+    @Column(name = "status")
     Status status;
 }
