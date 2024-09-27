@@ -1,4 +1,4 @@
-package com.be_planfortrips.exception;
+package com.be_planfortrips.exceptions;
 
 import lombok.Getter;
 

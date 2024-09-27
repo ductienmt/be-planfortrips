@@ -13,6 +13,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class Airline {
-@Id@GeneratedValue(strategy = GenerationType.IDENTITY)Long id;String airlineName;String airlineCode;String countryAirline;@ManyToOne@JoinColumn(name = "enterprise_id") AccountEnterprise accountEnterprise;@OneToMany
+@Id@GeneratedValue(strategy = GenerationType.IDENTITY)Long id;@Column(columnDefinition = "varchar(100)")String airlineName;@Column(columnDefinition = "varchar(5)")String airlineCode;@Column(columnDefinition = "varchar(100)")String countryAirline;@ManyToOne@JoinColumn(name = "enterprise_id") AccountEnterprise accountEnterprise;@OneToMany
     List<Airplane> airplanes;
 }
