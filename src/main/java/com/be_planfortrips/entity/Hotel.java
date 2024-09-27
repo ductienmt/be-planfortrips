@@ -19,6 +19,7 @@ public class Hotel extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "enterprise_id")
     AccountEnterprise accountEnterprise;
+    String name;
     String address;
     String phoneNumber;
     String description;
