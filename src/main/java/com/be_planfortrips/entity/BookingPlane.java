@@ -3,7 +3,9 @@ package com.be_planfortrips.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.ColumnDefault;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -16,20 +18,32 @@ import java.util.Date;
 public class BookingPlane {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "booking_plane_id", nullable = false)
     Long id;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_id")
     Ticket ticket;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     User user;
+
+    @Column(name = "book_date")
     Date bookDate;
+
+    @ColumnDefault("Pending")
+    @Column(name = "status")
     Status status;
-    Double totalPrice;
-    @ManyToOne
-    @JoinColumn(name = "service_id")
+
+    @Column(name = "total_price", precision = 10, scale = 2)
+    BigDecimal totalPrice;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "serivce_id")
     Service service;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     Payment payment;
 }

@@ -13,11 +13,14 @@ import lombok.experimental.FieldDefaults;
 
 public class HotelImage {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id")
     Hotel hotel;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id")
     Image image;
 }
