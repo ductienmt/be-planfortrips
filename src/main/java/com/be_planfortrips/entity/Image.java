@@ -16,9 +16,12 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(name = "url", length = Integer.MAX_VALUE)
     String url;
+
     @OneToMany(cascade = CascadeType.REMOVE)
     List<HotelImage> hotelImages;
+
     @OneToMany(cascade = CascadeType.REMOVE)
     List<RoomImage> roomImages;
 

@@ -1,24 +1,27 @@
 package com.be_planfortrips.dto;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
-    private Integer id;
-    private String username;
-    private String phonenumber;
-    private String gender;
-    private String fullname;
-    private String email;
-    private String address;
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
-    private Boolean isActive;
-    private Date birthdate;
-    private Integer facebookAccountId;
-    private Integer googleAccountId;
-    private Integer imageId;
+    String username;
+    String password;
+    String phoneNumber;
+    String gender;
+    String fullName;
+    String email;
+    String address;
+    LocalDateTime createAt;
+    LocalDateTime updateAt;
+    Boolean isActive;
+    Date birthdate;
+    Integer isFacebook;
+    Integer isGoogle;
+    Integer imageId;
 }

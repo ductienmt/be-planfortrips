@@ -14,11 +14,14 @@ public class SocialAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    @Column(name = "provider", nullable = false, length = 30)
     String provider;
+
+    @Column(name = "provider_id", nullable = false, length = 30)
     String providerId;
-    String email;
-    String name;
-    @OneToOne
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     User user;
 }
