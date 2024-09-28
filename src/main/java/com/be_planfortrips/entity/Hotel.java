@@ -20,6 +20,7 @@ public class Hotel extends BaseEntity{
     @JoinColumn(name = "enterprise_id")
     AccountEnterprise accountEnterprise;
     String name;
+    @Column(name = "address", nullable = false, length = Integer.MAX_VALUE)
     String address;
     String phoneNumber;
     String description;
