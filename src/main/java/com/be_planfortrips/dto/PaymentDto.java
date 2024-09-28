@@ -1,14 +1,16 @@
 package com.be_planfortrips.dto;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentDto {
-    private Integer id;
-    private String paymentMethod;
-    private Double amount;
-    private String status;
-    private LocalDateTime createAt;
+     String paymentMethod;
+     Double amount;
+     String status;
+     LocalDateTime createAt;
 }

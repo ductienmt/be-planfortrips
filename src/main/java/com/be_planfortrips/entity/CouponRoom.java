@@ -1,4 +1,5 @@
 package com.be_planfortrips.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -11,5 +12,15 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class CouponRoom {
-    @Id@GeneratedValue(strategy = GenerationType.IDENTITY)Long id;@ManyToOne @JoinColumn(name = "coupon_id") Coupon coupon;@ManyToOne@JoinColumn(name = "room_id")Room room;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "coupon_id", nullable = false)
+    Coupon coupon;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "room_id", nullable = false)
+    Room room;
 }

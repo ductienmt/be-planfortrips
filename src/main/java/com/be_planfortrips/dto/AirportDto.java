@@ -1,13 +1,15 @@
 package com.be_planfortrips.dto;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AirportDto {
-    private Integer airportId;
-    private String airportName;
-    private String airportCode;
-    private String city;
-    private String address;
-    private String country;
+    String airportName;
+    String airportCode;
+    String city;
+    String address;
+    String country;
 }

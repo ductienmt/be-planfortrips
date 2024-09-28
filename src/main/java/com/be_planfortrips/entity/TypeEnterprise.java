@@ -1,9 +1,6 @@
 package com.be_planfortrips.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,6 +15,12 @@ public class TypeEnterprise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    @Column(name = "name_type", length = 50)
     String nameType;
+
+    @Column(name = "description", length = Integer.MAX_VALUE)
     String description;
+
+
 }

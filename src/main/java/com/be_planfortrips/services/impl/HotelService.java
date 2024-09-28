@@ -1,13 +1,16 @@
 package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.HotelDto;
+import com.be_planfortrips.dto.HotelImageDto;
 import com.be_planfortrips.entity.AccountEnterprise;
 import com.be_planfortrips.entity.Hotel;
-import com.be_planfortrips.exceptions.AppException;
-import com.be_planfortrips.exceptions.CatchMyException;
-import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.entity.HotelImage;
+import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.repositories.EnterpriseRepository;
+import com.be_planfortrips.repositories.HotelImageRepository;
 import com.be_planfortrips.repositories.HotelRepository;
+import com.be_planfortrips.repositories.ImageRepository;
+import com.be_planfortrips.responses.HotelImageResponse;
 import com.be_planfortrips.responses.HotelResponse;
 import com.be_planfortrips.services.interfaces.IHotelService;
 import lombok.AccessLevel;
@@ -28,6 +31,8 @@ import java.util.Optional;
 public class HotelService implements IHotelService {
     HotelRepository hotelRepository;
     EnterpriseRepository enterpriseRepository;
+    ImageRepository imageRepository;
+    HotelImageRepository hotelImageRepository;
     ModelMapper modelMapper = new ModelMapper();
     @Override
     @Transactional
@@ -75,5 +80,24 @@ public class HotelService implements IHotelService {
     public void deleteHotelById(Long id) {
         Optional<Hotel> orderOptional = hotelRepository.findById(id);
         orderOptional.ifPresent(hotelRepository::delete);
+    }
+
+    @Override
+    @Transactional
+    public HotelImageResponse createHotelImage(Long hotelId, HotelImageDto hotelImageDto) throws Exception {
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(()->new Exception("Not found"));
+        Image image = new Image();
+        image.setUrl(hotelImageDto.getImageUrl());
+        imageRepository.saveAndFlush(image);
+
+        HotelImage hotelImage = new HotelImage();
+        hotelImage.setHotel(hotel);
+        hotelImage.setImage(image);
+        hotelImageRepository.saveAndFlush(hotelImage);
+        return HotelImageResponse.builder()
+                .hotelId(hotel.getId())
+                .url(image.getUrl())
+                .build();
     }
 }

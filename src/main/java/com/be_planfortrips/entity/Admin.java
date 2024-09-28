@@ -15,13 +15,17 @@ public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Column(columnDefinition = "varchar(20)")
+
+    @Column(name = "username", length = 20)
     String userName;
-    @Column(columnDefinition = "varchar(200)")
+
+    @Column(name = "password", length = 100)
     String password;
-    @Column(columnDefinition = "varchar(50)")
+
+    @Column(name = "full_name", length = 50)
     String fullName;
-    @Column(columnDefinition = "varchar(200)")
+
+    @Column(name = "email", length = 200)
     String email;
 
 }

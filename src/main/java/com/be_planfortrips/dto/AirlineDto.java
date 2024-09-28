@@ -1,12 +1,14 @@
 package com.be_planfortrips.dto;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AirlineDto {
-    private Integer airlineId;
-    private String airlineName;
-    private String airlineCode;
-    private String airlineCountry;
-    private Integer enterpriseId;
+    String airlineName;
+    String airlineCode;
+    String airlineCountry;
+    Integer enterpriseId;
 }
