@@ -13,7 +13,7 @@ import java.util.Date;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "users")
 public class User extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +34,6 @@ public class User extends BaseEntity{
     @Column(name = "address", length = Integer.MAX_VALUE)
     String address;
 
-    @ColumnDefault("true")
     @Column(name = "is_active")
     boolean isActive;
 

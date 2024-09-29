@@ -6,6 +6,8 @@ import com.be_planfortrips.entity.AccountEnterprise;
 import com.be_planfortrips.entity.Hotel;
 import com.be_planfortrips.entity.HotelImage;
 import com.be_planfortrips.entity.Image;
+import com.be_planfortrips.mappers.impl.HotelImageMapper;
+import com.be_planfortrips.mappers.impl.HotelMapper;
 import com.be_planfortrips.repositories.EnterpriseRepository;
 import com.be_planfortrips.repositories.HotelImageRepository;
 import com.be_planfortrips.repositories.HotelRepository;
@@ -33,19 +35,17 @@ public class HotelService implements IHotelService {
     EnterpriseRepository enterpriseRepository;
     ImageRepository imageRepository;
     HotelImageRepository hotelImageRepository;
-    ModelMapper modelMapper = new ModelMapper();
+    HotelMapper hotelMapper = new HotelMapper();
+    HotelImageMapper hotelImageMapper = new HotelImageMapper();
     @Override
     @Transactional
     public HotelResponse createHotel(HotelDto hotelDto) throws Exception {
         AccountEnterprise accountEnterprise = enterpriseRepository.findById(hotelDto.getEnterpriseId())
                 .orElseThrow(()->new Exception("Not found"));
-        Hotel hotel = new Hotel();
-        TypeMap<HotelDto, Hotel> typeMap = modelMapper.createTypeMap(hotelDto, Hotel.class);
-        typeMap.addMappings(mapper -> mapper.skip(Hotel::setId));
-        modelMapper.map(hotelDto,hotel);
+        Hotel hotel = hotelMapper.toEntity(hotelDto);
         hotel.setAccountEnterprise(accountEnterprise);
         hotelRepository.save(hotel);
-        return modelMapper.map(hotel,HotelResponse.class);
+        return hotelMapper.toResponse(hotel);
     }
 
     @Override
@@ -55,24 +55,23 @@ public class HotelService implements IHotelService {
                            .orElseThrow(()->new Exception("Not found"));
         AccountEnterprise accountEnterprise = enterpriseRepository.findById(hotelDto.getEnterpriseId())
                 .orElseThrow(()->new Exception("Not found"));
-        modelMapper.map(hotelDto,existHotel);
+        hotelMapper.updateEntityFromDto(hotelDto,existHotel);
         existHotel.setId(id);
         existHotel.setAccountEnterprise(accountEnterprise);
         hotelRepository.saveAndFlush(existHotel);
-        modelMapper.typeMap(Hotel.class,HotelResponse.class);
-        return modelMapper.map(existHotel,HotelResponse.class);
+        return hotelMapper.toResponse(existHotel);
     }
 
     @Override
     public Page<HotelResponse> getAllHotel(PageRequest request) {
-        return hotelRepository.findAll(request).map(hotel -> modelMapper.map(hotel,HotelResponse.class));
+        return hotelRepository.findAll(request).map(hotel -> hotelMapper.toResponse(hotel));
     }
 
     @Override
     public HotelResponse getByHotelId(Long id) throws Exception {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(()->new Exception("Not found"));
-        return modelMapper.map(hotel,HotelResponse.class);
+        return hotelMapper.toResponse(hotel);
     }
 
     @Override
@@ -86,18 +85,17 @@ public class HotelService implements IHotelService {
     @Transactional
     public HotelImageResponse createHotelImage(Long hotelId, HotelImageDto hotelImageDto) throws Exception {
         Hotel hotel = hotelRepository.findById(hotelId)
-                .orElseThrow(()->new Exception("Not found"));
+                .orElseThrow(() -> new Exception("Not found"));
+
         Image image = new Image();
         image.setUrl(hotelImageDto.getImageUrl());
-        imageRepository.saveAndFlush(image);
+        imageRepository.save(image);
 
         HotelImage hotelImage = new HotelImage();
         hotelImage.setHotel(hotel);
         hotelImage.setImage(image);
         hotelImageRepository.saveAndFlush(hotelImage);
-        return HotelImageResponse.builder()
-                .hotelId(hotel.getId())
-                .url(image.getUrl())
-                .build();
+
+        return hotelImageMapper.toResponse(hotelImage);
     }
 }

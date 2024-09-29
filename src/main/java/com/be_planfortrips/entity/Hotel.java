@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "hotels")
 public class Hotel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +25,7 @@ public class Hotel extends BaseEntity{
     String phoneNumber;
     String description;
     int rating;
-    @OneToMany(cascade = CascadeType.REMOVE)
-    List<HotelImage> hotelImages ;
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    List<HotelImage> hotelImages;
+
 }

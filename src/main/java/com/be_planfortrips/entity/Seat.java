@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "seats")
 public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,6 @@ public class Seat {
     @Column(name = "seat_number", length = 10)
     String seatNumber;
 
-    @ColumnDefault("Empty")
     @Column(name = "status")
     Status status;
 
@@ -39,6 +38,6 @@ public class Seat {
     @JoinColumn(name = "class_id")
     TicketClass ticketClass;
 
-    @OneToMany
+    @OneToMany(mappedBy = "seat", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<Ticket> tickets;
 }

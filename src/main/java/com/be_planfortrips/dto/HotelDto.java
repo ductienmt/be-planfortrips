@@ -17,6 +17,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class HotelDto {
     @JsonProperty("enterprise_id")
+    @Min(value = 1,message = "enterprise id must be greater than 1")
     Long enterpriseId;
     @JsonProperty("address")
     @NotBlank(message = "Address is required")
@@ -30,6 +31,7 @@ public class HotelDto {
     @JsonProperty("description")
     String description;
     @JsonProperty("rating")
-    @Min(1) @Max(5)
+    @Min(value = 1,message = "rating must be greater than 1 star")
+    @Max(value = 5,message = "rating must be less than 5 star")
     int rating;
 }
