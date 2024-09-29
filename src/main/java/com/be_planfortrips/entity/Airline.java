@@ -1,5 +1,8 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -27,9 +30,9 @@ public class Airline {
     @Column(name = "airline_country", length = 100)
     String airlineCountry;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "enterprise_id")
+    @JsonManagedReference
     AccountEnterprise accountEnterprise;
 
     @OneToMany

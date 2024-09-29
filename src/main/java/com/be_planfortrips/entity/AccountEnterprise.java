@@ -1,4 +1,7 @@
 package com.be_planfortrips.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -50,8 +53,9 @@ public class AccountEnterprise extends BaseEntity{
     @JoinColumn(name = "image_id")
     Image image;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "type_detail_id")
+    @JsonBackReference
     TypeEnterpriseDetail typeEnterpriseDetail;
 //    @OneToMany
 //    List<Hotel> hotels;
