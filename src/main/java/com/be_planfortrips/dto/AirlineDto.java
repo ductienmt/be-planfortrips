@@ -24,8 +24,7 @@ public class AirlineDto {
     @NotBlank(message = "Airline country is required")
     @JsonProperty("airline_country")
     String airlineCountry;
-    @NotBlank(message = "Enterprise is required")
     @Min(value = 1,message = "enterprise id must be greater than 1")
     @JsonProperty("enterprise_id")
-    Integer enterpriseId;
+    Long enterpriseId;
 }
