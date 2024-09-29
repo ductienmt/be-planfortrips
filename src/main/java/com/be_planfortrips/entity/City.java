@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "cities")
 public class City {
     @Id
     @Column(length = 20)
@@ -29,6 +29,6 @@ public class City {
     @Column(name = "description", length = Integer.MAX_VALUE)
     String description;
 
-    @OneToMany
+    @OneToMany(mappedBy = "city", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<Checkin> checkins;
 }

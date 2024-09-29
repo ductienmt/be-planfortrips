@@ -11,7 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "ticket_classes")
 public class TicketClass {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

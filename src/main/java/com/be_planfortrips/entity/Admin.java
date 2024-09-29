@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "admins")
 public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class Admin {
     @Column(name = "password", length = 100)
     String password;
 
-    @Column(name = "fullname", length = 50)
+    @Column(name = "full_name", length = 50)
     String fullName;
 
     @Column(name = "email", length = 200)

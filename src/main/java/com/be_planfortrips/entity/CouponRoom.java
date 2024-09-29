@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "coupon_room")
 public class CouponRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

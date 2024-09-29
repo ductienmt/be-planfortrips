@@ -10,13 +10,13 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "type_enterprises")
 public class TypeEnterprise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "nametype", length = 50)
+    @Column(name = "name_type", length = 50)
     String nameType;
 
     @Column(name = "description", length = Integer.MAX_VALUE)

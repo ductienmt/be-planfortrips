@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "rooms")
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,6 @@ public class Room {
     @JoinColumn(name = "hotel_id")
     Hotel hotel;
 
-    @ColumnDefault("Standard")
     @Column(name = "type_of_room")
     TypeOfRoom typeOfRoom;
 
@@ -46,9 +45,9 @@ public class Room {
     @Column(name = "is_available")
     boolean isAvailable;
 
-    @OneToMany
+    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<RoomImage> images;
 
-    @OneToMany
+    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<CouponRoom> couponRooms;
 }
