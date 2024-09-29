@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "account_enterprises")
 public class AccountEnterprise extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

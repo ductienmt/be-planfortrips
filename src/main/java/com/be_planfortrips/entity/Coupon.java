@@ -25,7 +25,6 @@ public class Coupon extends BaseEntity {
     @Column(name = "code", length = 50)
     String code;
 
-    @ColumnDefault("Percent")
     @Column(name = "discount_type")
     DiscountType discountType;
 
@@ -33,7 +32,7 @@ public class Coupon extends BaseEntity {
     BigDecimal discountValue;
 
     @Column(name = "start_date")
-    LocalDateTime startDate; // t nghĩ nó sẽ diễn ra từ mấy giờ nữa nên t sưẳ nha
+    LocalDateTime startDate;
 
     @Column(name = "end_date")
     LocalDateTime endDate;
@@ -49,6 +48,6 @@ public class Coupon extends BaseEntity {
     @Column(name = "is_active")
     boolean isActive;
 
-    @OneToMany
+    @OneToMany(mappedBy = "coupon", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<CouponRoom> couponRooms;
 }

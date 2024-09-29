@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "flight_prices")
 public class FlightPrice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,6 @@ public class FlightPrice {
     @JoinColumn(name = "ticket_class_id", nullable = false)
     TicketClass ticketClass;
 
-    @ColumnDefault("Percent")
     @Column(name = "discount_type")
     String discountType;
 

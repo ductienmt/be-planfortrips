@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "hotel_images")
 public class HotelImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

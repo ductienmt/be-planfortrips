@@ -12,7 +12,7 @@ import java.util.Date;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "passengers")
 public class Passenger {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "services")
 public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

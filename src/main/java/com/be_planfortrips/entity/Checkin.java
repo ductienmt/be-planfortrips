@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "checkins")
 public class Checkin extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

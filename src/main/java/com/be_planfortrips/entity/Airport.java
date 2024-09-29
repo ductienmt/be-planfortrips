@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
+@Table(name = "airports")
 public class Airport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
