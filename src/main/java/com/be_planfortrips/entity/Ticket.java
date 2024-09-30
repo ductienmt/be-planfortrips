@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "tickets")
-public class Ticket {
+public class Ticket extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -27,4 +27,10 @@ public class Ticket {
 
     @Column(name = "price", precision = 10, scale = 2)
     BigDecimal price;
+
+    @Column(name = "status")
+    Status status;
+
+    @Column(name = "notes", length = Integer.MAX_VALUE)
+    String notes;
 }
