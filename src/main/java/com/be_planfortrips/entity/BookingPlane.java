@@ -15,7 +15,7 @@ import java.util.Date;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "booking_planes")
-public class BookingPlane {
+public class BookingPlane extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_plane_id", nullable = false)
@@ -45,4 +45,10 @@ public class BookingPlane {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     Payment payment;
+
+    @Column(name = "service_name", length = 50)
+    String serviceName;
+
+    @Column(name = "service_price", precision = 10, scale = 2)
+    BigDecimal servicePrice;
 }
