@@ -27,9 +27,6 @@ public class FlightPrice {
     @JoinColumn(name = "ticket_class_id", nullable = false)
     TicketClass ticketClass;
 
-    @Column(name = "discount_type")
-    String discountType;
-
-    @Column(name = "discount_value", precision = 10, scale = 2)
-    BigDecimal discountValue;
+    @Column(name = "price", precision = 10, scale = 2)
+    BigDecimal price;
 }
