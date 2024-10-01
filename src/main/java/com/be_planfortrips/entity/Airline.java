@@ -32,6 +32,9 @@ public class Airline {
     @JsonManagedReference
     AccountEnterprise accountEnterprise;
 
+//    @OneToMany(mappedBy = "airline", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+//    List<Flight> flights;
+
     @OneToMany(mappedBy = "airline", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    List<Flight> flights;
+    List<Airplane> airplanes;
 }

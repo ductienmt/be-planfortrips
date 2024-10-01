@@ -41,9 +41,9 @@ public class Flight {
     Date arrivalTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "airline_id")
-    Airline airline;
+    @JoinColumn(name = "airplane_id")
+    Airplane airplane;
 
-    @OneToMany
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<Seat> seats;
 }

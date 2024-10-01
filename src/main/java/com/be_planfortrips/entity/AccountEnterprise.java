@@ -45,7 +45,6 @@ public class AccountEnterprise extends BaseEntity{
     @Column(name = "address", length = Integer.MAX_VALUE)
     String address;
 
-    @ColumnDefault("true")
     @Column(name = "status")
     boolean status;
 

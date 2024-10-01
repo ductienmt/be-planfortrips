@@ -33,7 +33,4 @@ public class Airport {
 
     @Column(name = "country", length = 20)
     String country;
-
-    @OneToMany
-    List<Flight> flights;
 }

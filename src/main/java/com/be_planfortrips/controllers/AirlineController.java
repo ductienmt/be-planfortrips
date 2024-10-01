@@ -1,14 +1,8 @@
 package com.be_planfortrips.controllers;
-import com.amadeus.Response;
-import com.amadeus.exceptions.ResponseException;
-import com.amadeus.resources.FlightOrder;
-import com.amadeus.resources.Location;
 import com.be_planfortrips.dto.AirlineDto;
-import com.be_planfortrips.dto.BookingRequest;
 import com.be_planfortrips.entity.Airline;
 import com.be_planfortrips.responses.*;
 import com.be_planfortrips.services.interfaces.IAirlineService;
-import com.be_planfortrips.services.interfaces.IAmadeusService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +23,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class AirlineController {
     IAirlineService iAirlineService;
-    IAmadeusService iAmadeusService;
     @PostMapping("")
     public ResponseEntity<?> saveAirline(@Valid @RequestBody AirlineDto airlineDto,
                                          BindingResult result){
@@ -48,31 +41,26 @@ public class AirlineController {
        }
     }
 
-//    @GetMapping("")
-//    public ResponseEntity<?> getAirlines(@RequestParam("page") int page,
-//                                         @RequestParam("limit") int limit){
-//        try {
-//            PageRequest request = PageRequest.of(page, limit,
-//                    Sort.by("id"));
-//            int totalPage = 0;
-//            Page<AirlineResponse> airlineResponses = iAirlineService.getAirlines(request);
-//            if(airlineResponses == null){
-//                return ResponseEntity.badRequest().body("Danh sách các chuyeens bay rỗng");
-//            }
-//            totalPage = airlineResponses.getTotalPages();
-//            return ResponseEntity.ok(AirlineListResponse.builder()
-//                    .list(airlineResponses.stream().toList())
-//                    .totalPage(totalPage)
-//                    .build()
-//                );
-//        }catch (Exception e){
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
     @GetMapping("")
-    public ResponseEntity<?> getAirlines() throws ResponseException {
-        List<com.amadeus.resources.Airline> response = iAmadeusService.getAirlines();
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> getAirlines(@RequestParam("page") int page,
+                                         @RequestParam("limit") int limit){
+        try {
+            PageRequest request = PageRequest.of(page, limit,
+                    Sort.by("id"));
+            int totalPage = 0;
+            Page<AirlineResponse> airlineResponses = iAirlineService.getAirlines(request);
+            if(airlineResponses == null){
+                return ResponseEntity.badRequest().body("Danh sách các chuyeens bay rỗng");
+            }
+            totalPage = airlineResponses.getTotalPages();
+            return ResponseEntity.ok(AirlineListResponse.builder()
+                    .list(airlineResponses.stream().toList())
+                    .totalPage(totalPage)
+                    .build()
+                );
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAirline(@PathVariable Long id,
@@ -105,10 +93,5 @@ public class AirlineController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
-    @GetMapping("/locations")
-    public ResponseEntity<?> createBooking(@RequestParam String keyword) throws ResponseException {
-        List<Location> response = iAmadeusService.getLocations(keyword);
-        return ResponseEntity.ok(response);
     }
 }

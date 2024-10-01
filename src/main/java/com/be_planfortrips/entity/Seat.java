@@ -3,7 +3,6 @@ package com.be_planfortrips.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 
@@ -20,9 +19,9 @@ public class Seat {
     @Column(name = "seat_id", nullable = false)
     Long id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "airplane_id")
-//    Airplane airplane;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "airplane_id")
+    Airplane airplane;
 
     @Column(name = "seat_number", length = 10)
     String seatNumber;
