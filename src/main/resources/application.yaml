@@ -10,5 +10,12 @@ spring:
       ddl-auto: none
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mvc:
+    converters:
+      preferred-json-mapper: gson.
 api:
   prefix : api/v1
+amadeus:
+  client:
+  id: 5F30W7vixYGfCto7GIygjLHsFmZ3y8lG
+  secret: RAylIcYANgAm1QaL

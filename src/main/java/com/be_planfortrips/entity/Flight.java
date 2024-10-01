@@ -41,8 +41,8 @@ public class Flight {
     Date arrivalTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "airplane_id")
-    Airplane airplane;
+    @JoinColumn(name = "airline_id")
+    Airline airline;
 
     @OneToMany
     List<Seat> seats;
