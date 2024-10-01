@@ -8,4 +8,6 @@ import java.util.List;
 public interface IAmadeusService {
     List<Airline> getAirlines() throws ResponseException;
     List<Location> getLocations(String keyword)throws  ResponseException;
+    List<HotelOffer> getHotels() throws ResponseException;
+
 }

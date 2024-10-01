@@ -4,7 +4,6 @@ import com.amadeus.Amadeus;
 import com.amadeus.Params;
 import com.amadeus.exceptions.ResponseException;
 import com.amadeus.resources.*;
-import com.be_planfortrips.dto.AirlineDto;
 import com.be_planfortrips.services.interfaces.IAmadeusService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -51,5 +50,20 @@ public class AmadeusService implements IAmadeusService {
             e.printStackTrace(); // Ghi log lỗi
         }
         return locations;
+    }
+
+    @Override
+    public List<HotelOffer> getHotels() throws ResponseException {
+        List<HotelOffer> hotels = new ArrayList<>();
+        try {
+            HotelOffer[] hotels1 = amadeus.shopping.hotelOffers.get();
+
+            if (hotels1 != null) {
+                hotels.addAll(Arrays.asList(hotels1));
+            }
+        } catch (ResponseException e) {
+            e.printStackTrace(); // Ghi log lỗi
+        }
+        return hotels;
     }
 }

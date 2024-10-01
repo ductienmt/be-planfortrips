@@ -1,21 +1,18 @@
 package com.be_planfortrips.controllers;
 
+import com.amadeus.exceptions.ResponseException;
+import com.amadeus.resources.HotelOffer;
 import com.be_planfortrips.dto.HotelDto;
 import com.be_planfortrips.dto.HotelImageDto;
-import com.be_planfortrips.entity.Hotel;
-import com.be_planfortrips.entity.HotelImage;
 import com.be_planfortrips.responses.HotelImageResponse;
-import com.be_planfortrips.responses.HotelListResponse;
 import com.be_planfortrips.responses.HotelResponse;
+import com.be_planfortrips.services.interfaces.IAmadeusService;
 import com.be_planfortrips.services.interfaces.IHotelService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.core.io.UrlResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +37,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class HotelController {
     IHotelService iHotelService;
-
+    IAmadeusService iAmadeusService;
     @PostMapping("")
     public ResponseEntity<?> createHotel(@Valid @RequestBody HotelDto hotelDto,
                                          BindingResult result){
@@ -58,18 +55,23 @@ public class HotelController {
             return ResponseEntity.badRequest().body("error"+e.getMessage());
         }
     }
+//    @GetMapping("")
+//    public ResponseEntity<HotelListResponse> getHotels(@RequestParam("page")     int page,
+//                                                       @RequestParam("limit")    int limit){
+//        PageRequest request = PageRequest.of(page, limit,
+//                Sort.by("rating").ascending());
+//        int totalPage = 0;
+//        Page<HotelResponse> hotelResponses = iHotelService.getAllHotel(request);
+//        totalPage = hotelResponses.getTotalPages();
+//        return ResponseEntity.ok(HotelListResponse.builder()
+//                        .hotelResponseList(hotelResponses.toList())
+//                        .totalPage(totalPage)
+//                        .build());
+//    }
     @GetMapping("")
-    public ResponseEntity<HotelListResponse> getHotels(@RequestParam("page")     int page,
-                                                       @RequestParam("limit")    int limit){
-        PageRequest request = PageRequest.of(page, limit,
-                Sort.by("rating").ascending());
-        int totalPage = 0;
-        Page<HotelResponse> hotelResponses = iHotelService.getAllHotel(request);
-        totalPage = hotelResponses.getTotalPages();
-        return ResponseEntity.ok(HotelListResponse.builder()
-                        .hotelResponseList(hotelResponses.toList())
-                        .totalPage(totalPage)
-                        .build());
+    public ResponseEntity<?> getHotels() throws ResponseException {
+        List<HotelOffer> response = iAmadeusService.getHotels();
+        return ResponseEntity.ok(response);
     }
     @PutMapping("/{id}")
     public ResponseEntity<?> updateHotel(@Valid @RequestBody HotelDto hotelDto,
