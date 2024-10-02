@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class HotelMapper implements MapperInterface<HotelResponse,Hotel,HotelDto> {
     ModelMapper modelMapper = new ModelMapper();
-    HotelImageMapper hotelImageMapper = new HotelImageMapper();
+    HotelImageMapper hotelImageMapper;
     @Override
     public Hotel toEntity(HotelDto hotelDto) {
         TypeMap<HotelDto, Hotel> typeMap = modelMapper.createTypeMap(hotelDto, Hotel.class);
