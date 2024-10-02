@@ -30,7 +30,7 @@ import java.util.Optional;
 public class AirlineService implements IAirlineService {
     AirlineRepository airlineRepository;
     EnterpriseRepository enterpriseRepository;
-    AirlineMapper airlineMapper = new AirlineMapper();
+    AirlineMapper airlineMapper;
     @Override
     @Transactional
     public Airline saveAirline(AirlineDto airlineDto) throws Exception {

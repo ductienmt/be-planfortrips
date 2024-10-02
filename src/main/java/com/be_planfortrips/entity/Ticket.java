@@ -33,4 +33,6 @@ public class Ticket extends BaseEntity{
 
     @Column(name = "notes", length = Integer.MAX_VALUE)
     String notes;
+    @Column(name = "oneWay")
+    Boolean oneWay;
 }
