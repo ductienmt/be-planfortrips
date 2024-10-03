@@ -10,7 +10,9 @@ import com.be_planfortrips.repositories.UserRepository;
 import com.be_planfortrips.responses.AccountUserResponse;
 import com.be_planfortrips.services.interfaces.IUserService;
 import com.be_planfortrips.utils.Utils;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -33,19 +35,35 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public AccountUserResponse createUser(UserDto userDto) {
-        User user = this.userRepository.findByUsername(userDto.getUserName());
-        if (user != null) {
-            throw new RuntimeException("Username đã tồn tại, vui lòng đổi username khác");
-        } else {
+        try {
+            User user = this.userRepository.findByUsername(userDto.getUserName());
+            if (user != null) {
+                throw new RuntimeException("Username đã tồn tại, vui lòng đổi username khác");
+            }
+
             if (!this.utils.isValidEmail(userDto.getEmail())) {
                 throw new RuntimeException("Email không hợp lệ");
             }
+
             if (!this.utils.isValidPhoneNumber(userDto.getPhoneNumber())) {
                 throw new RuntimeException("Số điện thoại không hợp lệ");
             }
+
             User newUser = this.userMapper.toEntity(userDto);
+            newUser.setActive(true);
             this.userRepository.save(newUser);
             return this.userMapper.toResponse(newUser);
+
+        } catch (DataIntegrityViolationException e) {
+            // Kiểm tra nếu lỗi vi phạm ràng buộc duy nhất (unique constraint)
+            if (e.getCause() instanceof ConstraintViolationException) {
+                throw new RuntimeException("Username đã tồn tại, vui lòng chọn tên khác.");
+            }
+            // Các trường hợp vi phạm dữ liệu khác
+            throw new RuntimeException("Có lỗi xảy ra khi tạo tài khoản, vui lòng thử lại.");
+        } catch (Exception e) {
+            // Bắt các lỗi khác
+            throw new RuntimeException("Lỗi không xác định: " + e.getMessage());
         }
     }
 
