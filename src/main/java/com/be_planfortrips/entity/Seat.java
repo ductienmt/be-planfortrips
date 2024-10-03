@@ -3,7 +3,6 @@ package com.be_planfortrips.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 

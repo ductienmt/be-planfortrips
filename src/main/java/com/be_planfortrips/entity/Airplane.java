@@ -28,6 +28,6 @@ public class Airplane {
     @JoinColumn(name = "airline_id")
     Airline airline;
 
-    @OneToMany
+    @OneToMany(mappedBy = "airplane", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<Flight> flights;
 }

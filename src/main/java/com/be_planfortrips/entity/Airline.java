@@ -27,14 +27,14 @@ public class Airline {
     @Column(name = "airline_code", length = 5)
     String airlineCode;
 
-    @Column(name = "airline_country", length = 100)
-    String airlineCountry;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "enterprise_id")
     @JsonManagedReference
     AccountEnterprise accountEnterprise;
 
-    @OneToMany
+//    @OneToMany(mappedBy = "airline", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+//    List<Flight> flights;
+
+    @OneToMany(mappedBy = "airline", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<Airplane> airplanes;
 }
