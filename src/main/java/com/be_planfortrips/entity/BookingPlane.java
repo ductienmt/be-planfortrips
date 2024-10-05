@@ -32,7 +32,7 @@ public class BookingPlane extends BaseEntity{
     @Column(name = "book_date")
     Date bookDate;
 
-    @Column(name = "status")
+    @Column(name = "status", columnDefinition = "status_booking")
     Status status;
 
     @Column(name = "total_price")

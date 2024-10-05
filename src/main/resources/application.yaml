@@ -1,8 +1,10 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/Planfortrips
-    username: postgres
-    password: 123
+#    username: postgres
+#    password: 123
+    username: admin
+    password: admin
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

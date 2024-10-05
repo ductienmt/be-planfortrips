@@ -28,11 +28,12 @@ public class Ticket extends BaseEntity{
     @Column(name = "price", precision = 10, scale = 2)
     BigDecimal price;
 
-    @Column(name = "status")
+    @Column(name = "status", columnDefinition = "status_booking")
     Status status;
 
     @Column(name = "notes", length = Integer.MAX_VALUE)
     String notes;
+
     @Column(name = "oneWay")
     Boolean oneWay;
 }

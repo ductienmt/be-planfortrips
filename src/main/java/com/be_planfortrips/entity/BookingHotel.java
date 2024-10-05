@@ -36,7 +36,7 @@ public class BookingHotel extends BaseEntity {
     @Column(name = "total_price", precision = 10, scale = 2)
     BigDecimal totalPrice;
 
-    @Column(name = "status")
+    @Column(name = "status", columnDefinition = "status_booking")
     Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)
