@@ -24,6 +24,6 @@ public class Payment {
     @Column(name = "amount", precision = 10, scale = 2)
     BigDecimal amount;
 
-    @Column(name = "status")
+    @Column(name = "status",columnDefinition = "status_booking")
     Status status;
 }

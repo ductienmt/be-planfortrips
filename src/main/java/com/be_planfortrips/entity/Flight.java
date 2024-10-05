@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -35,10 +36,10 @@ public class Flight {
     Airport arrivalAirport;
 
     @Column(name = "departure_time")
-    Date departureTime;
+    Timestamp departureTime;
 
     @Column(name = "arrival_time")
-    Date arrivalTime;
+    Timestamp arrivalTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "airplane_id")

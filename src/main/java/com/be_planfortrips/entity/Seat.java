@@ -26,7 +26,8 @@ public class Seat {
     @Column(name = "seat_number", length = 10)
     String seatNumber;
 
-    @Column(name = "status")
+
+    @Column(name = "status", columnDefinition = "status_seat")
     Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)
