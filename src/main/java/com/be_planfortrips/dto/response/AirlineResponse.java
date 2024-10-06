@@ -1,4 +1,4 @@
-package com.be_planfortrips.responses;
+package com.be_planfortrips.dto.response;
 import com.be_planfortrips.entity.Airplane;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

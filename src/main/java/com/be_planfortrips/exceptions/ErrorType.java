@@ -10,9 +10,7 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorType {
 
-    BAD_REQUEST(400, "Bad Request", HttpStatus.BAD_REQUEST),
-    NOT_FOUND(404, "Not Found", HttpStatus.NOT_FOUND),
-    INTERNAL_SERVER_ERROR(500, "Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+    usernameExisted(100, "Username đã tồn tại", HttpStatus.BAD_REQUEST);
 
     int code;
     String message;

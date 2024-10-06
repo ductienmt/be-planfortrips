@@ -2,7 +2,7 @@ package com.be_planfortrips.services.interfaces;
 
 import com.be_planfortrips.dto.AirlineDto;
 import com.be_planfortrips.entity.Airline;
-import com.be_planfortrips.responses.AirlineResponse;
+import com.be_planfortrips.dto.response.AirlineResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 

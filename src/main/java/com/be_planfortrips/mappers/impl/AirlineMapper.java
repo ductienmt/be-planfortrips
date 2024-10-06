@@ -1,11 +1,9 @@
 package com.be_planfortrips.mappers.impl;
 
 import com.be_planfortrips.dto.AirlineDto;
-import com.be_planfortrips.dto.HotelDto;
 import com.be_planfortrips.entity.Airline;
-import com.be_planfortrips.entity.Hotel;
 import com.be_planfortrips.mappers.MapperInterface;
-import com.be_planfortrips.responses.AirlineResponse;
+import com.be_planfortrips.dto.response.AirlineResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

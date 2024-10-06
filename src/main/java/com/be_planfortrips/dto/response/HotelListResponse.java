@@ -1,5 +1,4 @@
-package com.be_planfortrips.responses;
-import jakarta.persistence.*;
+package com.be_planfortrips.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class HotelImageResponse {
-    Long hotelId;
-    String url;
+public class HotelListResponse {
+    List<HotelResponse> hotelResponseList;
+    int totalPage;
 }

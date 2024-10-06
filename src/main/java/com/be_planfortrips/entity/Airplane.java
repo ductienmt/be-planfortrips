@@ -16,6 +16,7 @@ import java.util.List;
 public class Airplane {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "air_plane_id")
     Long id;
 
     @Column(name = "model", length = 50)
@@ -30,4 +31,12 @@ public class Airplane {
 
     @OneToMany
     List<Flight> flights;
+
+    @ManyToMany
+    @JoinTable(
+            name = "airplanes_users",
+            joinColumns = @JoinColumn(name = "air_plane_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    List<User> usersUsed;
 }
