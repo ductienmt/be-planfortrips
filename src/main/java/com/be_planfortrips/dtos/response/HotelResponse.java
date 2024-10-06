@@ -1,7 +1,4 @@
-package com.be_planfortrips.responses;
-import com.be_planfortrips.entity.AccountEnterprise;
-import com.be_planfortrips.entity.HotelImage;
-import jakarta.persistence.*;
+package com.be_planfortrips.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

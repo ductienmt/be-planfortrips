@@ -26,10 +26,11 @@ public class Room {
     @Column(name = "price", precision = 10, scale = 2)
     BigDecimal price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "hotel_id")
     Hotel hotel;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type_of_room")
     TypeOfRoom typeOfRoom;
 

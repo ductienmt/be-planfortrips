@@ -5,9 +5,12 @@ spring:
     password: admin
     driver-class-name: org.postgresql.Driver
   jpa:
-    hibernate:
-      ddl-auto: none
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
 api:
   prefix : api/v1

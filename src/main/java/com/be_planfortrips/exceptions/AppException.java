@@ -20,7 +20,7 @@ public class AppException extends RuntimeException{
      *
      * @param errorType Loại lỗi đã gây ra ngoại lệ.
      */
-    AppException(ErrorType errorType) {
+    public AppException(ErrorType errorType) {
             super(errorType.getMessage());
     }
 
