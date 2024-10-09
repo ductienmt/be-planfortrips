@@ -11,21 +11,18 @@ import org.hibernate.annotations.ColumnDefault;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "seats")
-public class Seat {
+@Table(name = "ticket_seats")
+public class TicketSeat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_code")
-    Vehicle vehicleCode;
+    @JoinColumn(name = "ticket_id")
+    private Ticket ticket;
 
-    @Column(name = "seat_number", length = 5)
-    String seatNumber;
-
-    @ColumnDefault("Empty")
-    @Column(name = "status", columnDefinition = "status_seat")
-    Status_Seat status;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seat_id")
+    private Seat seat;
 
 }

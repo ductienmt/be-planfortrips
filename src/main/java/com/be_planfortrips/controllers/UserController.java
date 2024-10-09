@@ -29,8 +29,6 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     private IUserService userService;
-    @Autowired
-    private UserRepository userRepository;
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllUsers(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {

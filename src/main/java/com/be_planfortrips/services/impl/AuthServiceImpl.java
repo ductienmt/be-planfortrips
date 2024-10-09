@@ -2,9 +2,8 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.dto.request.LoginDto;
-import com.be_planfortrips.repositories.UserRepository;
-import com.be_planfortrips.responses.AccountUserResponse;
-import com.be_planfortrips.responses.AuthResponse;
+import com.be_planfortrips.dto.response.AccountUserResponse;
+import com.be_planfortrips.dto.response.AuthResponse;
 import com.be_planfortrips.services.interfaces.IAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
