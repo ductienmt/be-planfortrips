@@ -1,6 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/Planfortrips
+#    username: postgres
+#    password: 123
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -12,5 +14,11 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+    
+  mvc:
+    converters:
+      preferred-json-mapper: gson.
 api:
   prefix : api/v1
+
+

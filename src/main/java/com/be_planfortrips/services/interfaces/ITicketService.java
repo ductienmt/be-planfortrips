@@ -1,4 +1,4 @@
-package com.be_planfortrips.services.interfaces;
-
-public interface ITicketService {
-}
+//package com.be_planfortrips.services.interfaces;
+//
+//public interface ITicketService {
+//}

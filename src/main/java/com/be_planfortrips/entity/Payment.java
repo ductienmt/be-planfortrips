@@ -24,6 +24,11 @@ public class Payment {
     @Column(name = "fee")
     Double fee;
 
+<<<<<<< HEAD
     @Column(name = "description")
     String  description;
+=======
+    @Column(name = "status",columnDefinition = "status_booking")
+    Status status;
+>>>>>>> a2b8a3077b0c703f7ee7dd0c64fe44094e080841
 }
