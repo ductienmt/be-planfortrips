@@ -7,7 +7,7 @@ import com.be_planfortrips.entity.User;
 import com.be_planfortrips.mappers.impl.UserMapper;
 import com.be_planfortrips.repositories.ImageRepository;
 import com.be_planfortrips.repositories.UserRepository;
-import com.be_planfortrips.responses.AccountUserResponse;
+import com.be_planfortrips.dto.response.AccountUserResponse;
 import com.be_planfortrips.services.interfaces.IUserService;
 import com.be_planfortrips.utils.Utils;
 import jakarta.validation.ConstraintViolationException;

@@ -39,4 +39,12 @@ public class Hotel extends BaseEntity{
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<HotelImage> hotelImages;
 
+    // Danh sách User đã từng đặt khách sạn này
+    @ManyToMany
+    @JoinTable(
+            name = "hotel_users",
+            joinColumns = @JoinColumn(name = "hotel_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    List<User> usersUsed;
 }

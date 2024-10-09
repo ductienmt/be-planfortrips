@@ -3,7 +3,11 @@ package com.be_planfortrips.controllers;
 import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.dto.request.ChangePasswordDto;
 import com.be_planfortrips.dto.response.ApiResponse;
-import com.be_planfortrips.responses.AccountUserResponse;
+import com.be_planfortrips.dto.response.AccountUserResponse;
+import com.be_planfortrips.entity.User;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.repositories.UserRepository;
 import com.be_planfortrips.services.interfaces.IUserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -24,6 +29,8 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private IUserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllUsers(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {
@@ -46,8 +53,6 @@ public class UserController {
             responseMap.put("totalElements", totalElements);
             responseMap.put("totalPages", totalPages);
             responseMap.put("userResponses", userResponses);
-
-
 
             return ResponseEntity.ok(
                     ApiResponse.<Map<String, Object>>builder()

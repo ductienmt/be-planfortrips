@@ -18,12 +18,17 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "payment_method", nullable = false, length = 50)
-    String paymentMethod;
+    @Column(name = "payment_name", nullable = false, length = 50)
+    String paymentName;
 
-    @Column(name = "amount", precision = 10, scale = 2)
-    BigDecimal amount;
+    @Column(name = "fee")
+    Double fee;
 
+<<<<<<< HEAD
+    @Column(name = "description")
+    String  description;
+=======
     @Column(name = "status",columnDefinition = "status_booking")
     Status status;
+>>>>>>> a2b8a3077b0c703f7ee7dd0c64fe44094e080841
 }

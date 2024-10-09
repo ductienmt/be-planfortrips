@@ -1,15 +1,18 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -25,18 +28,30 @@ public class BookingHotel extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     Room room;
 
     @Column(name = "check_in_time")
-    Date checkInTime;
+    LocalDateTime checkInTime;
 
     @Column(name = "check_out_time")
-    Date checkOutTime;
+    LocalDateTime checkOutTime;
+
+    @Column(name = "createAt")
+    LocalDateTime createAt;
+
+    @Column(name = "updateAt")
+    LocalDateTime updateAt;
 
     @Column(name = "total_price", precision = 10, scale = 2)
     BigDecimal totalPrice;
 
+<<<<<<< HEAD
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+=======
     @Column(name = "status", columnDefinition = "status_booking")
+>>>>>>> a2b8a3077b0c703f7ee7dd0c64fe44094e080841
     Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)

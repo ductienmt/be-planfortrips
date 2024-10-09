@@ -1,18 +1,13 @@
 package com.be_planfortrips.mappers.impl;
 
-import com.be_planfortrips.dto.HotelDto;
 import com.be_planfortrips.dto.HotelImageDto;
-import com.be_planfortrips.entity.Hotel;
 import com.be_planfortrips.entity.HotelImage;
-import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.mappers.MapperInterface;
-import com.be_planfortrips.responses.HotelImageResponse;
-import com.be_planfortrips.responses.HotelResponse;
+import com.be_planfortrips.dto.response.HotelImageResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
 @Component
