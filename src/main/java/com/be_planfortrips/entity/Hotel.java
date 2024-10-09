@@ -16,15 +16,26 @@ public class Hotel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enterprise_id")
     AccountEnterprise accountEnterprise;
+
+    @Column(name = "name")
     String name;
+
     @Column(name = "address", nullable = false, length = Integer.MAX_VALUE)
     String address;
+
+    @Column(name = "phone_number")
     String phoneNumber;
+
+    @Column(name = "description", length = Integer.MAX_VALUE)
     String description;
+
+    @Column(name = "rating")
     int rating;
+
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<HotelImage> hotelImages;
 

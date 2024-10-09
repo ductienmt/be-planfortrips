@@ -33,8 +33,8 @@ public class HotelService implements IHotelService {
     EnterpriseRepository enterpriseRepository;
     ImageRepository imageRepository;
     HotelImageRepository hotelImageRepository;
-    HotelMapper hotelMapper = new HotelMapper();
-    HotelImageMapper hotelImageMapper = new HotelImageMapper();
+    HotelMapper hotelMapper;
+    HotelImageMapper hotelImageMapper;
     @Override
     @Transactional
     public HotelResponse createHotel(HotelDto hotelDto) throws Exception {

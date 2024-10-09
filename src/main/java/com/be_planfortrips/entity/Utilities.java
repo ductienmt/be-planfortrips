@@ -4,24 +4,25 @@
 //import lombok.*;
 //import lombok.experimental.FieldDefaults;
 //
-//import java.math.BigDecimal;
-//
 //@Data
+//@Table(name = "utilities")
 //@AllArgsConstructor
 //@NoArgsConstructor
 //@Entity
 //@Builder
 //@FieldDefaults(level = AccessLevel.PRIVATE)
-//@Table(name = "services")
-//public class Service {
+//public class Utilities {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "service_id", nullable = false)
 //    Long id;
 //
-//    @Column(name = "service_name", length = 50)
-//    String serviceName;
+//    @Column(name = "name", length = 50)
+//    String name;
 //
-//    @Column(name = "price", precision = 10, scale = 2)
-//    BigDecimal price;
+//    @Column(name = "apply")
+//    Boolean apply;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "class_id")
+//    TicketClass ticketClass;
 //}

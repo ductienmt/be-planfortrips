@@ -6,6 +6,7 @@ import com.be_planfortrips.dto.response.HotelImageResponse;
 import com.be_planfortrips.dto.response.HotelListResponse;
 import com.be_planfortrips.dto.response.HotelResponse;
 import com.be_planfortrips.services.interfaces.IHotelService;
+import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,6 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class HotelController {
     IHotelService iHotelService;
-
     @PostMapping("")
     public ResponseEntity<?> createHotel(@Valid @RequestBody HotelDto hotelDto,
                                          BindingResult result){
@@ -69,6 +69,7 @@ public class HotelController {
                         .totalPage(totalPage)
                         .build());
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateHotel(@Valid @RequestBody HotelDto hotelDto,
                                          @PathVariable Long id,
@@ -171,5 +172,26 @@ public class HotelController {
         // Sao chép file vào thư mục đích
         Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
         return uniqueFilename;
+    }
+    @PostMapping("/generate")
+    public ResponseEntity<String> stringResponseEntity(){
+        Faker faker = new Faker();
+        for(int i =0;i<100;i++){
+            HotelDto hotelDto =HotelDto.builder()
+                    .name(faker.name().name())
+                    .address(faker.address().fullAddress())
+                    .description(faker.lorem().sentence())
+                    .rating((int) faker.number().numberBetween(1,5))
+                    .phoneNumber(faker.phoneNumber().phoneNumber())
+                    .enterpriseId((long) faker.number().numberBetween(1,2))
+                    .build();
+
+            try {
+                iHotelService.createHotel(hotelDto);
+            } catch (Exception e) {
+                ResponseEntity.badRequest().body(e.getMessage());
+            }
+        }
+        return ResponseEntity.ok("Fake hotel created successfully");
     }
 }
