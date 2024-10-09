@@ -2,7 +2,6 @@ package com.be_planfortrips.mappers.impl;
 
 import com.be_planfortrips.dto.BookingHotelDto;
 import com.be_planfortrips.dto.response.BookingHotelResponse;
-import com.be_planfortrips.dto.response.HotelListResponse;
 import com.be_planfortrips.entity.BookingHotel;
 import com.be_planfortrips.entity.User;
 import com.be_planfortrips.entity.Room;
@@ -26,7 +25,8 @@ public class BookingHotelMapper implements MapperInterface<BookingHotelResponse,
     @Override
     public BookingHotel toEntity(BookingHotelDto bookingHotelDto) {
         BookingHotel bookingHotel = modelMapper.map(bookingHotelDto, BookingHotel.class);
-        bookingHotel.setUser(User.builder().userId(bookingHotelDto.getUserId()).build());
+//        bookingHotel.setUser(User.builder().userId(bookingHotelDto.getUserId()).build());
+        bookingHotel.setUser(User.builder().id(bookingHotelDto.getUserId()).build());
         bookingHotel.setPayment(Payment.builder().id(bookingHotelDto.getPaymentId()).build());
         bookingHotel.setRoom(Room.builder().id(bookingHotelDto.getRoomId()).build());
         bookingHotel.setStatus(bookingHotelDto.getStatus());

@@ -2,9 +2,9 @@ package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.dto.request.LoginDto;
+import com.be_planfortrips.dto.response.AccountUserResponse;
 import com.be_planfortrips.dto.response.ApiResponse;
-import com.be_planfortrips.responses.AccountUserResponse;
-import com.be_planfortrips.responses.AuthResponse;
+import com.be_planfortrips.dto.response.AuthResponse;
 import com.be_planfortrips.services.interfaces.IAuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
