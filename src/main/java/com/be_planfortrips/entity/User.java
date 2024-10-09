@@ -19,25 +19,26 @@ public class User extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "username", length = 50)
+    @Column(name = "username", length = 50, nullable = false, unique = true)
     String userName;
 
-    @Column(name = "phonenumber", length = 20)
+    @Column(name = "phonenumber", length = 20, nullable = false)
     String phoneNumber;
 
     @Column(name = "gender", length = 5)
     String gender;
 
-    @Column(name = "password", length = 100)
+    @Column(name = "password", length = 100, nullable = false)
     String password;
 
     @Column(name = "address", length = Integer.MAX_VALUE)
     String address;
 
+    @ColumnDefault("true")
     @Column(name = "is_active")
     boolean isActive;
 
-    @Column(name = "birthdate")
+    @Column(name = "birthdate", nullable = false)
     Date birthdate;
 
     @ColumnDefault("0")
@@ -48,10 +49,10 @@ public class User extends BaseEntity{
     @Column(name = "google_account_id")
     int isGoogle;
 
-    @Column(name = "fullname", length = 50)
+    @Column(name = "fullname", length = 50, nullable = false)
     String fullName;
 
-    @Column(name = "email", length = 100)
+    @Column(name = "email", length = 100, nullable = false, unique = true)
     String email;
 
     @ManyToOne(fetch = FetchType.LAZY)

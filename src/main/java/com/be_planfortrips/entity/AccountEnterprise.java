@@ -30,16 +30,16 @@ public class AccountEnterprise extends BaseEntity{
     @Column(name = "email", length = 200,unique = true)
     String email;
 
-    @Column(name = "enterprisename", length = Integer.MAX_VALUE)
+    @Column(name = "enterprise_name", length = Integer.MAX_VALUE)
     String enterpriseName;
 
     @Column(name = "representative", length = 100)
     String representative;
 
-    @Column(name = "taxcode", length = 20)
+    @Column(name = "tax_code", length = 20)
     String taxCode;
 
-    @Column(name = "phonenumber", length = 15,unique = true)
+    @Column(name = "phone_number", length = 15,unique = true)
     String phoneNumber;
 
     @Column(name = "address", length = Integer.MAX_VALUE)

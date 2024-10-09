@@ -16,7 +16,7 @@ public class TypeEnterprise {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "nametype", length = 50)
+    @Column(name = "name_type", length = 50)
     String nameType;
 
     @Column(name = "description", length = Integer.MAX_VALUE)

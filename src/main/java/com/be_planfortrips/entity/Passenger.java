@@ -18,7 +18,7 @@ public class Passenger {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "fullname", length = 100)
+    @Column(name = "full_name", length = 100)
     String passengerName;
 
     @Column(name = "birthdate")
@@ -27,10 +27,10 @@ public class Passenger {
     @Column(name = "gender", length = 5)
     String gender;
 
-    @Column(name = "citizencard_id")
+    @Column(name = "citizen_card_id")
     String citizenCardId;
 
-    @Column(name = "phonenumber", length = 20)
+    @Column(name = "phone_number", length = 20)
     String phoneNumber;
 
     @Column(name = "email", length = 100)

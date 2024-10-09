@@ -27,14 +27,14 @@ public class Flight {
     String flightCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "depature_airport")
+    @JoinColumn(name = "departure_airport")
     Airport departureAirport;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "arrival_airport")
     Airport arrivalAirport;
 
-    @Column(name = "depature_time")
+    @Column(name = "departure_time")
     Date departureTime;
 
     @Column(name = "arrival_time")
