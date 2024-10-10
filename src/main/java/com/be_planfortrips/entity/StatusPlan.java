@@ -1,5 +1,5 @@
 package com.be_planfortrips.entity;
 
-public enum Status_Plan {
+public enum StatusPlan {
     Not_stated, In_progress, Complete, Cancel
 }

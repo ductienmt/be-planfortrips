@@ -1,9 +1,6 @@
 package com.be_planfortrips.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.ColumnDefault;
@@ -17,7 +14,8 @@ import org.hibernate.annotations.ColumnDefault;
 @Table(name = "stations")
 public class Station {
     @Id
-    @ColumnDefault("nextval('stations_id_seq'::regclass)")
+//    @ColumnDefault("nextval('stations_id_seq'::regclass)") // gio'ng generateValue ma`??
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     Integer id;
 
