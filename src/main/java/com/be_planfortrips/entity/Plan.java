@@ -11,10 +11,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "plan")
+@Table(name = "plans")
 public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "plan_id")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,11 +43,10 @@ public class Plan {
     @Column(name = "destination", length = 50)
     private String destination;
 
-    @Column(name = "originlocation", length = 50)
-    private String originlocation;
+    @Column(name = "origin_location", length = 50)
+    private String originLocation;
 
-    @Column(name = "status", columnDefinition = "status_plan")
-    private Status_Plan status;
-
-
+    @Column(name = "status_plan")
+    @Enumerated(EnumType.STRING)
+    private StatusPlan status;
 }

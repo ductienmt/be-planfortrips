@@ -1,5 +1,5 @@
 package com.be_planfortrips.entity;
 
-public enum Type_Vehicle {
+public enum TypeVehicle {
     Vip, Standard
 }

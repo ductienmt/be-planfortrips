@@ -1,6 +1,6 @@
 package com.be_planfortrips.entity;
 
-public enum Status_Seat {
+public enum StatusSeat {
     Empty,
     Null
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,9 +24,12 @@ public class CarCompany {
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id")
-    private Image image;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "car_image",
+        joinColumns = @JoinColumn(name = "car_id"),
+            inverseJoinColumns =  @JoinColumn(name = "image_id")
+    )
+    private List<Image> images;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enterprise_id")
