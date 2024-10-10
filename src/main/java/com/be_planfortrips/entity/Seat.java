@@ -24,8 +24,9 @@ public class Seat {
     @Column(name = "seat_number", length = 5)
     String seatNumber;
 
-    @Column(name = "status_seat")
-    @Enumerated(EnumType.STRING)
+    @ColumnDefault("Empty")
+    @Column(name = "status", columnDefinition = "status_seat")
+//    @Enumerated(EnumType.STRING)
     StatusSeat status;
 
 }

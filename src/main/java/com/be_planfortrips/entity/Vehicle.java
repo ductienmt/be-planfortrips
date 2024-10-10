@@ -31,8 +31,8 @@ public class Vehicle {
     private CarCompany carCompany;
 
 
-    @Column(name = "type_vehicle")
-    @Enumerated(EnumType.STRING)
+    @Column(name = "type_vehicle", columnDefinition = "type_vehicle")
+//    @Enumerated(EnumType.STRING)
     private TypeVehicle type;
 
 }
