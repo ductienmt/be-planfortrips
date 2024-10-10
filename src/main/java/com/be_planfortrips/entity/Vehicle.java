@@ -1,5 +1,7 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,13 +28,14 @@ public class Vehicle {
     @Column(name = "driver_phone", length = 20)
     private String driverPhone;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "car_company_id")
+    @JsonManagedReference
     private CarCompany carCompany;
 
 
     @Column(name = "type_vehicle")
     @Enumerated(EnumType.STRING)
-    private TypeVehicle type;
+    private TypeVehicle typeVehicle;
 
 }

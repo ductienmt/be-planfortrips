@@ -1,5 +1,7 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -29,10 +31,12 @@ public class CarCompany {
         joinColumns = @JoinColumn(name = "car_id"),
             inverseJoinColumns =  @JoinColumn(name = "image_id")
     )
+    @JsonManagedReference
     private List<Image> images;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enterprise_id")
+    @JsonBackReference
     private AccountEnterprise enterprise;
 
     @Column(name = "rating", precision = 2, scale = 1)
