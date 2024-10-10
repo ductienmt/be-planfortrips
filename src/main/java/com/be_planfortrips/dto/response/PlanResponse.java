@@ -1,9 +1,13 @@
 package com.be_planfortrips.dto.response;
 
 import com.be_planfortrips.entity.Image;
+import com.be_planfortrips.entity.Status;
+import com.be_planfortrips.entity.Status_Plan;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
@@ -12,31 +16,46 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PlanResponse {
+    Integer plan_id;
+    String plan_name;
+    Timestamp start_date;
+    Timestamp end_date;
+    BigDecimal budget;
+    BigDecimal total_price;
+    Status_Plan status;
     String destination;
-    String transport_name;
-    String transport_type;
-    Long transport_id;
-    Long transport_route;
-    String transport_departure;
-    String transport_arrival;
-    LocalDateTime transport_departure_time;
-    LocalDateTime transport_arrival_time;
+    String origin_location;
+    Integer numberPeople;
 
+    Integer hotel_id;
     String hotel_name;
-    String hotel_address;
-    String hotel_phone;
-    String hotel_email;
-    LocalDateTime hotel_checkin;
-    LocalDateTime hotel_checkout;
-    Long hotel_image;
-    String hotel_type;
-    String hotel_room; // nếu là homestay thì không có thông tin phòng
 
-    String restaurant_name;
-    String restaurant_address;
-    String restaurant_phone;
+    String room_id;
+    String room_name;
+    BigDecimal room_price;
 
-    String checkin_name;
-    String checkin_address;
+    Timestamp check_in;
+    Timestamp check_out;
+    Status status_hotel;
+    BigDecimal hotel_price;
+
+    Integer ticket_id;
+    BigDecimal transport_price;
+    Status status_transport;
+    Timestamp transport_date;
+
+    Integer schedule_id;
+    Timestamp departure_time;
+    Timestamp arrival_time;
+
+    Integer route_id;
+    String origin_station;
+    String destination_station;
+
+    String vehicle_code;
+    String plate_number;
+
+    Integer car_company_id;
+    String car_company_name;
 
 }
