@@ -1,11 +1,11 @@
 package com.be_planfortrips.controllers;
 
-import com.be_planfortrips.entity.User;
+import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.repositories.ImageRepository;
-import com.be_planfortrips.services.interfaces.IImageService;
-import com.be_planfortrips.services.interfaces.IUserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,25 +17,52 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
+@Slf4j
 @RequestMapping("${api.prefix}/images")
 @RequiredArgsConstructor
 public class ImageController {
-
     private final ImageRepository imageRepository;
 
 
+
     @GetMapping()
-    public ResponseEntity<byte[]> getImage(@RequestParam("id") Long id) {
+    public ResponseEntity<?> getImage(@RequestParam("id") Long id) {
         try {
-            String imageUrl = this.imageRepository.findById(id).get().getUrl();
-            Path path = Paths.get("src/main/resources/static/images/" + imageUrl);
+            String imageUrl;
+            try {
+                imageUrl = this.imageRepository.findById(id).get().getUrl();
+            }
+            catch (Exception e) {
+                log.error(e.getMessage());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        ApiResponse.<Void>builder()
+                                .code(HttpStatus.NOT_FOUND.value())
+                                .message("File không tồn tại.")
+                                .build()
+                );
+            }
+            Path path = Paths.get("uploads/images/" + imageUrl);
 
             // Kiểm tra xem file có tồn tại không
             if (!Files.exists(path)) {
-                return ResponseEntity.notFound().build(); // Trả về 404 nếu file không tồn tại
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        ApiResponse.<Void>builder()
+                                .code(HttpStatus.NOT_FOUND.value())
+                                .message("File không tồn tại.")
+                                .build()
+                ); // Trả về 404 nếu file không tồn tại
             }
 
-            byte[] imageBytes = Files.readAllBytes(path);
+            UrlResource resource = new UrlResource(path.toUri());
+            if (!resource.exists() || !resource.isReadable()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        ApiResponse.<Void>builder()
+                                .code(HttpStatus.NOT_FOUND.value())
+                                .message("File không tồn tại.")
+                                .build()
+                );
+            }
+//            byte[] imageBytes = Files.readAllBytes(path);
 
             // Lấy phần mở rộng của file để xác định Content-Type
             String fileExtension = FilenameUtils.getExtension(imageUrl);
@@ -51,14 +78,26 @@ public class ImageController {
                     mediaType = MediaType.IMAGE_PNG;
                     break;
                 default:
-                    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).build();
+                    log.error("Không hỗ trợ định dạng file: " + fileExtension);
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                            ApiResponse.<Void>builder()
+                                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                                    .message("Không hỗ trợ định dạng file.")
+                                    .build()
+                    );
             }
 
             return ResponseEntity.ok()
                     .contentType(mediaType)
-                    .body(imageBytes);
+                    .body(resource);
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    ApiResponse.<Void>builder()
+                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .message("Lỗi khi đọc file.")
+                            .build()
+            );
         }
     }
 }

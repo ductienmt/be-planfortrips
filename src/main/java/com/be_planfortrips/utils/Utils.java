@@ -1,10 +1,15 @@
 package com.be_planfortrips.utils;
 
 import lombok.SneakyThrows;
+import org.apache.commons.io.FilenameUtils;
 import org.hibernate.validator.internal.engine.messageinterpolation.parser.MessageDescriptorFormatException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,12 +62,12 @@ public class Utils {
 
     @SneakyThrows
     public static String saveImage(MultipartFile image) {
-        Path staticPath = Paths.get("static");
+        Path staticPath = Paths.get("uploads");
         Path imagePath = Paths.get("images");
 
 
         // Tạo thư mục nếu chưa tồn tại
-        Path directory = Utils.CURRENT_FOLDER.resolve("src/main/resources/").resolve(staticPath).resolve(imagePath);
+        Path directory = Utils.CURRENT_FOLDER.resolve(staticPath).resolve(imagePath);
         if (!Files.exists(directory)) {
             Files.createDirectories(directory);
         }
@@ -76,10 +81,12 @@ public class Utils {
             os.write(image.getBytes());
         }
 
-        // Trả về URL của ảnh
+        // Trả về tên ảnh
 //        String imageUrl = resolve(uniqueFileName).toString();
         //return imageUrl.replace("\\", "/"); // Đổi dấu "\\" thành "/"
         return uniqueFileName;
     }
+
+
 
 }

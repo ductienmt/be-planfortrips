@@ -3,7 +3,7 @@ package com.be_planfortrips.mappers.impl;
 import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.entity.User;
 import com.be_planfortrips.mappers.MapperInterface;
-import com.be_planfortrips.responses.AccountUserResponse;
+import com.be_planfortrips.dto.response.AccountUserResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

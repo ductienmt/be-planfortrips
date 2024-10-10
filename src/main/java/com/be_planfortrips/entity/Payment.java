@@ -21,9 +21,9 @@ public class Payment {
     @Column(name = "payment_method", nullable = false, length = 50)
     String paymentMethod;
 
-    @Column(name = "amount", precision = 10, scale = 2)
-    BigDecimal amount;
+    @Column(name = "fee")
+    Double fee;
 
-    @Column(name = "status")
-    Status status;
+    @Column(name = "description")
+    String  description;
 }
