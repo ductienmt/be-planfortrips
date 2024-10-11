@@ -1,6 +1,5 @@
 package com.be_planfortrips.dto.response;
 
-import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.entity.Status;
 import com.be_planfortrips.entity.StatusPlan;
 import lombok.*;
@@ -8,7 +7,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor

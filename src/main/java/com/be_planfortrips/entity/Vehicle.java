@@ -1,5 +1,7 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,27 +14,33 @@ import lombok.*;
 public class Vehicle {
     @Id
     @Column(name = "code", nullable = false, length = 10)
-    private String code;
+    String code;
 
     @Column(name = "plate_number", length = 20)
-    private String plateNumber;
+    String plateNumber;
 
     @Column(name = "capacity")
-    private Integer capacity;
+    Integer capacity;
 
     @Column(name = "driver_name", length = 50)
-    private String driverName;
+    String driverName;
 
     @Column(name = "driver_phone", length = 20)
-    private String driverPhone;
+    String driverPhone;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "car_company_id")
-    private CarCompany carCompany;
+    @JsonBackReference
+    CarCompany carCompany;
 
 
     @Column(name = "type_vehicle", columnDefinition = "type_vehicle")
 //    @Enumerated(EnumType.STRING)
-    private TypeVehicle type;
+    TypeVehicle type;
+
+//     @Column(name = "type_vehicle") 
+//     @Enumerated(EnumType.STRING) sài cái này nó chuyển dữ liệu về String 
+//     TypeVehicle typeVehicle;
+
 
 }

@@ -8,6 +8,8 @@ import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,34 +25,16 @@ public class BookingHotel extends BaseEntity {
     Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id")
+    Payment payment;
+
+    @Column(name = "total_price",precision = 10, scale = 2)
+    BigDecimal totalPrice;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    Room room;
-
-    @Column(name = "check_in_time")
-    LocalDateTime checkInTime;
-
-    @Column(name = "check_out_time")
-    LocalDateTime checkOutTime;
-
-    @Column(name = "createAt")
-    LocalDateTime createAt;
-
-    @Column(name = "updateAt")
-    LocalDateTime updateAt;
-
-    @Column(name = "total_price", precision = 10, scale = 2)
-    BigDecimal totalPrice;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    Status status;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
-    Payment payment;
+    @OneToMany(mappedBy = "bookingHotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    Set<BookingHotelDetail> bookingHotelDetails = new HashSet<>();
 }

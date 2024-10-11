@@ -7,6 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -31,9 +32,6 @@ public class Ticket {
     @Column(name = "total_price", precision = 10, scale = 2)
     BigDecimal totalPrice;
 
-    @Column(name = "discount_price", precision = 10, scale = 2)
-    BigDecimal discountPrice;
-
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "booking_time")
     Instant bookingTime;
@@ -45,5 +43,9 @@ public class Ticket {
     @Column(name = "status", columnDefinition = "status_booking")
 //    @Enumerated(EnumType.STRING)
     Status status;
-
+    @ManyToMany
+    @JoinTable(name = "ticket_seats",
+    joinColumns = @JoinColumn(name = "ticket_id"),
+    inverseJoinColumns = @JoinColumn(name = "seat_id"))
+    List<Seat> seats;
 }

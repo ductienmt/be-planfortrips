@@ -6,6 +6,7 @@ import com.be_planfortrips.dto.response.HotelImageResponse;
 import com.be_planfortrips.dto.response.HotelListResponse;
 import com.be_planfortrips.dto.response.HotelResponse;
 import com.be_planfortrips.services.interfaces.IHotelService;
+import com.be_planfortrips.utils.Helper;
 import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -62,7 +63,7 @@ public class HotelController {
         PageRequest request = PageRequest.of(page, limit,
                 Sort.by("rating").ascending());
         int totalPage = 0;
-        Page<HotelResponse> hotelResponses = iHotelService.getAllHotel(request);
+        Page<HotelResponse> hotelResponses = iHotelService.getHotels(request);
         totalPage = hotelResponses.getTotalPages();
         return ResponseEntity.ok(HotelListResponse.builder()
                         .hotelResponseList(hotelResponses.toList())
@@ -124,7 +125,7 @@ public class HotelController {
                             .body("File must be an image");
                 }
                 // Lưu file và cập nhật thumbnail trong DTO
-                String filename = storeFile(file); // Thay thế hàm này với code của bạn để lưu file
+                String filename = new Helper().storeFile(file); // Thay thế hàm này với code của bạn để lưu file
                 //lưu vào đối tượng product trong DB => sẽ làm sau
                 HotelImageResponse hotelImageResponse = iHotelService.createHotelImage(
                         id,
@@ -157,22 +158,7 @@ public class HotelController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    private String storeFile(MultipartFile file) throws IOException {
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
-        // Thêm UUID vào trước tên file để đảm bảo tên file là duy nhất
-        String uniqueFilename = UUID.randomUUID().toString() + "_" + filename;
-        // Đường dẫn đến thư mục mà bạn muốn lưu file
-        java.nio.file.Path uploadDir = Paths.get("uploads");
-        // Kiểm tra và tạo thư mục nếu nó không tồn tại
-        if (!Files.exists(uploadDir)) {
-            Files.createDirectories(uploadDir);
-        }
-        // Đường dẫn đầy đủ đến file
-        java.nio.file.Path destination = Paths.get(uploadDir.toString(), uniqueFilename);
-        // Sao chép file vào thư mục đích
-        Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-        return uniqueFilename;
-    }
+
     @PostMapping("/generate")
     public ResponseEntity<String> stringResponseEntity(){
         Faker faker = new Faker();
