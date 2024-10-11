@@ -22,11 +22,10 @@ public class BookingHotel extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
+    @JoinColumn(name = "user_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    Room room;
+    User user;
 
     @Column(name = "check_in_time")
     LocalDateTime checkInTime;

@@ -28,7 +28,7 @@ public class BookingHotelMapper implements MapperInterface<BookingHotelResponse,
 //        bookingHotel.setUser(User.builder().userId(bookingHotelDto.getUserId()).build());
 //        bookingHotel.setUser(User.builder().id(bookingHotelDto.getUserId()).build()); cmt lai
         bookingHotel.setPayment(Payment.builder().id(bookingHotelDto.getPaymentId()).build());
-        bookingHotel.setRoom(Room.builder().id(bookingHotelDto.getRoomId()).build());
+//        bookingHotel.setRoom(Room.builder().id(bookingHotelDto.getRoomId()).build());
         bookingHotel.setStatus(bookingHotelDto.getStatus());
         return  bookingHotel;
     }
@@ -37,7 +37,7 @@ public class BookingHotelMapper implements MapperInterface<BookingHotelResponse,
     public BookingHotelResponse toResponse(BookingHotel bookingHotel) {
         BookingHotelResponse response = modelMapper.map(bookingHotel, BookingHotelResponse.class);
 //        response.setRoom(bookingHotel.getRoom());
-        log.info(bookingHotel.getRoom().toString());
+//        log.info(bookingHotel.getRoom().toString());
         return response;
     }
 

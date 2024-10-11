@@ -21,7 +21,7 @@ public class BookingHotelDetail {
     @JoinColumn(name = "booking_hotel_id")
     BookingHotel bookingHotel;
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    User user;
+    @JoinColumn(name = "room_id")
+    Room room;
     Double totalPrice;
 }
