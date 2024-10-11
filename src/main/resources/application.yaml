@@ -10,14 +10,21 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
   jackson:
     serialization:
       fail-on-empty-beans: false
-  mvc:
-    converters:
-      preferred-json-mapper: gson.
+#  mvc:
+#    converters:
+#      preferred-json-mapper: gson.
 api:
   prefix : api/v1
+
+
+cloudinary:
+  cloud_name: dzbtsco86
+  api_key: 458554894698284
+  api_secret: 5JqucoX6jWiaB4xikpQb5wpjbJo
+
 
 
