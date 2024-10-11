@@ -7,7 +7,7 @@ import com.be_planfortrips.dto.response.PlanResponse;
 import java.util.List;
 
 public interface IPlanService {
-    PlanResponse genaratePlan(DataEssentialPlan dataEssentialPlan);
+//    PlanResponse genaratePlan(DataEssentialPlan dataEssentialPlan);
     List<PlanResponse> getAllPlan();
     List<PlanResponse> getAllPlanByUserId(Long id);
     PlanResponse getPlanById(Long id);

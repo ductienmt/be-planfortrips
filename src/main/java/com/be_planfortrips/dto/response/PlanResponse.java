@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PlanResponse {
-    Integer plan_id;
+    Long plan_id;
     String plan_name;
     Timestamp start_date;
     Timestamp end_date;
@@ -27,10 +27,10 @@ public class PlanResponse {
     String origin_location;
     Integer numberPeople;
 
-    Integer hotel_id;
+    Long hotel_id;
     String hotel_name;
 
-    String room_id;
+    Long room_id;
     String room_name;
     BigDecimal room_price;
 
@@ -39,23 +39,23 @@ public class PlanResponse {
     Status status_hotel;
     BigDecimal hotel_price;
 
-    Integer ticket_id;
+    Long ticket_id;
     BigDecimal transport_price;
     Status status_transport;
     Timestamp transport_date;
 
-    Integer schedule_id;
+    Long schedule_id;
     Timestamp departure_time;
     Timestamp arrival_time;
 
-    Integer route_id;
+    Long route_id;
     String origin_station;
     String destination_station;
 
     String vehicle_code;
     String plate_number;
 
-    Integer car_company_id;
+    Long car_company_id;
     String car_company_name;
 
 }
