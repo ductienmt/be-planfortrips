@@ -26,7 +26,7 @@ public class BookingHotelMapper implements MapperInterface<BookingHotelResponse,
     public BookingHotel toEntity(BookingHotelDto bookingHotelDto) {
         BookingHotel bookingHotel = modelMapper.map(bookingHotelDto, BookingHotel.class);
 //        bookingHotel.setUser(User.builder().userId(bookingHotelDto.getUserId()).build());
-        bookingHotel.setUser(User.builder().id(bookingHotelDto.getUserId()).build());
+//        bookingHotel.setUser(User.builder().id(bookingHotelDto.getUserId()).build()); cmt lai
         bookingHotel.setPayment(Payment.builder().id(bookingHotelDto.getPaymentId()).build());
         bookingHotel.setRoom(Room.builder().id(bookingHotelDto.getRoomId()).build());
         bookingHotel.setStatus(bookingHotelDto.getStatus());

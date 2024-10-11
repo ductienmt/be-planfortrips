@@ -38,6 +38,9 @@ public class CarCompany {
     @JoinColumn(name = "enterprise_id")
     @JsonBackReference
     private AccountEnterprise enterprise;
+    @OneToMany(mappedBy = "carCompany", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Vehicle> vehicles;
 
     @Column(name = "rating", precision = 2, scale = 1)
     private BigDecimal rating;

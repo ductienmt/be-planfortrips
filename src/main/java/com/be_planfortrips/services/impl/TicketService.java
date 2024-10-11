@@ -28,6 +28,7 @@ public class TicketService implements ITicketService {
     ScheduleRepository scheduleRepository;
     @Override
     public TicketResponse createTicket(TicketDTO ticketDto) throws Exception {
+        StringBuilder sb = new StringBuilder();
         User existingUser = userRepository.findByUsername(ticketDto.getUserName());
         if(existingUser==null){
             throw new Exception("User not found");
@@ -49,7 +50,17 @@ public class TicketService implements ITicketService {
         if(seats.size() == 0){
             throw new Exception("Vui lòng chọn ghees");
         }
-        ticket.setSeats(seats);
+        for(int i = 0;i<seats.size();i++){
+            Seat seat = seats.get(i);
+            if(seat.getStatus().equals("Full")){
+                sb.append(String.format("Ghế so' %s - mã số xe %s da co nguoi ngoi \n`",seat.getSeatNumber(),seat.getVehicleCode().getCode()));
+            }else{
+                seat.setStatus(StatusSeat.Full);
+                seatRepository.saveAndFlush(seat);
+                seats.set(i,seat);
+            }
+        }
+        if(!sb.toString().isEmpty()) throw new Exception(String.format("Lỗi: %s",sb.toString())); else ticket.setSeats(seats);
         ticketRepository.saveAndFlush(ticket);
         return ticketMapper.toResponse(ticket);
     }

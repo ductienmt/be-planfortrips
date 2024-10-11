@@ -1,14 +1,12 @@
 package com.be_planfortrips.dto.response;
 
-import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.entity.Status;
-import com.be_planfortrips.entity.Status_Plan;
+import com.be_planfortrips.entity.StatusPlan;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -22,7 +20,7 @@ public class PlanResponse {
     Timestamp end_date;
     BigDecimal budget;
     BigDecimal total_price;
-    Status_Plan status;
+    StatusPlan status;
     String destination;
     String origin_location;
     Integer numberPeople;

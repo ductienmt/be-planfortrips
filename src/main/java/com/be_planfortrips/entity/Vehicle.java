@@ -30,9 +30,8 @@ public class Vehicle {
 
     @ManyToOne
     @JoinColumn(name = "car_company_id")
-    @JsonManagedReference
+    @JsonBackReference
     private CarCompany carCompany;
-
 
     @Column(name = "type_vehicle")
     @Enumerated(EnumType.STRING)
