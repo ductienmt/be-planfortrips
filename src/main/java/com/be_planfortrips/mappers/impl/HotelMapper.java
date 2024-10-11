@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class HotelMapper implements MapperInterface<HotelResponse,Hotel,HotelDto> {
-    ModelMapper modelMapper = new ModelMapper();
+    ModelMapper modelMapper;
     HotelImageMapper hotelImageMapper;
     @Override
     public Hotel toEntity(HotelDto hotelDto) {

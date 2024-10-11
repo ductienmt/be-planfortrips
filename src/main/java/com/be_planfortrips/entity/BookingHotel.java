@@ -22,9 +22,6 @@ public class BookingHotel extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
@@ -46,12 +43,8 @@ public class BookingHotel extends BaseEntity {
     @Column(name = "total_price", precision = 10, scale = 2)
     BigDecimal totalPrice;
 
-<<<<<<< HEAD
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-=======
-    @Column(name = "status", columnDefinition = "status_booking")
->>>>>>> a2b8a3077b0c703f7ee7dd0c64fe44094e080841
     Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)

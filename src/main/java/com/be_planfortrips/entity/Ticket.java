@@ -1,39 +1,51 @@
-//package com.be_planfortrips.entity;
-//
-//import jakarta.persistence.*;
-//import lombok.*;
-//import lombok.experimental.FieldDefaults;
-//
-//import java.math.BigDecimal;
-//
-//@Data
-//@AllArgsConstructor
-//@NoArgsConstructor
-//@Entity
-//@Builder
-//@FieldDefaults(level = AccessLevel.PRIVATE)
-//@Table(name = "tickets")
-//public class Ticket extends BaseEntity{
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    Long id;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "seat_id")
-//    Seat seat;
-//
-//    @Column(name = "ticket_code", length = 10)
-//    String ticketCode;
-//
-//    @Column(name = "price", precision = 10, scale = 2)
-//    BigDecimal price;
-//
-//    @Column(name = "status", columnDefinition = "status_booking")
-//    Status status;
-//
-//    @Column(name = "notes", length = Integer.MAX_VALUE)
-//    String notes;
-//
-//    @Column(name = "oneWay")
-//    Boolean oneWay;
-//}
+package com.be_planfortrips.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
+@Table(name = "tickets")
+public class Ticket {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id")
+    Schedule schedule;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    User user;
+
+    @Column(name = "total_price", precision = 10, scale = 2)
+    BigDecimal totalPrice;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "booking_time")
+    Instant bookingTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id")
+    Payment payment;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    Status status;
+    @ManyToMany
+    @JoinTable(name = "ticket_seats",
+    joinColumns = @JoinColumn(name = "ticket_id"),
+    inverseJoinColumns = @JoinColumn(name = "seat_id"))
+    List<Seat> seats;
+}

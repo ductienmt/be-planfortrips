@@ -1,24 +1,30 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/Planfortrips
-#    username: postgres
-#    password: 123
-    username: admin
-    password: admin
+    username: postgres
+    password: 123
+#    username: admin
+#    password: admin
     driver-class-name: org.postgresql.Driver
   jpa:
-    show-sql: true
+    show-sql: none
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
   jackson:
     serialization:
       fail-on-empty-beans: false
-    
-  mvc:
-    converters:
-      preferred-json-mapper: gson.
+#  mvc:
+#    converters:
+#      preferred-json-mapper: gson.
 api:
   prefix : api/v1
+
+
+cloudinary:
+  cloud_name: dzbtsco86
+  api_key: 458554894698284
+  api_secret: 5JqucoX6jWiaB4xikpQb5wpjbJo
+
 
 
