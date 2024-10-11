@@ -14,27 +14,27 @@ import lombok.*;
 public class Vehicle {
     @Id
     @Column(name = "code", nullable = false, length = 10)
-    private String code;
+    String code;
 
     @Column(name = "plate_number", length = 20)
-    private String plateNumber;
+    String plateNumber;
 
     @Column(name = "capacity")
-    private Integer capacity;
+    Integer capacity;
 
     @Column(name = "driver_name", length = 50)
-    private String driverName;
+    String driverName;
 
     @Column(name = "driver_phone", length = 20)
-    private String driverPhone;
+    String driverPhone;
 
     @ManyToOne
     @JoinColumn(name = "car_company_id")
     @JsonBackReference
-    private CarCompany carCompany;
+    CarCompany carCompany;
 
     @Column(name = "type_vehicle")
     @Enumerated(EnumType.STRING)
-    private TypeVehicle typeVehicle;
+    TypeVehicle typeVehicle;
 
 }

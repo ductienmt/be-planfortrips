@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -14,31 +15,24 @@ import java.time.Instant;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "schedules")
-public class Schedule {
+public class Schedule extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id")
-    private Route route;
+    Route route;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_code")
-    private Vehicle vehicleCode;
+    Vehicle vehicleCode;
 
     @Column(name = "departure_time")
-    private Instant departureTime;
+    LocalDateTime departureTime;
 
     @Column(name = "arrival_time")
-    private Instant arrivalTime;
+    LocalDateTime arrivalTime;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "create_at")
-    private Instant createAt;
-
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "update_at")
-    private Instant updateAt;
 
 }

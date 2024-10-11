@@ -10,6 +10,10 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorType {
 
+    // Định nghĩa lỗi chung
+    notFound(404, "Đối tượng không tồn tại", HttpStatus.NOT_FOUND),
+
+    // Riêng từng case quan trọng (Yêu cầu rõ case)
     usernameExisted(100, "Username đã tồn tại", HttpStatus.BAD_REQUEST);
 
     int code;
