@@ -40,8 +40,8 @@ public class Ticket {
     @JoinColumn(name = "payment_id")
     Payment payment;
 
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
+    @Column(name = "status", columnDefinition = "status_booking")
+//    @Enumerated(EnumType.STRING)
     Status status;
     @ManyToMany
     @JoinTable(name = "ticket_seats",

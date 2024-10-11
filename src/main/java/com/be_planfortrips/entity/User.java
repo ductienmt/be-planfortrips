@@ -36,7 +36,7 @@ public class User extends BaseEntity{
 
     @ColumnDefault("true")
     @Column(name = "is_active")
-    boolean isActive;
+    boolean isActive = true;
 
     @Column(name = "birthdate", nullable = false)
     Date birthdate;

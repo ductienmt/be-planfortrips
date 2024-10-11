@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.Instant;
 
 @Data
@@ -33,16 +34,16 @@ public class PlanDetail {
     private BigDecimal totalPrice;
 
     @Column(name = "start_date")
-    private Instant startDate;
+    private Timestamp startDate;
 
     @Column(name = "end_date")
-    private Instant endDate;
+    private Timestamp endDate;
 
     @Column(name = "ticket_id")
     private Integer ticketId;
 
-    @Column(name = "status_plan")
-    @Enumerated(EnumType.STRING)
+    @Column(name = "status", columnDefinition = "status_plan")
+//    @Enumerated(EnumType.STRING)
     private StatusPlan status;
 
 }

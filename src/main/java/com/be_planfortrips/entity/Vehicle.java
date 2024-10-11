@@ -33,8 +33,14 @@ public class Vehicle {
     @JsonBackReference
     CarCompany carCompany;
 
-    @Column(name = "type_vehicle")
-    @Enumerated(EnumType.STRING)
-    TypeVehicle typeVehicle;
+
+    @Column(name = "type_vehicle", columnDefinition = "type_vehicle")
+//    @Enumerated(EnumType.STRING)
+    TypeVehicle type;
+
+//     @Column(name = "type_vehicle") 
+//     @Enumerated(EnumType.STRING) sài cái này nó chuyển dữ liệu về String 
+//     TypeVehicle typeVehicle;
+
 
 }

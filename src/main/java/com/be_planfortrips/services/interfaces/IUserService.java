@@ -7,12 +7,14 @@ import com.be_planfortrips.dto.response.AccountUserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 public interface IUserService {
     AccountUserResponse createUser(UserDto userDto);
     AccountUserResponse updateUser(Long id, UserDto userDto);
     void deleteUser(Long id);
     User getUserById(Long id);
-    Page<AccountUserResponse> getAllUsersWithPagination(Integer page);
+    Map<String, Object> getAllUsersWithPagination(Integer page);
     void changePassword(ChangePasswordDto changePasswordDto);
     AccountUserResponse getUserByUsername(String username);
     AccountUserResponse getUserByEmail(String email);
