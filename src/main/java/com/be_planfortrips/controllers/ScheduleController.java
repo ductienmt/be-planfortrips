@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -53,4 +54,10 @@ public class ScheduleController {
         scheduleService.deleteScheduleById(scheduleId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+//    @GetMapping("/getByTime")
+//    public ResponseEntity<?> getScheduleByTime(@RequestParam("departureTime") LocalDateTime departureTime, @RequestParam("arrivalTime") LocalDateTime arrivalTime) {
+//        List<ScheduleResponse> responses = scheduleService.getAllScheduleByTime(departureTime, arrivalTime);
+//        return new ResponseEntity<>(responses, HttpStatus.OK);
+//    } need review and edit sql and data type LocalDateTime, need to be changed to "yyyy-MM-dd HH:mm:ss"
 }

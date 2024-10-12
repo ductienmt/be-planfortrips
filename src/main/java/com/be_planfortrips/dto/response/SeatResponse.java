@@ -16,6 +16,6 @@ public class SeatResponse {
     Vehicle vehicle;
     @JsonProperty("seat_number")
     String seatNumber;
-    @JsonProperty("status")
-    String status;
+    @JsonProperty("status_seat")
+    String statusSeat;
 }
