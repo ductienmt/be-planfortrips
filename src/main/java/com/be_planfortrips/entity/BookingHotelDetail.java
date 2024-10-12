@@ -53,5 +53,4 @@ public class BookingHotelDetail {
     @JoinColumn(name = "booking_id")
     BookingHotel bookingHotel;
 
-
 }

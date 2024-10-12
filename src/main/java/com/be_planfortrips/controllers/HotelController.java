@@ -6,7 +6,6 @@ import com.be_planfortrips.dto.response.HotelImageResponse;
 import com.be_planfortrips.dto.response.HotelListResponse;
 import com.be_planfortrips.dto.response.HotelResponse;
 import com.be_planfortrips.services.interfaces.IHotelService;
-import com.be_planfortrips.utils.Helper;
 import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -19,20 +18,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.prefix}/hotels")
@@ -124,18 +118,16 @@ public class HotelController {
                     return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
                             .body("File must be an image");
                 }
-                // Lưu file và cập nhật thumbnail trong DTO
-                String filename = new Helper().storeFile(file); // Thay thế hàm này với code của bạn để lưu file
-                //lưu vào đối tượng product trong DB => sẽ làm sau
-                HotelImageResponse hotelImageResponse = iHotelService.createHotelImage(
-                        id,
-                        HotelImageDto
-                                .builder()
-                                .hotelId(id)
-                                .imageUrl(filename)
-                                .build()
-                );
-                list.add(hotelImageResponse);
+////                //lưu vào đối tượng product trong DB => sẽ làm sau
+////                HotelImageResponse hotelImageResponse = iHotelService.createHotelImage(
+////                        id,
+////                        HotelImageDto
+////                                .builder()
+////                                .hotelId(id)
+////                                .imageUrl(filename)
+////                                .build()
+////                );
+//                list.add(hotelImageResponse);
             }
             return ResponseEntity.ok(list);
         }catch (Exception ex){

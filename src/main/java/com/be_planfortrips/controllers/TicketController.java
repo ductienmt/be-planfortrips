@@ -45,12 +45,14 @@ public class TicketController {
             TicketResponse TicketResponse = iTicketService.createTicket(ticketDTO);
             return ResponseEntity.ok(TicketResponse);
         }catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTicket(@PathVariable Integer id,@RequestBody @Valid TicketDTO TicketDTO,
-                                        BindingResult result){
+    public ResponseEntity<?> updateTicket(@PathVariable Integer id,@RequestBody @Valid TicketDTO ticketDTO,
+                                          @RequestParam String ids,
+                                          BindingResult result){
         try {
             if(result.hasErrors()) {
                 List<String> errorMessages = result.getFieldErrors()
@@ -59,7 +61,11 @@ public class TicketController {
                         .toList();
                 return ResponseEntity.badRequest().body(errorMessages);
             }
-            TicketResponse TicketResponse = iTicketService.updateTicket(id,TicketDTO);
+            List<Integer> seatIds = Arrays.stream(ids.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+            ticketDTO.setSeatIds(seatIds);
+            TicketResponse TicketResponse = iTicketService.updateTicket(id,ticketDTO);
             return ResponseEntity.ok(TicketResponse);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
