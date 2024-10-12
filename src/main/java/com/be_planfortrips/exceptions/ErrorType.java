@@ -10,6 +10,12 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorType {
 
+    // Bắt mọi lỗi khác và trả về Internal Server Error
+    internalServerError(500, "Lỗi hệ thống", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    // Định nghĩa lỗi ngày giờ "yyyy-MM-dd HH:mm:ss"
+    notValidDateFormat(101, "Định dạng ngày giờ không hợp lệ", HttpStatus.BAD_REQUEST),
+
     // Định nghĩa lỗi chung
     notFound(404, "Đối tượng không tồn tại", HttpStatus.NOT_FOUND),
 

@@ -27,14 +27,6 @@ public class CheckinController {
     public ResponseEntity<?> getAllCheckin(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {
         try {
             Map<String, Object> checkins = this.checkinService.getAllCheckin(page);
-            if (checkins.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        ApiResponse.<Void>builder()
-                                .code(HttpStatus.NOT_FOUND.value())
-                                .message("Không có điểm checkin.")
-                                .build()
-                );
-            }
 
             return ResponseEntity.ok(
                     ApiResponse.<Map<String, Object>>builder()
@@ -45,12 +37,7 @@ public class CheckinController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Lấy danh sách điểm checkin thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy danh sách điểm checkin thất bại.");
         }
     }
 
@@ -67,12 +54,7 @@ public class CheckinController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Lấy thông tin điểm checkin thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy thông tin điểm checkin thất bại.");
         }
     }
 
@@ -136,12 +118,7 @@ public class CheckinController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Tạo điểm checkin thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Tạo điểm checkin thất bại.");
         }
     }
 
@@ -158,12 +135,7 @@ public class CheckinController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Cập nhật điểm checkin thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Cập nhật điểm checkin thất bại.");
         }
     }
 
@@ -179,12 +151,7 @@ public class CheckinController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Xóa điểm checkin thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Xóa điểm checkin thất bại.");
         }
     }
 
@@ -200,12 +167,7 @@ public class CheckinController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Upload ảnh thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Upload ảnh thất bại.");
         }
     }
 

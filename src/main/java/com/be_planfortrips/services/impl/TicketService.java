@@ -94,7 +94,7 @@ public class TicketService implements ITicketService {
             }
         }
         ticket.setTotalPrice(ticket.getTotalPrice().subtract(discountPrice));
-        ticket.setStatus(Status.PENDING);
+        ticket.setStatus(Status.Pending);
         ticketRepository.saveAndFlush(ticket);
         if(coupon!=null){
             if(coupon.getUseCount() < coupon.getUseLimit()){
