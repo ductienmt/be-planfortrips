@@ -37,8 +37,8 @@ public class Ticket extends BaseEntity {
     @JoinColumn(name = "payment_id")
     Payment payment;
 
-    @Column(name = "status", columnDefinition = "status_booking")
-//    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     Status status;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "ticket_seats",
