@@ -12,12 +12,11 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
-//    @Query(value = "SELECT s FROM Schedule s WHERE FUNCTION('DATE', s.departureTime) = :departureDate AND FUNCTION('TIME', s.departureTime) > :departureTime " +
-//            "AND FUNCTION('DATE', s.arrivalTime) = :arrivalDate AND FUNCTION('TIME', s.arrivalTime) > :arrivalTime", nativeQuery = true)
-//    List<Schedule> findSchedulesAfterSpecificTime(
-//            @Param("departureDate") LocalDate departureDate,
-//            @Param("departureTime") LocalTime departureTime,
-//            @Param("arrivalDate") LocalDate arrivalDate,
-//            @Param("arrivalTime") LocalTime arrivalTime
-//    ); need review and edit
+    @Query(value = "select * from schedules where CAST(departure_time AS DATE) = :departureDate" +
+            " AND CAST(departure_time AS TIME) >= :departureTime", nativeQuery = true)
+    List<Schedule> findSchedulesAfterSpecificTime(
+            @Param("departureDate") LocalDate departureDate,
+            @Param("departureTime") LocalTime departureTime
+    );
+//    need review and edit
 }

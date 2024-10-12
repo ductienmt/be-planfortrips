@@ -69,7 +69,7 @@ public class TicketService implements ITicketService {
             }
         }
         if(!sb.toString().isEmpty()) throw new Exception(String.format("Lỗi: %s", sb)); else ticket.setSeats(seats);
-        ticket.setStatus(Status.PENDING);
+        ticket.setStatus(Status.Pending);
         ticketRepository.saveAndFlush(ticket);
         return ticketMapper.toResponse(ticket);
     }
