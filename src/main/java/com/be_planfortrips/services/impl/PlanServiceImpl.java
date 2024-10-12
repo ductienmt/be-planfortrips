@@ -28,9 +28,6 @@ public class PlanServiceImpl implements IPlanService {
     @Autowired
     private HotelService hotelService;
 
-    @Autowired
-    private BookingHotelService bookingHotelService;
-
 
     @Override
     public List<PlanResponse> getAllPlan() {
@@ -51,30 +48,30 @@ public class PlanServiceImpl implements IPlanService {
 
                     List<PlanDetail> planDetails = planDetailService.getAllPlanDetailByPlanId(Long.valueOf(plan.getId()));
 
-                    planDetails.stream().map(
-                            planDetail -> {
-                                if (planDetail.getTypeEde().getName().trim().equals("Khách sạn")){
-                                    planResponse.setHotel_id(Long.valueOf(planDetail.getServiceId()));
-                                    HotelResponse hotel =  null;
-                                    try {
-                                        hotel =  hotelService.getByHotelId(Long.valueOf(planDetail.getServiceId()));
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    planResponse.setHotel_name(hotel.getName());
-                                    BookingHotelResponse bookingHotel = null;
-                                    try {
-                                        bookingHotel = bookingHotelService.getBookingHotelById(Long.valueOf(planDetail.getTicketId()));
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    planResponse.setRoom_id(bookingHotel.getRoom().getId());
-                                    planResponse.setRoom_name(bookingHotel.getRoom().getRoomName());
-                                    planResponse.setRoom_price(bookingHotel.getRoom().getPrice());
-                                }
-                                return planDetail;
-                            }
-                    ).collect(Collectors.toList());
+//                    planDetails.stream().map(
+//                            planDetail -> {
+//                                if (planDetail.getTypeEde().getName().trim().equals("Khách sạn")){
+//                                    planResponse.setHotel_id(Long.valueOf(planDetail.getServiceId()));
+//                                    HotelResponse hotel =  null;
+//                                    try {
+//                                        hotel =  hotelService.getByHotelId(Long.valueOf(planDetail.getServiceId()));
+//                                    } catch (Exception e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                    planResponse.setHotel_name(hotel.getName());
+//                                    BookingHotelResponse bookingHotel = null;
+//                                    try {
+//                                        bookingHotel = bookingHotelService.getBookingHotelById(Long.valueOf(planDetail.getTicketId()));
+//                                    } catch (Exception e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                    planResponse.setRoom_id(bookingHotel.getRoom().getId());
+//                                    planResponse.setRoom_name(bookingHotel.getRoom().getRoomName());
+//                                    planResponse.setRoom_price(bookingHotel.getRoom().getPrice());
+//                                }
+//                                return planDetail;
+//                            }
+//                    ).collect(Collectors.toList());
 
 //                    for (PlanDetail planDetail : planDetails) {
 //                        System.out.println(planDetail.getId() + " " + planDetail.getTypeEde().getName() +" "+ planDetail.getPlan().getId() + " "
