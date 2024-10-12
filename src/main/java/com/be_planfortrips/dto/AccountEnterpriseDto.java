@@ -19,8 +19,7 @@ public class AccountEnterpriseDto {
     String address;
     Boolean status;
     Integer imageId;
-    LocalDateTime createAt;
-    LocalDateTime updateAt;
+    Long typeEnterpriseDetailId;
 }
 
 

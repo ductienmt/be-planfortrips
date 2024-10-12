@@ -20,14 +20,6 @@ import java.time.LocalDateTime;
 public class BookingHotelResponse {
 
     Long bookingHotelId;
-    Room room;
-    LocalDateTime checkInTime;
-    LocalDateTime checkOutTime;
-    LocalDateTime createAt;
-    LocalDateTime updateAt;
-    BigDecimal totalPrice;
-    Status status;
-    Payment payment;
 
 
 }

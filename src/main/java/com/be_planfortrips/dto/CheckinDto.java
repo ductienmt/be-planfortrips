@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CheckinDto {
     Integer cityId;
-    Integer imageId;
     String name;
     String address;
     BigDecimal latitude;
