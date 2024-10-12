@@ -1,16 +1,13 @@
 spring:
   datasource:
-
-    url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
-    username: postgres
-    password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
-
-#     url: jdbc:postgresql://localhost:5432/Planfortrips
+#    url: jdbc:postgresql://localhost:5432/Planfortrips
 #    username: postgres
 #    password: 123
-#     username: admin
-#     password: admin
-
+#    url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
+#    username: postgres
+#    password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
+#    username: admin
+#    password: admin
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
@@ -20,17 +17,10 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
-#  mvc:
-#    converters:
-#      preferred-json-mapper: gson.
 api:
   prefix : api/v1
-
 
 cloudinary:
   cloud_name: dzbtsco86
   api_key: 458554894698284
   api_secret: 5JqucoX6jWiaB4xikpQb5wpjbJo
-
-
-

@@ -30,4 +30,5 @@ public class TicketDTO {
     @NotBlank(message = "status is required")
     String status;
     List<Integer> seatIds;
+    String codeCoupon;
 }
