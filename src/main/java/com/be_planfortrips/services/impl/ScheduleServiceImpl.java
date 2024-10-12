@@ -13,7 +13,9 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -61,4 +63,14 @@ public class ScheduleServiceImpl implements IScheduleService {
         );
         scheduleRepository.deleteById(scheduleId);
     }
+
+//    @Override
+//    public List<ScheduleResponse> getAllScheduleByTime(LocalDateTime departureTime, LocalDateTime arrivalTime) {
+//        return this.scheduleRepository.findSchedulesAfterSpecificTime(
+//                departureTime.toLocalDate(),
+//                departureTime.toLocalTime(),
+//                arrivalTime.toLocalDate(),
+//                arrivalTime.toLocalTime()
+//        ).stream().map(scheduleMapper::toResponse).collect(Collectors.toList());
+//    }
 }

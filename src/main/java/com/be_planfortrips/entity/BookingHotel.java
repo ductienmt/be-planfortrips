@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -30,6 +31,10 @@ public class BookingHotel extends BaseEntity {
 
     @Column(name = "total_price",precision = 10, scale = 2)
     BigDecimal totalPrice;
+
+    @ColumnDefault("Pending")
+    @Column(name = "status", columnDefinition = "status_booking")
+    Status status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

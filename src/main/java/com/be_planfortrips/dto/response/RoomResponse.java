@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoomResponse {
 
-    Integer roomId;
+    Integer id; // roomId can not to map, Tien edit to id
     String roomName;
     TypeOfRoom typeOfRoom;
     BigDecimal price;
