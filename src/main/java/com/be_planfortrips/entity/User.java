@@ -22,7 +22,7 @@ public class User extends BaseEntity{
     @Column(name = "username", length = 50, nullable = false, unique = true)
     String userName;
 
-    @Column(name = "phone_number", length = 20, nullable = false)
+    @Column(name = "phonenumber", length = 20, nullable = false)
     String phoneNumber;
 
     @Column(name = "gender", length = 5)
@@ -49,7 +49,7 @@ public class User extends BaseEntity{
     @Column(name = "google_account_id")
     int isGoogle;
 
-    @Column(name = "fullName", length = 50, nullable = false)
+    @Column(name = "fullname", length = 50, nullable = false)
     String fullName;
 
     @Column(name = "email", length = 100, nullable = false, unique = true)
