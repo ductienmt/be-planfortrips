@@ -1,8 +1,15 @@
 package com.be_planfortrips.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,17 +18,39 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "booking_hotel_details")
+@Table(name = "booking_hotels_details")
 public class BookingHotelDetail {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-            @Column(name = "book_hotel_detail_id")
-    Integer id;
-    @ManyToOne
-    @JoinColumn(name = "booking_hotel_id")
-    BookingHotel bookingHotel;
-    @ManyToOne
+    @GeneratedValue(strategy = GenerationType.UUID)
+    UUID bookingHotelDetailId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     Room room;
-    Double totalPrice;
+
+    @Column(name = "check_in_time")
+    LocalDateTime checkInTime;
+
+    @Column(name = "check_out_time")
+    LocalDateTime checkOutTime;
+
+    @Column(name = "createAt")
+    LocalDateTime createAt;
+
+    @Column(name = "updateAt")
+    LocalDateTime updateAt;
+
+    @Column(name = "total_price", precision = 10, scale = 2)
+    BigDecimal price;
+
+    @ColumnDefault("Pending")
+    @Column(name = "status", columnDefinition = "status_booking")
+    Status status;
+
+    @ManyToOne
+    @JoinColumn(name = "booking_id")
+    BookingHotel bookingHotel;
+
 }

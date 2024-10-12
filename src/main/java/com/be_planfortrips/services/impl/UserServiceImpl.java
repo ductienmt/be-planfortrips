@@ -18,6 +18,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class UserServiceImpl implements IUserService {
 
@@ -91,14 +95,28 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Page<AccountUserResponse> getAllUsersWithPagination(Integer page) {
+    public Map<String, Object> getAllUsersWithPagination(Integer page) {
         int size = 10;
+
         if (page < 1) {
-            throw new RuntimeException("Trang không hợp lệ phải từ 1 trở lên");
+            throw new IllegalArgumentException("Trang không hợp lệ, phải từ 1 trở lên");
         }
-        Page<User> users = this.userRepository.findAll(PageRequest.of(page-1, size));
-        return users.map(user -> this.userMapper.toResponse(user));
+
+        Page<User> users = this.userRepository.findAll(PageRequest.of(page - 1, size));
+
+        List<AccountUserResponse> userResponses = users.map(user -> this.userMapper.toResponse(user)).getContent();
+
+        int totalPages = users.getTotalPages();
+        long totalElements = users.getTotalElements();
+
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("totalElements", totalElements);
+        responseMap.put("totalPages", totalPages);
+        responseMap.put("userResponses", userResponses);
+
+        return responseMap;
     }
+
 
     @Override
     public void changePassword(ChangePasswordDto changePasswordDto) {

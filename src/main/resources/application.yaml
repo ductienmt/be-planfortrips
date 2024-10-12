@@ -20,11 +20,7 @@ spring:
 api:
   prefix : api/v1
 
-
 cloudinary:
   cloud_name: dzbtsco86
   api_key: 458554894698284
   api_secret: 5JqucoX6jWiaB4xikpQb5wpjbJo
-
-
-
