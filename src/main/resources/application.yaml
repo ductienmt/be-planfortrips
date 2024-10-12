@@ -1,6 +1,5 @@
 spring:
   datasource:
-
 #    url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
 #    username: postgres
 #    password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
@@ -19,17 +18,10 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
-#  mvc:
-#    converters:
-#      preferred-json-mapper: gson.
 api:
   prefix : api/v1
-
 
 cloudinary:
   cloud_name: dzbtsco86
   api_key: 458554894698284
   api_secret: 5JqucoX6jWiaB4xikpQb5wpjbJo
-
-
-

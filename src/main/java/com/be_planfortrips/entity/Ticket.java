@@ -7,6 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -16,7 +17,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "tickets")
-public class Ticket {
+public class Ticket extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
@@ -32,20 +33,21 @@ public class Ticket {
     @Column(name = "total_price", precision = 10, scale = 2)
     BigDecimal totalPrice;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "booking_time")
-    Instant bookingTime;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     Payment payment;
 
-    @Column(name = "status", columnDefinition = "status_booking")
-//    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     Status status;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "ticket_seats",
     joinColumns = @JoinColumn(name = "ticket_id"),
     inverseJoinColumns = @JoinColumn(name = "seat_id"))
     List<Seat> seats;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "ticket_coupons",
+            joinColumns = @JoinColumn(name = "ticket_id"),
+            inverseJoinColumns = @JoinColumn(name = "coupon_id"))
+    List<Coupon> coupons;
 }

@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +30,7 @@ public class TicketService implements ITicketService {
     PaymentRepository paymentRepository;
     UserRepository userRepository;
     ScheduleRepository scheduleRepository;
+    CouponRepository couponRepository;
     @Override
     @Transactional
     public TicketResponse createTicket(TicketDTO ticketDto) throws Exception {
@@ -45,6 +47,14 @@ public class TicketService implements ITicketService {
                 .orElseThrow(
                         ()-> new Exception("Vui long chon lich trinh")
                 );
+        Coupon coupon = null;
+        if (ticketDto.getCodeCoupon() != null && !ticketDto.getCodeCoupon().isEmpty()) {
+            if (!couponRepository.existsByCode(ticketDto.getCodeCoupon())) {
+                throw new Exception("Voucher không tồn tại");
+            }
+            coupon = couponRepository.findByCode(ticketDto.getCodeCoupon());
+            if(!coupon.isActive()) throw new Exception("Voucher da het han hoac khong con kha dung");
+        }
         Ticket ticket = ticketMapper.toEntity(ticketDto);
         ticket.setPayment(payment);
         ticket.setUser(existingUser);
@@ -69,8 +79,33 @@ public class TicketService implements ITicketService {
             }
         }
         if(!sb.toString().isEmpty()) throw new Exception(String.format("Lỗi: %s", sb)); else ticket.setSeats(seats);
+        List<Coupon> coupons = Arrays.asList(coupon);
+        ticket.setCoupons(coupons);
+        BigDecimal discountPrice = BigDecimal.valueOf(0.0);
+        if(coupon != null){
+            if(ticket.getCoupons().get(0).getDiscountType() == DiscountType.PERCENT){
+                discountPrice = (ticket.getTotalPrice()).
+                        multiply(
+                                ticket.getCoupons().get(0).getDiscountValue().multiply(BigDecimal.valueOf(0.01)
+                                ));
+            }else{
+                discountPrice = (ticket.getCoupons().get(0)
+                        .getDiscountValue());
+            }
+        }
+        ticket.setTotalPrice(ticket.getTotalPrice().subtract(discountPrice));
         ticket.setStatus(Status.Pending);
         ticketRepository.saveAndFlush(ticket);
+        if(coupon!=null){
+            if(coupon.getUseCount() < coupon.getUseLimit()){
+                int useCount = coupon.getUseCount();
+                coupon.setUseCount( useCount+= 1);
+                if(coupon.getUseCount() == coupon.getUseLimit()) {
+                    coupon.setActive(false);
+                    couponRepository.saveAndFlush(coupon);
+                }
+            }
+        }
         return ticketMapper.toResponse(ticket);
     }
 
@@ -117,7 +152,7 @@ public class TicketService implements ITicketService {
         ticketExisting.setPayment(payment);
         ticketExisting.setUser(existingUser);
         ticketExisting.setSchedule(schedule);
-        List<String> allowedStatuses = Arrays.asList("PENDING", "CANCELED   ", "COMPLETED");
+        List<String> allowedStatuses = Arrays.asList("PENDING", "CANCELED", "COMPLETED");
         if (!allowedStatuses.contains(ticketDto.getStatus())) {
             throw new Exception("Trang thai khong hop le");
         }
