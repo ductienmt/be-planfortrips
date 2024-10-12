@@ -1,11 +1,14 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -20,34 +23,34 @@ import java.util.List;
 public class Coupon extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Integer id;
 
     @Column(name = "code", length = 50)
     String code;
 
     @Column(name = "discount_type")
+    @Enumerated(EnumType.STRING)
     DiscountType discountType;
 
     @Column(name = "discount_value", precision = 10, scale = 2)
     BigDecimal discountValue;
 
     @Column(name = "start_date")
-    LocalDateTime startDate;
+    LocalDate startDate;
 
     @Column(name = "end_date")
-    LocalDateTime endDate;
+    LocalDate endDate;
 
     @Column(name = "use_limit")
     int useLimit;
 
-    @ColumnDefault("0")
     @Column(name = "use_count")
-    int useCount;
+    int useCount = 0;
 
-    @ColumnDefault("true")
     @Column(name = "is_active")
-    boolean isActive;
+    boolean isActive = true;
 
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JsonIgnore
     List<CouponRoom> couponRooms;
 }
