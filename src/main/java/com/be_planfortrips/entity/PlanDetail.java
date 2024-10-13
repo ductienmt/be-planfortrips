@@ -42,8 +42,8 @@ public class PlanDetail {
     @Column(name = "ticket_id")
     private Integer ticketId;
 
-    @Column(name = "status", columnDefinition = "status_plan")
-//    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private StatusPlan status;
 
 }

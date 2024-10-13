@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "plan")
+@Table(name = "plans")
 public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,10 +42,10 @@ public class Plan {
     @Column(name = "destination", length = 50)
     private String destination;
 
-    @Column(name = "originlocation", length = 50)
+    @Column(name = "originLocation", length = 50)
     private String originLocation;
 
-    @Column(name = "status", columnDefinition = "status_plan")
-//    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private StatusPlan status;
 }

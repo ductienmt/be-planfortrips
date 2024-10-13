@@ -45,9 +45,8 @@ public class BookingHotelDetail {
     @Column(name = "total_price", precision = 10, scale = 2)
     BigDecimal price;
 
-    @ColumnDefault("Pending")
-    @Column(name = "status", columnDefinition = "status_booking")
-    Status status;
+    @Column(name = "status")
+    Status status = Status.Pending;
 
     @ManyToOne
     @JoinColumn(name = "booking_id")

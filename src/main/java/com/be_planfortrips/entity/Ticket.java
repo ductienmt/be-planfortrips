@@ -40,12 +40,12 @@ public class Ticket extends BaseEntity {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     Status status;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinTable(name = "ticket_seats",
-    joinColumns = @JoinColumn(name = "ticket_id"),
-    inverseJoinColumns = @JoinColumn(name = "seat_id"))
+            joinColumns = @JoinColumn(name = "ticket_id"),
+            inverseJoinColumns = @JoinColumn(name = "seat_id"))
     List<Seat> seats;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "ticket_coupons",
             joinColumns = @JoinColumn(name = "ticket_id"),
             inverseJoinColumns = @JoinColumn(name = "coupon_id"))

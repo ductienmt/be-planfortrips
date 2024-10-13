@@ -62,10 +62,10 @@ public class CouponController {
         }
     }
     @GetMapping()
-    public ResponseEntity<?> getCarCompanies(@RequestParam int page,
+    public ResponseEntity<?> getCoupons(@RequestParam int page,
                                              @RequestParam int limit){
         try {
-            PageRequest request = PageRequest.of(page,limit, Sort.by("code").ascending());
+            PageRequest request = PageRequest.of(page,limit, Sort.by("endDate").ascending());
             int totalPage = 0;
             Page<CouponResponse> CouponResponses = iCouponService.getCoupons(request);
             totalPage = CouponResponses.getTotalPages();
@@ -79,12 +79,12 @@ public class CouponController {
         }
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCarCompanyById(@PathVariable Integer id) throws Exception {
+    public ResponseEntity<?> deleteCouponById(@PathVariable Integer id) throws Exception {
         iCouponService.deleteCouponById(id);
         return ResponseEntity.noContent().build();
     }
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCarCompanyById(@PathVariable Integer id){
+    public ResponseEntity<?> getCouponById(@PathVariable Integer id){
         try {
             CouponResponse response = iCouponService.getByCouponId(id);
             return ResponseEntity.ok(response);
