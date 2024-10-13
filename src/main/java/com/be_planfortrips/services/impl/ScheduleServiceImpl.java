@@ -14,7 +14,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -64,13 +66,22 @@ public class ScheduleServiceImpl implements IScheduleService {
         scheduleRepository.deleteById(scheduleId);
     }
 
-//    @Override
-//    public List<ScheduleResponse> getAllScheduleByTime(LocalDateTime departureTime, LocalDateTime arrivalTime) {
-//        return this.scheduleRepository.findSchedulesAfterSpecificTime(
-//                departureTime.toLocalDate(),
-//                departureTime.toLocalTime(),
-//                arrivalTime.toLocalDate(),
-//                arrivalTime.toLocalTime()
-//        ).stream().map(scheduleMapper::toResponse).collect(Collectors.toList());
-//    }
+    @Override
+    public Map<String, Object> getAllScheduleByTime(LocalDateTime departureTime, LocalDateTime returnTime) {
+        List<ScheduleResponse> departure = this.scheduleRepository.findSchedulesAfterSpecificTime(
+                departureTime.toLocalDate(),
+                departureTime.toLocalTime()
+        ).stream().map(scheduleMapper::toResponse).collect(Collectors.toList());
+        List<ScheduleResponse> returnSchedules = this.scheduleRepository.findSchedulesAfterSpecificTime(
+                returnTime.toLocalDate(),
+                returnTime.toLocalTime()
+        ).stream().map(scheduleMapper::toResponse).collect(Collectors.toList());
+        Map<String, Object> response = new HashMap<>();
+        response.put("departure", departure);
+        response.put("return", returnSchedules);
+        if (response.isEmpty()) {
+            throw new AppException(ErrorType.notFound); // Ném lỗi nếu không tìm thấy chuyến đi
+        }
+        return response;
+    }
 }

@@ -5,6 +5,7 @@ import com.be_planfortrips.dto.response.ScheduleResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface IScheduleService {
 
@@ -18,5 +19,5 @@ public interface IScheduleService {
 
     void deleteScheduleById(Integer scheduleId);
 
-//    List<ScheduleResponse> getAllScheduleByTime(LocalDateTime departureTime, LocalDateTime arrivalTime);
+    Map<String, Object> getAllScheduleByTime(LocalDateTime departureTime, LocalDateTime returnTime);
 }

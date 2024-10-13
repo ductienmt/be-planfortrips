@@ -34,14 +34,6 @@ public class UserController {
     public ResponseEntity<?> getAllUsers(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {
         try {
             Map<String, Object> users = this.userService.getAllUsersWithPagination(page);
-            if (users.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        ApiResponse.<Void>builder()
-                                .code(HttpStatus.NOT_FOUND.value())
-                                .message("Không có người dùng.")
-                                .build()
-                );
-            }
 
             return ResponseEntity.ok(
                     ApiResponse.<Map<String, Object>>builder()
