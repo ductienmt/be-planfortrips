@@ -77,7 +77,7 @@ public class TicketController {
     public ResponseEntity<?> getCarCompanies(@RequestParam int page,
                                              @RequestParam int limit){
         try {
-            PageRequest request = PageRequest.of(page,limit, Sort.by("endDate").ascending());
+            PageRequest request = PageRequest.of(page,limit, Sort.by("createAt").ascending());
             int totalPage = 0;
             Page<TicketResponse> TicketResponses = iTicketService.getTickets(request);
             totalPage = TicketResponses.getTotalPages();

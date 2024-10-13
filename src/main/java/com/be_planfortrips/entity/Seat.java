@@ -6,6 +6,8 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,9 +28,12 @@ public class Seat {
     @Column(name = "seat_number", length = 5)
     String seatNumber;
 
-    @ColumnDefault("Empty")
-    @Column(name = "status", columnDefinition = "status_seat")
-//    @Enumerated(EnumType.STRING)
-    StatusSeat status;
-
+    @Column(name = "status_seat")
+    @Enumerated(EnumType.STRING)
+    StatusSeat status = StatusSeat.Empty;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinTable(name = "ticket_seats",
+            joinColumns = @JoinColumn(name = "seat_id"),
+            inverseJoinColumns = @JoinColumn(name = "ticket_id"))
+    List<Ticket> tickets;
 }

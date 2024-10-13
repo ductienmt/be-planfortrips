@@ -32,9 +32,9 @@ public class BookingHotel extends BaseEntity {
     @Column(name = "total_price",precision = 10, scale = 2)
     BigDecimal totalPrice;
 
-    @ColumnDefault("Pending")
-    @Column(name = "status", columnDefinition = "status_booking")
-    Status status;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    Status status = Status.Pending;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
