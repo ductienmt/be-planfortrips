@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,9 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private ImageRepository imageRepository;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @Override
     public AccountUserResponse createUser(UserDto userDto) {
@@ -185,26 +189,33 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public String uploadAvatar(Long userId, MultipartFile file) {
-        if(file == null || file.isEmpty()) {
-            throw new RuntimeException("Vui lòng chọn ảnh");
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Vui lòng chọn ảnh hợp lệ");
         }
+
         User user = this.getUserById(userId);
-        if (user == null) {
-            throw new RuntimeException("Tài khoản không tồn tại");
-        }
+
         this.utils.isValidImage(file);
         this.utils.checkSize(file);
 
-        String avatar = this.utils.saveImage(file);
-        System.out.println(avatar);
+        String avatarUrl;
+        try {
+            Map<String, Object> uploadResult = this.cloudinaryService.uploadFile(file);
+            avatarUrl = uploadResult.get("url").toString();
+        } catch (IOException e) {
+            throw new AppException(ErrorType.internalServerError);
+        }
 
         Image image = new Image();
-        image.setUrl(avatar);
+        image.setUrl(avatarUrl);
         this.imageRepository.saveAndFlush(image);
+
         user.setImage(image);
         this.userRepository.saveAndFlush(user);
-        return image.getUrl();
+
+        return avatarUrl;
     }
+
 
 
 }

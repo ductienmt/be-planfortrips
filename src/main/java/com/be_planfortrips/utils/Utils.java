@@ -9,20 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Component
 public class Utils {
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
     private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^\\+(?:[0-9] ?){6,14}[0-9]$");
-    public static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
 
     public static boolean isValidEmail(String email) {
         return EMAIL_PATTERN.matcher(email).matches();
@@ -52,7 +47,7 @@ public class Utils {
 
 
     public static void checkSize(MultipartFile file) {
-        long maxSize = 500 * 1024; // Giới hạn dung lượng tối đa (500KB)
+        long maxSize = 500 * 1024 * 1024; // Giới hạn dung lượng tối đa (5MB)
 
         if (file.getSize() > maxSize) {
             throw new MessageDescriptorFormatException("Dung lượng ảnh vượt quá giới hạn.");
@@ -60,32 +55,6 @@ public class Utils {
     }
 
 
-    @SneakyThrows
-    public static String saveImage(MultipartFile image) {
-        Path staticPath = Paths.get("uploads");
-        Path imagePath = Paths.get("images");
-
-
-        // Tạo thư mục nếu chưa tồn tại
-        Path directory = Utils.CURRENT_FOLDER.resolve(staticPath).resolve(imagePath);
-        if (!Files.exists(directory)) {
-            Files.createDirectories(directory);
-        }
-
-        // Thêm dấu thời gian (timestamp) vào tên file
-        String uniqueFileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
-
-        // Lưu file vào thư mục
-        Path filePath = directory.resolve(Objects.requireNonNull(uniqueFileName));
-        try (OutputStream os = Files.newOutputStream(filePath)) {
-            os.write(image.getBytes());
-        }
-
-        // Trả về tên ảnh
-//        String imageUrl = resolve(uniqueFileName).toString();
-        //return imageUrl.replace("\\", "/"); // Đổi dấu "\\" thành "/"
-        return uniqueFileName;
-    }
 
 
 

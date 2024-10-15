@@ -7,6 +7,7 @@ import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.dto.response.AuthResponse;
 import com.be_planfortrips.services.interfaces.IAuthService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("${api.prefix}/auth")
+@Slf4j
 public class AuthController {
 
     @Autowired
     private IAuthService authService;
+
+    // Phương thức hỗ trợ để tạo ApiResponse
+    private ResponseEntity<ApiResponse<Void>> buildApiResponse(HttpStatus status, String message) {
+        return ResponseEntity.status(status).body(
+                ApiResponse.<Void>builder()
+                        .code(status.value())
+                        .message(message)
+                        .build()
+        );
+    }
 
     @PostMapping("register")
     public ResponseEntity<?> register(@Valid @RequestBody UserDto userDto) {
@@ -28,12 +40,8 @@ public class AuthController {
                     .message("Đăng ký thành công.")
                     .build());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message(e.getMessage())
-                            .build()
-            );
+            log.error(e.getMessage());
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Đăng ký thất bại.");
         }
     }
 
@@ -47,12 +55,8 @@ public class AuthController {
                     .message("Đăng nhập thành công.")
                     .build());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message(e.getMessage())
-                            .build()
-            );
+            log.error(e.getMessage());
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Đăng nhập thất bại.");
         }
     }
 }

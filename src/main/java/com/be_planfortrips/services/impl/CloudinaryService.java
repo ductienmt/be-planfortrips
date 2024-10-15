@@ -15,8 +15,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
-public class CloudinaryService implements ICloudinaryService
-{
+public class CloudinaryService implements ICloudinaryService {
     Cloudinary cloudinary;
     @Override
     public Map<String, Object> uploadFile(MultipartFile file) throws IOException {
