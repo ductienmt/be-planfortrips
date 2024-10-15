@@ -35,10 +35,9 @@ public class Vehicle {
     @JsonBackReference
     CarCompany carCompany;
 
-
     @Column(name = "type_vehicle")
     @Enumerated(EnumType.STRING)
-    TypeVehicle type;
+    TypeVehicle typeVehicle;
     @OneToMany(mappedBy = "vehicleCode",cascade = CascadeType.REMOVE)
     List<Seat> seats;
 //     @Column(name = "type_vehicle") 

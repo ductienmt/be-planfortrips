@@ -1,6 +1,7 @@
 package com.be_planfortrips.controllers;
 import com.be_planfortrips.dto.CarCompanyDTO;
 import com.be_planfortrips.dto.response.CarResponse;
+import com.be_planfortrips.dto.response.HotelResponse;
 import com.be_planfortrips.dto.response.TListResponse;
 import com.be_planfortrips.services.interfaces.ICarCompanyService;
 import jakarta.validation.Valid;
@@ -18,7 +19,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${api.prefix}/car_companies")
@@ -99,6 +102,20 @@ public class CarCompanyController {
             return ResponseEntity.ok(response);
         }catch (Exception ex){
             return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+    @DeleteMapping("/{id}/images")
+    public ResponseEntity<?> deleteImages(@PathVariable Integer id,
+                                          @RequestParam String imageIds){
+        try {
+            List<Integer> imageIdsList = Arrays.stream(imageIds.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+            CarResponse response = iCarService.deleteImage(id,imageIdsList);
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

@@ -5,6 +5,8 @@ import com.be_planfortrips.dto.response.CarResponse;
 import com.be_planfortrips.entity.AccountEnterprise;
 import com.be_planfortrips.entity.CarCompany;
 import com.be_planfortrips.entity.Image;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.CarCompanyMapper;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.CarCompanyRepository;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -101,7 +104,7 @@ public class CarCompanyService implements ICarCompanyService {
             if(contentType == null || !contentType.startsWith("image/")) {
                 new Exception("File must be an image");
             }
-            Map<String, Object> uploadResult = cloudinaryService.uploadFile(file);
+            Map<String, Object> uploadResult = cloudinaryService.uploadFile(file,"cars");
             String imageUrl = (String) uploadResult.get("secure_url");
             Image image = new Image();
             image.setUrl(imageUrl);
@@ -109,6 +112,33 @@ public class CarCompanyService implements ICarCompanyService {
             imageList.add(image);
         }
         carCompany.getImages().addAll(imageList);
+        carCompanyRepository.saveAndFlush(carCompany);
+        return carCompanyMapper.toResponse(carCompany);
+    }
+    @Override
+    @Transactional
+    public CarResponse deleteImage(Integer id, List<Integer> imageIds) throws Exception {
+        CarCompany carCompany = carCompanyRepository.findById(id).orElseThrow(
+                () -> new AppException(ErrorType.notFound)
+        );
+        List<Image> images = carCompany.getImages();
+        List<Image> imagesToDelete = images.stream()
+                .filter(image -> imageIds.contains(Integer.valueOf(String.valueOf(image.getId()))))
+                .collect(Collectors.toList());
+        if (imagesToDelete.isEmpty()) {
+            throw new Exception("No images found to delete");
+        }
+
+        for (Image image : imagesToDelete) {
+            try {
+                String publicId = cloudinaryService.getPublicIdFromUrl(image.getUrl());
+                cloudinaryService.deleteFile(publicId);
+                carCompany.getImages().remove(image);
+                imageRepository.delete(image);
+            } catch (Exception e) {
+                throw new Exception("Error deleting image: " + e.getMessage());
+            }
+        }
         carCompanyRepository.saveAndFlush(carCompany);
         return carCompanyMapper.toResponse(carCompany);
     }

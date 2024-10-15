@@ -37,5 +37,5 @@ public class VehicleDTO {
     @Min(value = 1,message = "car_company_id must be greater than 1!")
     Integer carCompanyId;
     @JsonProperty("type_vehicle")
-    TypeVehicle typeVehicle;
+    String typeVehicle;
 }
