@@ -19,9 +19,9 @@ public class Checkin extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id")
-    Image image;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "image_id")
+//    Image image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", columnDefinition = "varchar(20)")
