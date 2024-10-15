@@ -74,7 +74,7 @@ public class UserServiceImpl implements IUserService {
             throw new RuntimeException("Có lỗi xảy ra khi tạo tài khoản, vui lòng thử lại.");
         } catch (Exception e) {
             // Bắt các lỗi khác
-            throw new AppException(ErrorType.internalServerError);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -203,8 +203,6 @@ public class UserServiceImpl implements IUserService {
         this.imageRepository.saveAndFlush(image);
         user.setImage(image);
         this.userRepository.saveAndFlush(user);
-
-
         return image.getUrl();
     }
 
