@@ -1,10 +1,13 @@
 package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.CheckinDto;
+import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.dto.response.CheckinResponse;
 import com.be_planfortrips.entity.Checkin;
 import com.be_planfortrips.entity.CheckinImage;
 import com.be_planfortrips.entity.Image;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.CheckinMapper;
 import com.be_planfortrips.repositories.CheckinImageRepository;
 import com.be_planfortrips.repositories.CheckinRepository;
@@ -14,6 +17,8 @@ import com.be_planfortrips.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -83,6 +88,9 @@ public class CheckinServiceImpl implements ICheckinService {
         responseMap.put("totalElements", totalElements);
         responseMap.put("totalPages", totalPages);
         responseMap.put("checkinResponses", checkinResponses);
+        if (responseMap.isEmpty()) {
+            throw new AppException(ErrorType.notFound);
+        }
         return responseMap;
     }
 
