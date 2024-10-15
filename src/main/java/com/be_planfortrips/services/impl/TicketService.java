@@ -3,6 +3,8 @@ package com.be_planfortrips.services.impl;
 import com.be_planfortrips.dto.TicketDTO;
 import com.be_planfortrips.dto.response.TicketResponse;
 import com.be_planfortrips.entity.*;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.TicketMapper;
 import com.be_planfortrips.repositories.*;
 import com.be_planfortrips.services.interfaces.ITicketService;
@@ -15,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -34,130 +33,82 @@ public class TicketService implements ITicketService {
     @Override
     @Transactional
     public TicketResponse createTicket(TicketDTO ticketDto) throws Exception {
-        StringBuilder sb = new StringBuilder();
         User existingUser = userRepository.findByUsername(ticketDto.getUserName());
         if(existingUser==null){
             throw new Exception("User not found");
         }
         Payment payment = paymentRepository.findById(ticketDto.getPaymentId())
-                .orElseThrow(
-                        ()->new Exception("Vui lòng chọn phương thức thanh toán")
-                );
+                .orElseThrow(() -> new Exception("Vui lòng chọn phương thức thanh toán"));
+
         Schedule schedule = scheduleRepository.findById(ticketDto.getScheduleId())
-                .orElseThrow(
-                        ()-> new Exception("Vui long chon lich trinh")
-                );
-        Coupon coupon = null;
-        if (ticketDto.getCodeCoupon() != null && !ticketDto.getCodeCoupon().isEmpty()) {
-            if (!couponRepository.existsByCode(ticketDto.getCodeCoupon())) {
-                throw new Exception("Voucher không tồn tại");
-            }
-            coupon = couponRepository.findByCode(ticketDto.getCodeCoupon());
-            if(!coupon.isActive()) throw new Exception("Voucher da het han hoac khong con kha dung");
-        }
+                .orElseThrow(() -> new Exception("Vui lòng chọn lịch trình"));
+
+        Coupon coupon = getCoupon(ticketDto.getCodeCoupon());
+
         Ticket ticket = ticketMapper.toEntity(ticketDto);
         ticket.setPayment(payment);
         ticket.setUser(existingUser);
         ticket.setSchedule(schedule);
-        List<String> allowedStatuses = Arrays.asList("PENDING", "CANCELED", "COMPLETED");
-        if (!allowedStatuses.contains(ticketDto.getStatus())) {
-            throw new Exception("Trang thai khong hop le");
+
+        validateTicketStatus(ticketDto.getStatus());
+
+        List<Seat> seats = validateAndUpdateSeats(ticketDto.getSeatIds());
+        ticket.setSeats(seats);
+
+        if (coupon != null) {
+            applyCouponDiscount(ticket, coupon);
         }
-        List<Integer> seatIds = ticketDto.getSeatIds();
-        List<Seat> seats = (seatIds==null) ? new ArrayList<>() : seatRepository.findAllById(seatIds);
-        if(seats.isEmpty()){
-            throw new Exception("Vui lòng chọn ghees");
-        }
-        for(int i = 0;i<seats.size();i++){
-            Seat seat = seats.get(i);
-            if(seat.getStatus() == StatusSeat.Full){
-                sb.append(String.format("Ghế so' %s - mã số xe %s da co nguoi ngoi` \n",seat.getSeatNumber(),seat.getVehicleCode().getCode()));
-            }else{
-                seat.setStatus(StatusSeat.Full);
-                seatRepository.saveAndFlush(seat);
-                seats.set(i,seat);
-            }
-        }
-        if(!sb.toString().isEmpty()) throw new Exception(String.format("Lỗi: %s", sb)); else ticket.setSeats(seats);
-        List<Coupon> coupons = Arrays.asList(coupon);
-        ticket.setCoupons(coupons);
-        BigDecimal discountPrice = BigDecimal.valueOf(0.0);
-        if(coupon != null){
-            if(ticket.getCoupons().get(0).getDiscountType() == DiscountType.PERCENT){
-                discountPrice = (ticket.getTotalPrice()).
-                        multiply(
-                                ticket.getCoupons().get(0).getDiscountValue().multiply(BigDecimal.valueOf(0.01)
-                                ));
-            }else{
-                discountPrice = (ticket.getCoupons().get(0)
-                        .getDiscountValue());
-            }
-        }
-        ticket.setTotalPrice(ticket.getTotalPrice().subtract(discountPrice));
+
+        ticket.setTotalPrice(ticket.getTotalPrice().subtract(BigDecimal.valueOf(payment.getFee())));
         ticket.setStatus(Status.Pending);
+
         ticketRepository.saveAndFlush(ticket);
-        if(coupon!=null){
-            if(coupon.getUseCount() < coupon.getUseLimit()){
-                int useCount = coupon.getUseCount();
-                coupon.setUseCount( useCount+= 1);
-                if(coupon.getUseCount() == coupon.getUseLimit()) {
-                    coupon.setActive(false);
-                    couponRepository.saveAndFlush(coupon);
-                }
-            }
-        }
+
+        updateCouponUsage(coupon);
+
         return ticketMapper.toResponse(ticket);
     }
 
     @Override
     @Transactional
     public TicketResponse updateTicket(Integer id, TicketDTO ticketDto) throws Exception {
-        StringBuilder sb = new StringBuilder();
         Ticket ticketExisting = ticketRepository.findById(id)
                 .orElseThrow(
-                        ()-> new Exception("Ticket not found")
+                        ()-> new AppException(ErrorType.notFound)
                 );
-        if (ticketExisting == null) {
-            return null;
-        }
         User existingUser = userRepository.findByUsername(ticketDto.getUserName());
         if(existingUser==null){
             throw new Exception("User not found");
         }
         Payment payment = paymentRepository.findById(ticketDto.getPaymentId())
-                .orElseThrow(
-                        ()->new Exception("Vui lòng chọn phương thức thanh toán")
-                );
+                .orElseThrow(() -> new Exception("Vui lòng chọn phương thức thanh toán"));
+
         Schedule schedule = scheduleRepository.findById(ticketDto.getScheduleId())
-                .orElseThrow(
-                        ()-> new Exception("Vui long chon lich trinh")
-                );
-        List<Integer> seatIds = ticketDto.getSeatIds();
-        List<Seat> seats = (seatIds==null) ? new ArrayList<>() : seatRepository.findAllById(seatIds);
-        if(seats.size() == 0){
-            throw new Exception("Vui lòng chọn ghees");
-        }
-        for(int i = 0;i<seats.size();i++){
-            Seat seat = seats.get(i);
-            if(seat.getStatus() == StatusSeat.Empty || ticketDto.getSeatIds().contains(seat.getId())){
-                seat.setStatus(StatusSeat.Full);
-                seatRepository.saveAndFlush(seat);
-                seats.set(i,seat);
-            }else{
-                sb.append(String.format("Ghế so' %s - mã số xe %s da co nguoi ngoi` \n",seat.getSeatNumber(),seat.getVehicleCode().getCode()));
-            }
-        }
+                .orElseThrow(() -> new Exception("Vui lòng chọn lịch trình"));
+
+        Coupon coupon = getCoupon(ticketDto.getCodeCoupon());
+
         ticketExisting = ticketMapper.toEntity(ticketDto);
-        ticketExisting.setId(id);
         ticketExisting.setPayment(payment);
         ticketExisting.setUser(existingUser);
         ticketExisting.setSchedule(schedule);
-        List<String> allowedStatuses = Arrays.asList("PENDING", "CANCELED", "COMPLETED");
-        if (!allowedStatuses.contains(ticketDto.getStatus())) {
-            throw new Exception("Trang thai khong hop le");
+
+        validateTicketStatus(ticketDto.getStatus());
+
+        List<Seat> seats = validateAndUpdateSeats(ticketDto.getSeatIds());
+        ticketExisting.setSeats(seats);
+
+        if (coupon != null) {
+            applyCouponDiscount(ticketExisting, coupon);
         }
-        if(!sb.toString().isEmpty()) throw new Exception(String.format("Lỗi: %s",sb.toString())); else ticketExisting.setSeats(seats);
+
+        ticketExisting.setTotalPrice(ticketExisting.getTotalPrice().subtract(BigDecimal.valueOf(payment.getFee())));
+        ticketExisting.setStatus(Status.valueOf(ticketDto.getStatus()));
+
         ticketRepository.saveAndFlush(ticketExisting);
+
+        updateCouponUsage(coupon);
+
         return ticketMapper.toResponse(ticketExisting);
     }
 
@@ -180,5 +131,69 @@ public class TicketService implements ITicketService {
     public void deleteTicketById(Integer id) {
         Optional<Ticket> ticket = ticketRepository.findById(id);
         ticket.ifPresent(ticketRepository::delete);
+    }
+    private Coupon getCoupon(String codeCoupon) throws Exception {
+        if (codeCoupon != null && !codeCoupon.isEmpty()) {
+            Coupon coupon = couponRepository.findByCode(codeCoupon);
+            if(coupon==null){
+                throw new AppException(ErrorType.notFound);
+            }
+            if (!coupon.isActive()) {
+                throw new AppException(ErrorType.couponIsExpired);
+            }
+            return coupon;
+        }
+        return null;
+    }
+
+    private void validateTicketStatus(String status) throws Exception {
+        List<String> allowedStatuses = Arrays.asList("PENDING", "CANCELED", "COMPLETED");
+        if (!allowedStatuses.contains(status)) {
+            throw new Exception("Trạng thái không hợp lệ");
+        }
+    }
+
+    private List<Seat> validateAndUpdateSeats(List<Integer> seatIds) throws Exception {
+        List<Seat> seats = (seatIds == null) ? new ArrayList<>() : seatRepository.findAllById(seatIds);
+        if (seats.isEmpty()) {
+            throw new Exception("Vui lòng chọn ghế");
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (Seat seat : seats) {
+            if (seat.getStatus() == StatusSeat.Full) {
+                sb.append(String.format("Ghế số %s - mã số xe %s đã có người ngồi \n", seat.getSeatNumber(), seat.getVehicleCode().getCode()));
+            } else {
+                seat.setStatus(StatusSeat.Full);
+                seatRepository.saveAndFlush(seat);
+            }
+        }
+
+        if (sb.length() > 0) {
+            throw new Exception(String.format("Lỗi: %s", sb));
+        }
+
+        return seats;
+    }
+
+    private void applyCouponDiscount(Ticket ticket, Coupon coupon) {
+        BigDecimal discountPrice = BigDecimal.ZERO;
+        if (coupon.getDiscountType() == DiscountType.PERCENT) {
+            discountPrice = ticket.getTotalPrice().multiply(coupon.getDiscountValue().multiply(BigDecimal.valueOf(0.01)));
+        } else {
+            discountPrice = coupon.getDiscountValue();
+        }
+        ticket.setTotalPrice(ticket.getTotalPrice().subtract(discountPrice));
+        ticket.setCoupons(Collections.singletonList(coupon));
+    }
+
+    private void updateCouponUsage(Coupon coupon) {
+        if (coupon != null && coupon.getUseCount() < coupon.getUseLimit()) {
+            coupon.setUseCount(coupon.getUseCount() + 1);
+            if (coupon.getUseCount() == coupon.getUseLimit()) {
+                coupon.setActive(false);
+            }
+            couponRepository.saveAndFlush(coupon);
+        }
     }
 }

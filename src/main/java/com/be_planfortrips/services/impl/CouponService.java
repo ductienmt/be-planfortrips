@@ -3,6 +3,9 @@ package com.be_planfortrips.services.impl;
 import com.be_planfortrips.dto.CouponDTO;
 import com.be_planfortrips.dto.response.CouponResponse;
 import com.be_planfortrips.entity.Coupon;
+import com.be_planfortrips.entity.DiscountType;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.CouponMapper;
 import com.be_planfortrips.repositories.CouponRepository;
 import com.be_planfortrips.services.interfaces.ICouponService;
@@ -50,11 +53,18 @@ public class CouponService implements ICouponService {
         if (coupon.getStartDate().isBefore(LocalDate.now())) {
             throw new Exception("Shopping date must be at least today!");
         }
+        if(coupon.getDiscountType().equals(DiscountType.PERCENT)){
+            int percent = Integer.parseInt(String.valueOf(coupon.getDiscountValue()));
+            if(percent<0 || percent>100){
+                throw new AppException(ErrorType.percentIsUnprocessed);
+            }
+        }
         couponRepository.saveAndFlush(coupon);
         return couponMapper.toResponse(coupon);
     }
 
     @Override
+    @Transactional
     public CouponResponse updateCoupon(Integer id, CouponDTO couponDto) throws Exception {
         Coupon existingCoupon = couponRepository.findById(id)
                 .orElseThrow(()->new Exception("Coupon is not found"));
@@ -66,6 +76,12 @@ public class CouponService implements ICouponService {
         List<String> allowedDiscountTypes = Arrays.asList("PERCENT", "FIXED_AMOUNT");
         if(!allowedDiscountTypes.contains(couponDto.getDiscountType())){
             throw new Exception("The loai giam gia khong hop le");
+        }
+        if(existingCoupon.getDiscountType().equals(DiscountType.PERCENT)){
+            int percent = Integer.parseInt(String.valueOf(existingCoupon.getDiscountValue()));
+            if(percent<0 || percent>100){
+                throw new AppException(ErrorType.percentIsUnprocessed);
+            }
         }
         couponRepository.saveAndFlush(existingCoupon);
         return couponMapper.toResponse(existingCoupon);
@@ -86,6 +102,7 @@ public class CouponService implements ICouponService {
     }
 
     @Override
+    @Transactional
     public void deleteCouponById(Integer id) {
         Optional<Coupon> coupon = couponRepository.findById(id);
         coupon.ifPresent(couponRepository::delete);

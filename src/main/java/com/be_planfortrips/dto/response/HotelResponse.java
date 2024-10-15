@@ -1,4 +1,6 @@
 package com.be_planfortrips.dto.response;
+import com.be_planfortrips.entity.Image;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,11 +12,12 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class HotelResponse {
-    String enterpriseName;
+    @JsonProperty("hotel_id")
+    Long id;
     String name;
     String address;
     String phoneNumber;
     String description;
     int rating;
-    List<HotelImageResponse> hotelImageResponses ;
+    List<Image> images ;
 }

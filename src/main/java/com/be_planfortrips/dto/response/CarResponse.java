@@ -18,5 +18,5 @@ public class CarResponse {
     String phoneNumber;
     Integer enterpriseId;
     Integer rating;
-    List<String> imageList ;
+    List<Image> imageList ;
 }

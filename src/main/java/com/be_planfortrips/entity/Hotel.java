@@ -1,4 +1,5 @@
 package com.be_planfortrips.entity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -36,8 +37,13 @@ public class Hotel extends BaseEntity{
     @Column(name = "rating")
     int rating;
 
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    List<HotelImage> hotelImages;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "hotel_images",
+            joinColumns = @JoinColumn(name = "hotel_id"),
+            inverseJoinColumns =  @JoinColumn(name = "image_id")
+    )
+    @JsonManagedReference
+    List<Image> images;
 
     // Danh sách User đã từng đặt khách sạn này
     @ManyToMany
