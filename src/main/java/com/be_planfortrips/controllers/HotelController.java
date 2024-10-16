@@ -1,8 +1,6 @@
 package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.HotelDto;
-import com.be_planfortrips.dto.HotelImageDto;
-import com.be_planfortrips.dto.response.HotelImageResponse;
 import com.be_planfortrips.dto.response.HotelListResponse;
 import com.be_planfortrips.dto.response.HotelResponse;
 import com.be_planfortrips.services.interfaces.IHotelService;
@@ -11,11 +9,9 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -23,10 +19,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${api.prefix}/hotels")
@@ -101,56 +96,27 @@ public class HotelController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadImages(@PathVariable long id,@RequestParam("files") List<MultipartFile> files)throws IllegalArgumentException{
         try{
-            HotelResponse existingHotel = iHotelService.getByHotelId(id);
-            files = files == null ? new ArrayList<MultipartFile>() : files;
-            List<HotelImageResponse> list = new ArrayList<>();
-            for (MultipartFile file : files) {
-                if(file.getSize() == 0) {
-                    continue;
-                }
-                // Kiểm tra kích thước file và định dạng
-                if(file.getSize() > 10 * 1024 * 1024) { // Kích thước > 10MB
-                    return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                            .body("File is too large! Maximum size is 10MB");
-                }
-                String contentType = file.getContentType();
-                if(contentType == null || !contentType.startsWith("image/")) {
-                    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                            .body("File must be an image");
-                }
-////                //lưu vào đối tượng product trong DB => sẽ làm sau
-////                HotelImageResponse hotelImageResponse = iHotelService.createHotelImage(
-////                        id,
-////                        HotelImageDto
-////                                .builder()
-////                                .hotelId(id)
-////                                .imageUrl(filename)
-////                                .build()
-////                );
-//                list.add(hotelImageResponse);
-            }
-            return ResponseEntity.ok(list);
+            HotelResponse hotelResponse = iHotelService.createHotelImage(id,files);
+            return ResponseEntity.ok(hotelResponse);
         }catch (Exception ex){
+            ex.printStackTrace();
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
-    @GetMapping("/images/{imageName}")
-    public ResponseEntity<?> viewImage(@PathVariable("imageName") String imageName){
+    @DeleteMapping("/{id}/images")
+    public ResponseEntity<?> deleteImages(@PathVariable Long id,
+                                          @RequestParam String imageIds){
         try {
-            Path imagePath = Paths.get("uploads/"+imageName);
-            UrlResource urlResource = new UrlResource(imagePath.toUri());
-            if(urlResource.exists()){
-                return ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_JPEG)
-                        .body(urlResource);
-            }else{
-                return ResponseEntity.notFound().build();
-            }
+            List<Integer> imageIdsList = Arrays.stream(imageIds.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+            HotelResponse response = iHotelService.deleteImage(id,imageIdsList);
+            return ResponseEntity.ok(response);
         }catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
     @PostMapping("/generate")
     public ResponseEntity<String> stringResponseEntity(){
         Faker faker = new Faker();

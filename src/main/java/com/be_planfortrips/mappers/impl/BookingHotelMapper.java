@@ -3,13 +3,22 @@ package com.be_planfortrips.mappers.impl;
 import com.be_planfortrips.dto.BookingHotelDetailDto;
 import com.be_planfortrips.dto.BookingHotelDto;
 import com.be_planfortrips.dto.response.BookingHotelResponse;
-import com.be_planfortrips.entity.BookingHotel;
+import com.be_planfortrips.entity.*;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.MapperInterface;
+import com.be_planfortrips.repositories.PaymentRepository;
+import com.be_planfortrips.repositories.RoomRepository;
+import com.be_planfortrips.repositories.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 @Component
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -17,10 +26,41 @@ import org.springframework.stereotype.Component;
 public class BookingHotelMapper implements MapperInterface<BookingHotelResponse, BookingHotel, BookingHotelDto> {
 
    ModelMapper modelMapper;
+   RoomRepository roomRepository;
+   UserRepository userRepository;
+   PaymentRepository paymentRepository;
 
     @Override
     public BookingHotel toEntity(BookingHotelDto bookingHotelDto) {
         BookingHotel hotel = modelMapper.map(bookingHotelDto, BookingHotel.class);
+        Long userId = bookingHotelDto.getUserId();
+        Long paymentId = bookingHotelDto.getPaymentId();
+
+        if (!userRepository.existsById(userId)) {
+            throw new AppException(ErrorType.userIdNotFound, userId);
+        }
+        if (!paymentRepository.existsById(paymentId)) {
+            throw new AppException(ErrorType.paymentIdNotFound, paymentId);
+        }
+
+        List<BookingHotelDetail> bookingHotelDetails = new ArrayList<>();
+
+        bookingHotelDto.getBookingHotelDetailDto().forEach((detailDto) -> {
+            Long roomId = detailDto.getRoomId();
+            Room room = roomRepository.findById(roomId).orElseThrow(
+                    () -> new AppException(ErrorType.roomIdNotFound, roomId)
+            );
+                BookingHotelDetail detail = modelMapper.map(detailDto, BookingHotelDetail.class);
+                detail.setRoom(Room.builder().id(roomId).build());
+                detail.setBookingHotel(hotel);
+                // Giá tại thời điểm hiện tại (Tránh trường hợp tăng giá -> Select Sai giá cũ)
+                detail.setPrice(room.getPrice());
+                bookingHotelDetails.add(detail);
+        });
+
+        hotel.setUser(User.builder().id(userId).build());
+        hotel.setPayment(Payment.builder().id(paymentId).build());
+        hotel.setBookingHotelDetails(new HashSet<>(bookingHotelDetails));
         return hotel;
     }
 

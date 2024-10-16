@@ -26,4 +26,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                   @Param("checkOutDate") LocalDateTime checkOutDate,
                                   @Param("numberOfPeople") int numberOfPeople);
 
+    @Override
+    boolean existsById(Long roomId);
+
 }

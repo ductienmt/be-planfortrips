@@ -7,12 +7,13 @@ import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.HotelImageMapper;
+import com.be_planfortrips.entity.*;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.HotelMapper;
 import com.be_planfortrips.repositories.EnterpriseRepository;
-import com.be_planfortrips.repositories.HotelImageRepository;
 import com.be_planfortrips.repositories.HotelRepository;
 import com.be_planfortrips.repositories.ImageRepository;
-import com.be_planfortrips.dto.response.HotelImageResponse;
 import com.be_planfortrips.dto.response.HotelResponse;
 import com.be_planfortrips.services.interfaces.IHotelService;
 import lombok.AccessLevel;
@@ -22,9 +23,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -45,6 +52,7 @@ public class HotelService implements IHotelService {
 
     RoomServiceImpl roomServiceImpl;
 
+    CloudinaryService cloudinaryService;
     @Override
     @Transactional
     public HotelResponse createHotel(HotelDto hotelDto) throws Exception {
@@ -91,20 +99,72 @@ public class HotelService implements IHotelService {
 
     @Override
     @Transactional
-    public HotelImageResponse createHotelImage(Long hotelId, HotelImageDto hotelImageDto) throws Exception {
+    public HotelResponse createHotelImage(Long hotelId, List<MultipartFile> files) throws Exception {
         Hotel hotel = hotelRepository.findById(hotelId)
-                .orElseThrow(() -> new Exception("Not found"));
+                .orElseThrow(() -> new Exception("Hotel not found"));
 
-        Image image = new Image();
-        image.setUrl(hotelImageDto.getImageUrl());
-        imageRepository.save(image);
+        if (files == null || files.isEmpty()) {
+            throw new Exception("No files to upload");
+        }
 
-        HotelImage hotelImage = new HotelImage();
-        hotelImage.setHotel(hotel);
-        hotelImage.setImage(image);
-        hotelImageRepository.saveAndFlush(hotelImage);
+        List<Image> imageList = new ArrayList<>();
+        for (MultipartFile file : files) {
+            if (file.isEmpty()) {
+                throw new Exception("One or more files are empty");
+            }
+            if (file.getSize() > 10 * 1024 * 1024) { // Giới hạn 10MB
+                throw new Exception("File " + file.getOriginalFilename() + " is too large! Maximum size is 10MB");
+            }
+            String contentType = file.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                throw new Exception("File " + file.getOriginalFilename() + " must be an image");
+            }
 
-        return hotelImageMapper.toResponse(hotelImage);
+            Map<String, Object> uploadResult = cloudinaryService.uploadFile(file, "hotels");
+            String imageUrl = (String) uploadResult.get("secure_url");
+            Image image = new Image();
+            image.setUrl(imageUrl);
+            image = imageRepository.saveAndFlush(image);
+            imageList.add(image);
+        }
+        hotel.setImages(imageList);
+        hotelRepository.save(hotel);
+        return hotelMapper.toResponse(hotel);
+    }
+
+    @Override
+    @Transactional
+    public HotelResponse deleteImage(Long id, List<Integer> imageIds) throws Exception {
+        Hotel hotel = hotelRepository.findById(id).orElseThrow(
+                () -> new AppException(ErrorType.notFound)
+        );
+        List<Image> images = hotel.getImages();
+        System.out.println("Total images for hotel ID " + hotel.getId() + ": " + images.size());
+
+        List<Image> imagesToDelete = images.stream()
+                .filter(image -> imageIds.contains(Integer.valueOf(String.valueOf(image.getId()))))
+                .collect(Collectors.toList());
+        if (imagesToDelete.isEmpty()) {
+            System.out.println("No images found to delete.");
+        } else {
+            System.out.println("Images to delete: " + imagesToDelete.size());
+        }
+        if (imagesToDelete.isEmpty()) {
+            throw new Exception("No images found to delete");
+        }
+
+        for (Image image : imagesToDelete) {
+            try {
+                String publicId = cloudinaryService.getPublicIdFromUrl(image.getUrl());
+                cloudinaryService.deleteFile(publicId);
+                hotel.getImages().remove(image);
+                imageRepository.delete(image);
+            } catch (Exception e) {
+                throw new Exception("Error deleting image: " + e.getMessage());
+            }
+        }
+        hotelRepository.saveAndFlush(hotel);
+        return hotelMapper.toResponse(hotel);
     }
 
     @Override

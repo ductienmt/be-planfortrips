@@ -15,9 +15,8 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ScheduleDto {
-    Long routeId;
+    String routeId;
     String vehicleCode;
-    Integer capacity;
     String driverName;
     String driverPhone;
     LocalDateTime departureTime;

@@ -1,6 +1,7 @@
 package com.be_planfortrips.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -35,5 +36,6 @@ public class Seat {
     @JoinTable(name = "ticket_seats",
             joinColumns = @JoinColumn(name = "seat_id"),
             inverseJoinColumns = @JoinColumn(name = "ticket_id"))
+    @JsonIgnore
     List<Ticket> tickets;
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 @RequiredArgsConstructor
 @Service
@@ -18,11 +19,12 @@ import java.util.Map;
 public class CloudinaryService implements ICloudinaryService {
     Cloudinary cloudinary;
     @Override
-    public Map<String, Object> uploadFile(MultipartFile file) throws IOException {
+    public Map<String, Object> uploadFile(MultipartFile file, String folder) throws IOException {
         byte[] fileBytes = file.getBytes();
-        Map<String, Object> uploadResult = cloudinary.uploader().upload(fileBytes,
-                ObjectUtils.asMap("resource_type", "auto"));
-
+        Map<String, Object> params = new HashMap<>();
+        params.put("resource_type", "auto");
+        params.put("folder", folder);
+        Map<String, Object> uploadResult = cloudinary.uploader().upload(fileBytes, params);
         return uploadResult;
     }
 
@@ -30,4 +32,11 @@ public class CloudinaryService implements ICloudinaryService {
     public Map<String, Object> deleteFile(String publicId) throws IOException {
         return cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
     }
+    public String getPublicIdFromUrl(String url) {
+            String[] parts = url.split("/");
+            String fileNameWithExtension = parts[parts.length - 1];
+            String fileName = fileNameWithExtension.split("\\.")[0];
+            String folderPath = parts[parts.length - 2];
+            return folderPath + "/" + fileName;
+        }
 }

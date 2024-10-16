@@ -32,7 +32,7 @@ public class VehicleMapper implements MapperInterface<VehicleResponse, Vehicle, 
     @Override
     public VehicleResponse toResponse(Vehicle vehicle) {
         modelMapper.typeMap(Vehicle.class,VehicleResponse.class).addMappings(mapper -> {
-            mapper.map(src -> src.getType(), VehicleResponse::setTypeVehicle);
+            mapper.map(src -> src.getTypeVehicle(), VehicleResponse::setTypeVehicle);
         });
         return modelMapper.map(vehicle,VehicleResponse.class);
     }
