@@ -20,15 +20,16 @@ public enum ErrorType {
     notFound(404, "Đối tượng không tồn tại", HttpStatus.NOT_FOUND),
     // Riêng từng case quan trọng (Yêu cầu rõ case)
     usernameExisted(600, "Username đã tồn tại", HttpStatus.BAD_REQUEST),
-    routeExisted(601,"Tuyến này đã tồn tại, vui lòng thêm tuyến đi khác!",HttpStatus.BAD_REQUEST),
-    routeCodeExisted(602,"Mã nhà ga này đã tồn tại",HttpStatus.BAD_REQUEST),
-    couponIsExpired(603,"Voucher đã hết hạn hoặc không còn khả dụng",HttpStatus.BAD_REQUEST),
-    percentIsUnprocessed(604,"Phần trăm không hợp lệ",HttpStatus.UNPROCESSABLE_ENTITY),
+    routeExisted(601, "Tuyến này đã tồn tại, vui lòng thêm tuyến đi khác!", HttpStatus.BAD_REQUEST),
+    routeCodeExisted(602, "Mã nhà ga này đã tồn tại", HttpStatus.BAD_REQUEST),
+    couponIsExpired(603, "Voucher đã hết hạn hoặc không còn khả dụng", HttpStatus.BAD_REQUEST),
+    percentIsUnprocessed(604, "Phần trăm không hợp lệ", HttpStatus.UNPROCESSABLE_ENTITY),
     // Case Not Found
-    // (Trong trường hợp tạo đối tượng từ đối tượng khác, cần biết rõ đối tượng nào không tồn tại)
-    roomIdNotFound(700, "RoomId không tồn tại",HttpStatus.NOT_FOUND),
-    userIdNotFound(701, "User không tồn tại",HttpStatus.NOT_FOUND),
-    paymentIdNotFound(702, "PaymentId không tồn tại",HttpStatus.NOT_FOUND),
+    // (Trong trường hợp tạo đối tượng từ đối tượng khác, cần biết rõ đối tượng nào
+    // không tồn tại)
+    roomIdNotFound(700, "RoomId không tồn tại", HttpStatus.NOT_FOUND),
+    userIdNotFound(701, "User không tồn tại", HttpStatus.NOT_FOUND),
+    paymentIdNotFound(702, "PaymentId không tồn tại", HttpStatus.NOT_FOUND),
     routeIdNotFound(703, "RouteId ", HttpStatus.NOT_FOUND),
     vehicleCodeNotFound(704, "VehicleCode không tồn tại", HttpStatus.NOT_FOUND),
     typeEnterpriseIdNotFound(705, "typeEnterpriseId không tồn tại", HttpStatus.NOT_FOUND),

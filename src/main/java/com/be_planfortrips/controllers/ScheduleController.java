@@ -65,7 +65,7 @@ public class ScheduleController {
     }
 
     // test get data by time, don't care
-    @GetMapping("/getByTime") //    need review and edit sql and data type LocalDateTime
+    @GetMapping("/getByTime") // need review and edit sql and data type LocalDateTime
     public ResponseEntity<?> getScheduleByTime(
             @RequestParam("departureTime") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime departureTime,
             @RequestParam("returnTime") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime returnTime) {
@@ -80,7 +80,7 @@ public class ScheduleController {
         } catch (DateTimeParseException e) {
             log.error(e.getMessage());
             // Xử lý lỗi định dạng ngày giờ và ném ngoại lệ tùy chỉnh
-            throw new AppException(ErrorType.notValidDateFormat ,"");
+            throw new AppException(ErrorType.notValidDateFormat);
         } catch (AppException e) {
             log.error(e.getMessage());
             // Ném lại AppException nếu có
@@ -88,9 +88,8 @@ public class ScheduleController {
         } catch (Exception e) {
             log.error(e.getMessage());
             // Bắt mọi lỗi khác và trả về Internal Server Error
-            throw new AppException(ErrorType.internalServerError, "");
+            throw new AppException(ErrorType.internalServerError);
         }
     }
-
 
 }

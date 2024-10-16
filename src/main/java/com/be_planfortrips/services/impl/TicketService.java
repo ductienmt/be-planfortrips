@@ -21,7 +21,7 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TicketService implements ITicketService {
     TicketRepository ticketRepository;
     TicketMapper ticketMapper;
@@ -30,11 +30,12 @@ public class TicketService implements ITicketService {
     UserRepository userRepository;
     ScheduleRepository scheduleRepository;
     CouponRepository couponRepository;
+
     @Override
     @Transactional
     public TicketResponse createTicket(TicketDTO ticketDto) throws Exception {
         User existingUser = userRepository.findByUsername(ticketDto.getUserName());
-        if(existingUser==null){
+        if (existingUser == null) {
             throw new Exception("User not found");
         }
         Payment payment = paymentRepository.findById(ticketDto.getPaymentId())
@@ -74,10 +75,9 @@ public class TicketService implements ITicketService {
     public TicketResponse updateTicket(Integer id, TicketDTO ticketDto) throws Exception {
         Ticket ticketExisting = ticketRepository.findById(id)
                 .orElseThrow(
-                        ()-> new AppException(ErrorType.notFound, "")
-                );
+                        () -> new AppException(ErrorType.notFound));
         User existingUser = userRepository.findByUsername(ticketDto.getUserName());
-        if(existingUser==null){
+        if (existingUser == null) {
             throw new Exception("User not found");
         }
         Payment payment = paymentRepository.findById(ticketDto.getPaymentId())
@@ -121,8 +121,7 @@ public class TicketService implements ITicketService {
     public TicketResponse getByTicketId(Integer id) throws Exception {
         Ticket ticketExisting = ticketRepository.findById(id)
                 .orElseThrow(
-                        ()-> new Exception("Ticket not found")
-                );
+                        () -> new Exception("Ticket not found"));
         return ticketMapper.toResponse(ticketExisting);
     }
 
@@ -132,14 +131,15 @@ public class TicketService implements ITicketService {
         Optional<Ticket> ticket = ticketRepository.findById(id);
         ticket.ifPresent(ticketRepository::delete);
     }
+
     private Coupon getCoupon(String codeCoupon) throws Exception {
         if (codeCoupon != null && !codeCoupon.isEmpty()) {
             Coupon coupon = couponRepository.findByCode(codeCoupon);
-            if(coupon==null){
-                throw new AppException(ErrorType.notFound, "");
+            if (coupon == null) {
+                throw new AppException(ErrorType.notFound);
             }
             if (!coupon.isActive()) {
-                throw new AppException(ErrorType.couponIsExpired, "");
+                throw new AppException(ErrorType.couponIsExpired);
             }
             return coupon;
         }
@@ -162,7 +162,8 @@ public class TicketService implements ITicketService {
         StringBuilder sb = new StringBuilder();
         for (Seat seat : seats) {
             if (seat.getStatus() == StatusSeat.Full) {
-                sb.append(String.format("Ghế số %s - mã số xe %s đã có người ngồi \n", seat.getSeatNumber(), seat.getVehicleCode().getCode()));
+                sb.append(String.format("Ghế số %s - mã số xe %s đã có người ngồi \n", seat.getSeatNumber(),
+                        seat.getVehicleCode().getCode()));
             } else {
                 seat.setStatus(StatusSeat.Full);
                 seatRepository.saveAndFlush(seat);
@@ -179,7 +180,8 @@ public class TicketService implements ITicketService {
     private void applyCouponDiscount(Ticket ticket, Coupon coupon) {
         BigDecimal discountPrice = BigDecimal.ZERO;
         if (coupon.getDiscountType() == DiscountType.PERCENT) {
-            discountPrice = ticket.getTotalPrice().multiply(coupon.getDiscountValue().multiply(BigDecimal.valueOf(0.01)));
+            discountPrice = ticket.getTotalPrice()
+                    .multiply(coupon.getDiscountValue().multiply(BigDecimal.valueOf(0.01)));
         } else {
             discountPrice = coupon.getDiscountValue();
         }
