@@ -36,11 +36,8 @@ public class CarCompanyMapper implements MapperInterface<CarResponse, CarCompany
     @Override
     public CarResponse toResponse(CarCompany carCompany) {
         CarResponse response = modelMapper.map(carCompany,CarResponse.class);
-        List<String> listImage = new ArrayList<>();
-        for(Image image : carCompany.getImages()){
-            listImage.add(image.getUrl());
-        }
-        response.setImageList(listImage);
+        response.setEnterpriseId(carCompany.getId());
+        response.setImageList(carCompany.getImages());
         return response ;
     }
 

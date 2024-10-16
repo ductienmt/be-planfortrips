@@ -2,8 +2,11 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.dto.request.ChangePasswordDto;
+import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.entity.User;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.UserMapper;
 import com.be_planfortrips.repositories.ImageRepository;
 import com.be_planfortrips.repositories.UserRepository;
@@ -11,14 +14,22 @@ import com.be_planfortrips.dto.response.AccountUserResponse;
 import com.be_planfortrips.services.interfaces.IUserService;
 import com.be_planfortrips.utils.Utils;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
+@Slf4j
 public class UserServiceImpl implements IUserService {
 
     @Autowired
@@ -38,7 +49,7 @@ public class UserServiceImpl implements IUserService {
         try {
             User user = this.userRepository.findByUsername(userDto.getUserName());
             if (user != null) {
-                throw new RuntimeException("Username đã tồn tại, vui lòng đổi username khác");
+                throw new AppException(ErrorType.usernameExisted);
             }
 
             if (!this.utils.isValidEmail(userDto.getEmail())) {
@@ -57,13 +68,13 @@ public class UserServiceImpl implements IUserService {
         } catch (DataIntegrityViolationException e) {
             // Kiểm tra nếu lỗi vi phạm ràng buộc duy nhất (unique constraint)
             if (e.getCause() instanceof ConstraintViolationException) {
-                throw new RuntimeException("Username đã tồn tại, vui lòng chọn tên khác.");
+                throw new AppException(ErrorType.usernameExisted);
             }
             // Các trường hợp vi phạm dữ liệu khác
             throw new RuntimeException("Có lỗi xảy ra khi tạo tài khoản, vui lòng thử lại.");
         } catch (Exception e) {
             // Bắt các lỗi khác
-            throw new RuntimeException("Lỗi không xác định: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -91,14 +102,30 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Page<AccountUserResponse> getAllUsersWithPagination(Integer page) {
+    public Map<String, Object> getAllUsersWithPagination(Integer page) {
         int size = 10;
+
         if (page < 1) {
-            throw new RuntimeException("Trang không hợp lệ phải từ 1 trở lên");
+            throw new IllegalArgumentException("Trang không hợp lệ, phải từ 1 trở lên");
         }
-        Page<User> users = this.userRepository.findAll(PageRequest.of(page-1, size));
-        return users.map(user -> this.userMapper.toResponse(user));
+
+        Page<User> users = this.userRepository.findAll(PageRequest.of(page - 1, size));
+
+        List<AccountUserResponse> userResponses = users.map(user -> this.userMapper.toResponse(user)).getContent();
+
+        int totalPages = users.getTotalPages();
+        long totalElements = users.getTotalElements();
+
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("totalElements", totalElements);
+        responseMap.put("totalPages", totalPages);
+        responseMap.put("userResponses", userResponses);
+        if (users.isEmpty()) {
+            throw new AppException(ErrorType.notFound);
+        }
+        return responseMap;
     }
+
 
     @Override
     public void changePassword(ChangePasswordDto changePasswordDto) {
@@ -176,8 +203,6 @@ public class UserServiceImpl implements IUserService {
         this.imageRepository.saveAndFlush(image);
         user.setImage(image);
         this.userRepository.saveAndFlush(user);
-
-
         return image.getUrl();
     }
 

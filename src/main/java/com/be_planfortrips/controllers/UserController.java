@@ -33,29 +33,12 @@ public class UserController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllUsers(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {
         try {
-            Page<AccountUserResponse> users = this.userService.getAllUsersWithPagination(page);
-            if (users.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        ApiResponse.<Void>builder()
-                                .code(HttpStatus.NOT_FOUND.value())
-                                .message("Không có người dùng.")
-                                .build()
-                );
-            }
-
-            List<AccountUserResponse> userResponses = users.getContent();
-            int totalPages = users.getTotalPages();
-            long totalElements = users.getTotalElements();
-
-            Map<String, Object> responseMap = new HashMap<>();
-            responseMap.put("totalElements", totalElements);
-            responseMap.put("totalPages", totalPages);
-            responseMap.put("userResponses", userResponses);
+            Map<String, Object> users = this.userService.getAllUsersWithPagination(page);
 
             return ResponseEntity.ok(
                     ApiResponse.<Map<String, Object>>builder()
                             .code(HttpStatus.OK.value())
-                            .data(responseMap)
+                            .data(users)
                             .message("Lấy danh sách người dùng thành công.")
                             .build()
             );

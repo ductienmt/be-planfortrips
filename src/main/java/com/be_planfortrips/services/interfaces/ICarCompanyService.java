@@ -15,4 +15,5 @@ public interface ICarCompanyService {
     CarResponse getByCarId(Integer id) throws Exception;
     void deleteCarById(Integer id);
     CarResponse uploadImage(Integer id, List<MultipartFile> files) throws Exception;
+    CarResponse deleteImage(Integer id, List<Integer> imageIds) throws Exception;
 }

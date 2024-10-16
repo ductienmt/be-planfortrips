@@ -12,12 +12,17 @@ public class PlanController {
     private IPlanService planService;
 
     @GetMapping
-    public ResponseEntity<?> getAllPlan() {
+    public ResponseEntity<?> getAllPlanByUserId(@RequestParam("userId") Integer userId) {
         try {
-            return ResponseEntity.ok().body(this.planService.getAllPlanByUserId(29L));
+            return ResponseEntity.ok().body(this.planService.getAllPlanByUserId(userId.longValue()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/getEssentialData")
+    public ResponseEntity<?> planTrip() {
+        return null;
     }
 
 

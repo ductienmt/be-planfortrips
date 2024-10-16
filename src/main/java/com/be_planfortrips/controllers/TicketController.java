@@ -28,8 +28,33 @@ public class TicketController {
     ITicketService iTicketService;
     @PostMapping()
     public ResponseEntity<?> createTicket(@RequestBody @Valid TicketDTO ticketDTO,
-                                        @RequestParam String ids,
+                                          @RequestParam String seatIds,
+                                          @RequestParam(required = false) String codeCoupon,
                                         BindingResult result){
+        try {
+            if(result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
+            List<Integer> seatIdsList = Arrays.stream(seatIds.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+            ticketDTO.setSeatIds(seatIdsList);
+            ticketDTO.setCodeCoupon(codeCoupon);
+            TicketResponse TicketResponse = iTicketService.createTicket(ticketDTO);
+            return ResponseEntity.ok(TicketResponse);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateTicket(@PathVariable Integer id,@RequestBody @Valid TicketDTO ticketDTO,
+                                          @RequestParam String ids,
+                                          BindingResult result){
         try {
             if(result.hasErrors()) {
                 List<String> errorMessages = result.getFieldErrors()
@@ -42,24 +67,7 @@ public class TicketController {
                     .map(Integer::parseInt)
                     .collect(Collectors.toList());
             ticketDTO.setSeatIds(seatIds);
-            TicketResponse TicketResponse = iTicketService.createTicket(ticketDTO);
-            return ResponseEntity.ok(TicketResponse);
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateTicket(@PathVariable Integer id,@RequestBody @Valid TicketDTO TicketDTO,
-                                        BindingResult result){
-        try {
-            if(result.hasErrors()) {
-                List<String> errorMessages = result.getFieldErrors()
-                        .stream()
-                        .map(FieldError::getDefaultMessage)
-                        .toList();
-                return ResponseEntity.badRequest().body(errorMessages);
-            }
-            TicketResponse TicketResponse = iTicketService.updateTicket(id,TicketDTO);
+            TicketResponse TicketResponse = iTicketService.updateTicket(id,ticketDTO);
             return ResponseEntity.ok(TicketResponse);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -69,7 +77,7 @@ public class TicketController {
     public ResponseEntity<?> getCarCompanies(@RequestParam int page,
                                              @RequestParam int limit){
         try {
-            PageRequest request = PageRequest.of(page,limit, Sort.by("id").ascending());
+            PageRequest request = PageRequest.of(page,limit, Sort.by("createAt").ascending());
             int totalPage = 0;
             Page<TicketResponse> TicketResponses = iTicketService.getTickets(request);
             totalPage = TicketResponses.getTotalPages();

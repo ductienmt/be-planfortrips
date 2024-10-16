@@ -1,10 +1,12 @@
 package com.be_planfortrips.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,7 +20,7 @@ import java.util.UUID;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "booking_hotels_details")
-public class BookingHotelDetail {
+public class BookingHotelDetail extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -35,22 +37,15 @@ public class BookingHotelDetail {
     @Column(name = "check_out_time")
     LocalDateTime checkOutTime;
 
-    @Column(name = "createAt")
-    LocalDateTime createAt;
-
-    @Column(name = "updateAt")
-    LocalDateTime updateAt;
-
-    @Column(name = "total_price", precision = 10, scale = 2)
+    @Column(name = "price", precision = 10, scale = 2)
     BigDecimal price;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    Status status;
+    Status status = Status.Pending;
 
     @ManyToOne
     @JoinColumn(name = "booking_id")
+    @JsonBackReference
     BookingHotel bookingHotel;
-
 
 }

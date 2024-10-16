@@ -3,7 +3,6 @@ package com.be_planfortrips.mappers.impl;
 import com.be_planfortrips.dto.HotelDto;
 import com.be_planfortrips.entity.Hotel;
 import com.be_planfortrips.mappers.MapperInterface;
-import com.be_planfortrips.dto.response.HotelImageResponse;
 import com.be_planfortrips.dto.response.HotelResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class HotelMapper implements MapperInterface<HotelResponse,Hotel,HotelDto> {
     ModelMapper modelMapper;
-    HotelImageMapper hotelImageMapper;
     @Override
     public Hotel toEntity(HotelDto hotelDto) {
         TypeMap<HotelDto, Hotel> typeMap = modelMapper.createTypeMap(hotelDto, Hotel.class);
@@ -32,14 +30,8 @@ public class HotelMapper implements MapperInterface<HotelResponse,Hotel,HotelDto
     }
 
     @Override
-
     public HotelResponse toResponse(Hotel hotel) {
-        List<HotelImageResponse> hotelImageResponses = Optional.ofNullable(hotel.getHotelImages())
-                .orElseGet(Collections::emptyList)
-                .stream().map(hotelImageMapper::toResponse)
-                .collect(Collectors.toList());
         HotelResponse hotelResponse = modelMapper.map(hotel, HotelResponse.class);
-        hotelResponse.setHotelImageResponses(hotelImageResponses);
         return hotelResponse;
     }
     @Override

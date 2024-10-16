@@ -15,7 +15,6 @@ import java.time.LocalDate;
 public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "plan_id")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,10 +42,10 @@ public class Plan {
     @Column(name = "destination", length = 50)
     private String destination;
 
-    @Column(name = "origin_location", length = 50)
+    @Column(name = "originLocation", length = 50)
     private String originLocation;
 
-    @Column(name = "status_plan")
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private StatusPlan status;
 }

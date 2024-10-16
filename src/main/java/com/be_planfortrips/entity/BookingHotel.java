@@ -1,9 +1,11 @@
 package com.be_planfortrips.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,19 +24,22 @@ import java.util.Set;
 public class BookingHotel extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @Column(name = "booking_hotel_id")
+    Long bookingHotelId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     Payment payment;
 
-    @Column(name = "total_price",precision = 10, scale = 2)
-    BigDecimal totalPrice;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    Status status = Status.Pending;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
 
     @OneToMany(mappedBy = "bookingHotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     Set<BookingHotelDetail> bookingHotelDetails = new HashSet<>();
 }

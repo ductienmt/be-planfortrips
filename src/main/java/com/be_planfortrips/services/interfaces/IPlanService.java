@@ -5,9 +5,10 @@ import com.be_planfortrips.dto.request.DataEssentialPlan;
 import com.be_planfortrips.dto.response.PlanResponse;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IPlanService {
-    PlanResponse genaratePlan(DataEssentialPlan dataEssentialPlan);
+    Map<String, Object> prepareDataPlan(DataEssentialPlan dataEssentialPlan);
     List<PlanResponse> getAllPlan();
     List<PlanResponse> getAllPlanByUserId(Long id);
     PlanResponse getPlanById(Long id);

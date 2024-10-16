@@ -35,7 +35,7 @@ public class FeedbackServiceImpl implements IFeedbackService {
     @Override
     public FeedbackResponse getFeedbackById(UUID id) {
         Feedback feedback = feedbackRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorType.notFound));
+                .orElseThrow(() -> new AppException(ErrorType.notFound,""));
         return feedbackMapper.toResponse(feedback);
     }
 
@@ -49,7 +49,7 @@ public class FeedbackServiceImpl implements IFeedbackService {
     @Override
     public FeedbackResponse updateFeedback(UUID id, FeedbackDto feedbackDto) {
         Feedback feedback = feedbackRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorType.notFound));
+                .orElseThrow(() -> new AppException(ErrorType.notFound, feedbackDto));
         feedbackMapper.updateEntityFromDto(feedbackDto, feedback);
         feedback = feedbackRepository.save(feedback);
         return feedbackMapper.toResponse(feedback);
@@ -58,7 +58,7 @@ public class FeedbackServiceImpl implements IFeedbackService {
     @Override
     public void deleteFeedbackById(UUID id) {
         Feedback feedback = feedbackRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorType.notFound));
+                .orElseThrow(() -> new AppException(ErrorType.notFound, id));
         feedbackRepository.delete(feedback);
     }
 }

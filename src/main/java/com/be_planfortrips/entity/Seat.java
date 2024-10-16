@@ -1,10 +1,13 @@
 package com.be_planfortrips.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -28,6 +31,11 @@ public class Seat {
 
     @Column(name = "status_seat")
     @Enumerated(EnumType.STRING)
-    StatusSeat status;
-
+    StatusSeat status = StatusSeat.Empty;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinTable(name = "ticket_seats",
+            joinColumns = @JoinColumn(name = "seat_id"),
+            inverseJoinColumns = @JoinColumn(name = "ticket_id"))
+    @JsonIgnore
+    List<Ticket> tickets;
 }
