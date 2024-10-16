@@ -189,6 +189,13 @@ public class CheckinServiceImpl implements ICheckinService {
         }
     }
 
+    @Override
+    public List<CheckinResponse> getCheckinRandom(Integer limit) {
+        return this.checkinRepository.findRandomCheckins(limit)
+                .stream()
+                .map(checkinMapper::toResponse)
+                .collect(Collectors.toList());
+    }
 
 
 }

@@ -80,7 +80,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         response.put("departure", departure);
         response.put("return", returnSchedules);
         if (response.isEmpty()) {
-            throw new AppException(ErrorType.notFound); // Ném lỗi nếu không tìm thấy chuyến đi
+            throw new AppException(ErrorType.notFound);
         }
         return response;
     }

@@ -13,12 +13,10 @@ import java.math.BigDecimal;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoomResponse {
-
-    Integer id; // roomId can not to map, Tien edit to id
+    Integer id;
     String roomName;
     TypeOfRoom typeOfRoom;
     BigDecimal price;
     boolean isAvailable;
     Hotel hotel;
-
 }

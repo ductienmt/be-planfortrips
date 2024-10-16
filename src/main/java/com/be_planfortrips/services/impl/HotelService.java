@@ -2,10 +2,10 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.HotelDto;
 import com.be_planfortrips.dto.HotelImageDto;
-import com.be_planfortrips.entity.AccountEnterprise;
-import com.be_planfortrips.entity.Hotel;
-import com.be_planfortrips.entity.HotelImage;
-import com.be_planfortrips.entity.Image;
+import com.be_planfortrips.dto.response.RoomResponse;
+import com.be_planfortrips.entity.*;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.HotelImageMapper;
 import com.be_planfortrips.mappers.impl.HotelMapper;
 import com.be_planfortrips.repositories.EnterpriseRepository;
@@ -23,23 +23,33 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class HotelService implements IHotelService {
+
     HotelRepository hotelRepository;
+
     EnterpriseRepository enterpriseRepository;
+
     ImageRepository imageRepository;
+
     HotelImageRepository hotelImageRepository;
+
     HotelMapper hotelMapper;
+
     HotelImageMapper hotelImageMapper;
+
+    RoomServiceImpl roomServiceImpl;
+
     @Override
     @Transactional
     public HotelResponse createHotel(HotelDto hotelDto) throws Exception {
         AccountEnterprise accountEnterprise = enterpriseRepository.findById(hotelDto.getEnterpriseId())
-                .orElseThrow(()->new Exception("Not found"));
+                .orElseThrow(() -> new Exception("Not found"));
         Hotel hotel = hotelMapper.toEntity(hotelDto);
         hotel.setAccountEnterprise(accountEnterprise);
         hotelRepository.save(hotel);
@@ -50,10 +60,10 @@ public class HotelService implements IHotelService {
     @Transactional
     public HotelResponse updateHotel(Long id, HotelDto hotelDto) throws Exception {
         Hotel existHotel = hotelRepository.findById(id)
-                           .orElseThrow(()->new Exception("Not found"));
+                .orElseThrow(() -> new Exception("Not found"));
         AccountEnterprise accountEnterprise = enterpriseRepository.findById(hotelDto.getEnterpriseId())
-                .orElseThrow(()->new Exception("Not found"));
-        hotelMapper.updateEntityFromDto(hotelDto,existHotel);
+                .orElseThrow(() -> new Exception("Not found"));
+        hotelMapper.updateEntityFromDto(hotelDto, existHotel);
         existHotel.setId(id);
         existHotel.setAccountEnterprise(accountEnterprise);
         hotelRepository.saveAndFlush(existHotel);
@@ -68,7 +78,7 @@ public class HotelService implements IHotelService {
     @Override
     public HotelResponse getByHotelId(Long id) throws Exception {
         Hotel hotel = hotelRepository.findById(id)
-                .orElseThrow(()->new Exception("Not found"));
+                .orElseThrow(() -> new Exception("Not found"));
         return hotelMapper.toResponse(hotel);
     }
 
@@ -96,4 +106,41 @@ public class HotelService implements IHotelService {
 
         return hotelImageMapper.toResponse(hotelImage);
     }
+
+    @Override
+    public Map<String, Object> getRoomAvailable(Integer numberPeople, LocalDateTime checkIn, LocalDateTime checkOut) {
+        List<RoomResponse> availableRooms = roomServiceImpl.getRoomAvailable(numberPeople, checkIn, checkOut);
+        Map<String, Object> hotelMap = new HashMap<>();
+        for (RoomResponse roomResponse : availableRooms) {
+            HotelResponse hotelResponse;
+            try {
+                hotelResponse = this.getByHotelId(roomResponse.getHotel().getId());
+            } catch (Exception e) {
+                throw new AppException(ErrorType.notFound);
+            }
+            if (!hotelMap.containsKey(roomResponse.getHotel().getId())) {
+                Map<String, Object> hotelInfo = new HashMap<>();
+                hotelInfo.put("hotelId", roomResponse.getHotel().getId());
+                hotelInfo.put("hotelName", hotelResponse.getName());
+                hotelInfo.put("hotelAddress", hotelResponse.getAddress());
+                hotelInfo.put("hotelPhonenumber", hotelResponse.getPhoneNumber());
+                hotelInfo.put("rating", hotelResponse.getRating());
+                hotelInfo.put("hotelImages", hotelResponse.getHotelImageResponses());
+                hotelInfo.put("roomAvailable", new HashSet<RoomResponse>());
+                hotelMap.put(hotelResponse.getName(), hotelInfo);
+            }
+            Map<String, Object> roomInfo = new HashMap<>();
+            roomInfo.put("roomId", roomResponse.getId());
+            roomInfo.put("roomName", roomResponse.getRoomName());
+            roomInfo.put("roomType", roomResponse.getTypeOfRoom());
+            roomInfo.put("price", roomResponse.getPrice());
+            roomInfo.put("availability", roomResponse.isAvailable());
+
+            Set<Map<String, Object>> roomResponses = (Set<Map<String, Object>>) ((Map<String, Object>) hotelMap.get(hotelResponse.getName())).get("roomAvailable");
+            roomResponses.add(roomInfo);
+        }
+        return hotelMap;
+    }
+
+
 }
