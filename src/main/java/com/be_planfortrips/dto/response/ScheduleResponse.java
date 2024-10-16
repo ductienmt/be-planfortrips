@@ -4,6 +4,9 @@ package com.be_planfortrips.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,4 +15,11 @@ import lombok.experimental.FieldDefaults;
 public class ScheduleResponse {
 
     Integer Id;
+    String routeId;
+    String code;
+    String carCompanyName;
+    BigDecimal carCompanyRating;
+    Long countSeatsEmpty;
+    LocalDateTime departureTime;
+    LocalDateTime arrivalTime;
 }

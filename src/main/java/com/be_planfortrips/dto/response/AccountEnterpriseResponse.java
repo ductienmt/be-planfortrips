@@ -11,4 +11,11 @@ import lombok.experimental.FieldDefaults;
 public class AccountEnterpriseResponse {
 
     Long accountEnterpriseId;
+    String enterpriseName;
+    String phoneNumber;
+    String email;
+    String address;
+    String taxCode;
+    Long typeEnterpriseDetailId;
+
 }

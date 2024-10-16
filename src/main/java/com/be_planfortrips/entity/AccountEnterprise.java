@@ -19,7 +19,8 @@ import java.util.List;
 public class AccountEnterprise extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @Column(name = "accountEnterprise_id")
+    Long accountEnterpriseId;
 
     @Column(name = "username", length = 20, unique = true)
     String username;

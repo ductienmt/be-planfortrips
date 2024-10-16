@@ -1,6 +1,7 @@
 package com.be_planfortrips.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "booking_hotels_details")
-public class BookingHotelDetail {
+public class BookingHotelDetail extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -36,13 +37,7 @@ public class BookingHotelDetail {
     @Column(name = "check_out_time")
     LocalDateTime checkOutTime;
 
-    @Column(name = "createAt")
-    LocalDateTime createAt;
-
-    @Column(name = "updateAt")
-    LocalDateTime updateAt;
-
-    @Column(name = "total_price", precision = 10, scale = 2)
+    @Column(name = "price", precision = 10, scale = 2)
     BigDecimal price;
 
     @Column(name = "status")
@@ -50,6 +45,7 @@ public class BookingHotelDetail {
 
     @ManyToOne
     @JoinColumn(name = "booking_id")
+    @JsonBackReference
     BookingHotel bookingHotel;
 
 }
