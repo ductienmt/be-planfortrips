@@ -12,9 +12,12 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -55,4 +58,23 @@ public class RoomServiceImpl implements IRoomService {
         room.setId(roomId);
         return roomMapper.toResponse(roomRepository.save(room));
     }
+
+    @Override
+    public List<RoomResponse> getRoomByHotelId(Long hotelId) {
+        return this.roomRepository.findByHotelId(hotelId).stream().map(roomMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RoomResponse> getRoomAvailable(Integer numberPeople, LocalDateTime checkIn, LocalDateTime checkOut) {
+        List<Room> availableRooms = roomRepository.findAvailableRooms(checkIn, checkOut, numberPeople);
+
+        List<RoomResponse> roomResponses = availableRooms.stream()
+                .map(roomMapper::toResponse)
+                .collect(Collectors.toList());
+
+
+        return roomResponses;
+    }
+
+
 }

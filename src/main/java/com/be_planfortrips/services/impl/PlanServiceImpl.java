@@ -3,6 +3,7 @@ package com.be_planfortrips.services.impl;
 import com.be_planfortrips.controllers.PlanController;
 import com.be_planfortrips.dto.request.DataEssentialPlan;
 import com.be_planfortrips.dto.response.BookingHotelResponse;
+import com.be_planfortrips.dto.response.CheckinResponse;
 import com.be_planfortrips.dto.response.HotelResponse;
 import com.be_planfortrips.dto.response.PlanResponse;
 import com.be_planfortrips.entity.Plan;
@@ -12,6 +13,7 @@ import com.be_planfortrips.services.interfaces.IPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,11 +31,24 @@ public class PlanServiceImpl implements IPlanService {
     @Autowired
     private HotelService hotelService;
 
+    @Autowired
+    private CheckinServiceImpl checkinService;
+
+    @Autowired
+    private ScheduleServiceImpl scheduleService;
+
 
     @Override
     public Map<String, Object> prepareDataPlan(DataEssentialPlan dataEssentialPlan) {
-
-        return null;
+        Map<String, Object> dataEssential = new HashMap<>();
+        dataEssential.put("userData", dataEssentialPlan);
+        List<CheckinResponse> checkinResponses = this.checkinService.getCheckinRandom(5);
+        dataEssential.put("checkins", checkinResponses);
+        Map<String, Object> schedulesResponse = this.scheduleService.getAllScheduleByTime(dataEssentialPlan.getStartDate(), dataEssentialPlan.getEndDate());
+        dataEssential.put("schedules", schedulesResponse);
+        Map<String, Object> hotels = this.hotelService.getRoomAvailable(dataEssentialPlan.getNumberPeople(), dataEssentialPlan.getStartDate(), dataEssentialPlan.getEndDate());
+        dataEssential.put("hotels", hotels);
+        return dataEssential;
     }
 
     @Override

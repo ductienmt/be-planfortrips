@@ -1,13 +1,11 @@
 package com.be_planfortrips.exceptions;
 
-import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-
 public enum ErrorType {
 
     // Bắt mọi lỗi khác và trả về Internal Server Error

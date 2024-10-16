@@ -16,4 +16,5 @@ public interface ICheckinService {
     Map<String, Object>getCheckinByCityName(String cityName, Integer page);
     Map<String, Object> getCheckinByName(String checkinName, Integer page);
     void uploadImage(Long checkinId, List<MultipartFile> files);
+    List<CheckinResponse> getCheckinRandom(Integer limit);
 }
