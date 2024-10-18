@@ -11,6 +11,7 @@ import com.be_planfortrips.services.interfaces.IAccountEnterpriseService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     // Inject repository and mapper
     AccountEnterpriseRepository accountEnterpriseRepository;
     AccountEnterpriseMapper accountEnterpriseMapper;
+    PasswordEncoder passwordEncoder;
 
     @Override
     public List<AccountEnterpriseResponse> getAllAccountEnterprises() {
@@ -45,6 +47,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     public AccountEnterpriseResponse createAccountEnterprise(AccountEnterpriseDto accountEnterpriseDto) {
         // Chuyển đổi DTO thành entity và lưu vào repository
         AccountEnterprise accountEnterprise = accountEnterpriseMapper.toEntity(accountEnterpriseDto);
+        accountEnterprise.setPassword(passwordEncoder.encode(accountEnterpriseDto.getPassword()));
         accountEnterprise = accountEnterpriseRepository.save(accountEnterprise);
         return accountEnterpriseMapper.toResponse(accountEnterprise); // Trả về response DTO
     }
@@ -55,6 +58,9 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorType.notFound));
 
+        // Cập nhật thông tin từ DTO
+        accountEnterpriseMapper.updateEntityFromDto(accountEnterpriseDto, accountEnterprise);
+        accountEnterprise.setPassword(passwordEncoder.encode(accountEnterpriseDto.getPassword()));
         // Lưu entity đã cập nhật
         accountEnterprise = accountEnterpriseRepository.save(accountEnterprise);
 

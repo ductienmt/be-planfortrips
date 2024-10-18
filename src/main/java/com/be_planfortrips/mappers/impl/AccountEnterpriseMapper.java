@@ -43,6 +43,6 @@ public class AccountEnterpriseMapper implements
 
     @Override
     public void updateEntityFromDto(AccountEnterpriseDto accountEnterpriseDto, AccountEnterprise accountEnterprise) {
-
+        modelMapper.map(accountEnterpriseDto, accountEnterprise);
     }
 }

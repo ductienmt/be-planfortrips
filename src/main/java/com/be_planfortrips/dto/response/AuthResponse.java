@@ -3,6 +3,8 @@ package com.be_planfortrips.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -10,8 +12,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthResponse {
     String userName;
-    String phoneNumber;
-    String fullName;
-    String email;
-//    String token;
+    String token;
+    String role;
 }

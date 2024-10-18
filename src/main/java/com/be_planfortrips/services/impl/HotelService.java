@@ -44,6 +44,7 @@ public class HotelService implements IHotelService {
     RoomServiceImpl roomServiceImpl;
 
     CloudinaryService cloudinaryService;
+
     @Override
     @Transactional
     public HotelResponse createHotel(HotelDto hotelDto) throws Exception {
@@ -127,8 +128,7 @@ public class HotelService implements IHotelService {
     @Transactional
     public HotelResponse deleteImage(Long id, List<Integer> imageIds) throws Exception {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(
-                () -> new AppException(ErrorType.notFound)
-        );
+                () -> new AppException(ErrorType.notFound));
         List<Image> images = hotel.getImages();
         System.out.println("Total images for hotel ID " + hotel.getId() + ": " + images.size());
 
@@ -187,11 +187,11 @@ public class HotelService implements IHotelService {
             roomInfo.put("price", roomResponse.getPrice());
             roomInfo.put("availability", roomResponse.isAvailable());
 
-            Set<Map<String, Object>> roomResponses = (Set<Map<String, Object>>) ((Map<String, Object>) hotelMap.get(hotelResponse.getName())).get("roomAvailable");
+            Set<Map<String, Object>> roomResponses = (Set<Map<String, Object>>) ((Map<String, Object>) hotelMap
+                    .get(hotelResponse.getName())).get("roomAvailable");
             roomResponses.add(roomInfo);
         }
         return hotelMap;
     }
-
 
 }
