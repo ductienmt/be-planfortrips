@@ -35,10 +35,6 @@ public class BookingHotel extends BaseEntity {
     @Enumerated(EnumType.STRING)
     Status status = Status.Pending;
 
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    Status status = Status.Pending;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;

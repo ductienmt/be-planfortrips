@@ -200,7 +200,7 @@ public class UserServiceImpl implements IUserService {
 
         String avatarUrl;
         try {
-            Map<String, Object> uploadResult = this.cloudinaryService.uploadFile(file);
+            Map<String, Object> uploadResult = this.cloudinaryService.uploadFile(file, "");
             avatarUrl = uploadResult.get("url").toString();
         } catch (IOException e) {
             throw new AppException(ErrorType.internalServerError);

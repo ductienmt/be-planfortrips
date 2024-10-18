@@ -101,7 +101,7 @@ public class BannerServiceImpl implements IBannerService {
 
         try {
             // Upload hình ảnh lên Cloudinary
-            uploadResult = cloudinaryService.uploadFile(file);
+            uploadResult = cloudinaryService.uploadFile(file, "");
 
             // Kiểm tra kết quả upload
             if (uploadResult == null || !uploadResult.containsKey("url")) {

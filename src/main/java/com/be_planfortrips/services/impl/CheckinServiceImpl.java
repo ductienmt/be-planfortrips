@@ -171,7 +171,7 @@ public class CheckinServiceImpl implements ICheckinService {
         for (MultipartFile file : files) {
             String fileUrl;
             try {
-                fileUrl = this.cloudinaryService.uploadFile(file).get("url").toString();
+                fileUrl = this.cloudinaryService.uploadFile(file, "").get("url").toString();
             } catch (IOException e) {
                 throw new AppException(ErrorType.internalServerError);
             }
