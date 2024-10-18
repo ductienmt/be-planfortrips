@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,6 +49,9 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private CloudinaryService cloudinaryService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public AccountUserResponse createUser(UserDto userDto) {
         try {
@@ -66,6 +70,7 @@ public class UserServiceImpl implements IUserService {
 
             User newUser = this.userMapper.toEntity(userDto);
             newUser.setActive(true);
+            newUser.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
             this.userRepository.save(newUser);
             return this.userMapper.toResponse(newUser);
 
@@ -89,6 +94,7 @@ public class UserServiceImpl implements IUserService {
             throw new RuntimeException("Username đã tồn tại, vui lòng đổi username khác");
         } else {
             this.userMapper.updateEntityFromDto(userDto, user);
+            user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
             this.userRepository.saveAndFlush(user);
             return this.userMapper.toResponse(user);
         }
@@ -139,7 +145,7 @@ public class UserServiceImpl implements IUserService {
             throw new RuntimeException("Mật khẩu cũ không đúng");
         }
 
-        user.setPassword(changePasswordDto.getNewPassword());
+        user.setPassword(this.passwordEncoder.encode(changePasswordDto.getNewPassword()));
         this.userRepository.saveAndFlush(user);
     }
 
@@ -200,7 +206,7 @@ public class UserServiceImpl implements IUserService {
 
         String avatarUrl;
         try {
-            Map<String, Object> uploadResult = this.cloudinaryService.uploadFile(file);
+            Map<String, Object> uploadResult = this.cloudinaryService.uploadFile(file, "");
             avatarUrl = uploadResult.get("url").toString();
         } catch (IOException e) {
             throw new AppException(ErrorType.internalServerError);

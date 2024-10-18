@@ -1,6 +1,6 @@
 package com.be_planfortrips.services.impl;
 
-import com.be_planfortrips.dto.CouponDTO;
+import com.be_planfortrips.dto.CouponDto;
 import com.be_planfortrips.dto.response.CouponResponse;
 import com.be_planfortrips.entity.Coupon;
 import com.be_planfortrips.entity.DiscountType;
@@ -41,7 +41,7 @@ public class CouponService implements ICouponService {
     }
     @Override
     @Transactional
-    public CouponResponse createCoupon(CouponDTO couponDto) throws Exception {
+    public CouponResponse createCoupon(CouponDto couponDto) throws Exception {
         if(couponRepository.existsByCode(couponDto.getCode())){
             throw new Exception("Coupon is exist");
         }
@@ -65,7 +65,7 @@ public class CouponService implements ICouponService {
 
     @Override
     @Transactional
-    public CouponResponse updateCoupon(Integer id, CouponDTO couponDto) throws Exception {
+    public CouponResponse updateCoupon(Integer id, CouponDto couponDto) throws Exception {
         Coupon existingCoupon = couponRepository.findById(id)
                 .orElseThrow(()->new Exception("Coupon is not found"));
         existingCoupon = couponMapper.toEntity(couponDto);

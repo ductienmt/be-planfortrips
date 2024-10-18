@@ -27,8 +27,7 @@ public class AuthController {
                 ApiResponse.<Void>builder()
                         .code(status.value())
                         .message(message)
-                        .build()
-        );
+                        .build());
     }
 
     @PostMapping("register")

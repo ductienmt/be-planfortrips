@@ -1,12 +1,7 @@
 package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.HotelDto;
-import com.be_planfortrips.dto.HotelImageDto;
 import com.be_planfortrips.dto.response.RoomResponse;
-import com.be_planfortrips.entity.*;
-import com.be_planfortrips.exceptions.AppException;
-import com.be_planfortrips.exceptions.ErrorType;
-import com.be_planfortrips.mappers.impl.HotelImageMapper;
 import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
@@ -44,15 +39,12 @@ public class HotelService implements IHotelService {
 
     ImageRepository imageRepository;
 
-    HotelImageRepository hotelImageRepository;
-
     HotelMapper hotelMapper;
-
-    HotelImageMapper hotelImageMapper;
 
     RoomServiceImpl roomServiceImpl;
 
     CloudinaryService cloudinaryService;
+
     @Override
     @Transactional
     public HotelResponse createHotel(HotelDto hotelDto) throws Exception {
@@ -136,8 +128,7 @@ public class HotelService implements IHotelService {
     @Transactional
     public HotelResponse deleteImage(Long id, List<Integer> imageIds) throws Exception {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(
-                () -> new AppException(ErrorType.notFound)
-        );
+                () -> new AppException(ErrorType.notFound));
         List<Image> images = hotel.getImages();
         System.out.println("Total images for hotel ID " + hotel.getId() + ": " + images.size());
 
@@ -185,7 +176,7 @@ public class HotelService implements IHotelService {
                 hotelInfo.put("hotelAddress", hotelResponse.getAddress());
                 hotelInfo.put("hotelPhonenumber", hotelResponse.getPhoneNumber());
                 hotelInfo.put("rating", hotelResponse.getRating());
-                hotelInfo.put("hotelImages", hotelResponse.getHotelImageResponses());
+                hotelInfo.put("hotelImages", hotelResponse.getImages());
                 hotelInfo.put("roomAvailable", new HashSet<RoomResponse>());
                 hotelMap.put(hotelResponse.getName(), hotelInfo);
             }
@@ -196,11 +187,11 @@ public class HotelService implements IHotelService {
             roomInfo.put("price", roomResponse.getPrice());
             roomInfo.put("availability", roomResponse.isAvailable());
 
-            Set<Map<String, Object>> roomResponses = (Set<Map<String, Object>>) ((Map<String, Object>) hotelMap.get(hotelResponse.getName())).get("roomAvailable");
+            Set<Map<String, Object>> roomResponses = (Set<Map<String, Object>>) ((Map<String, Object>) hotelMap
+                    .get(hotelResponse.getName())).get("roomAvailable");
             roomResponses.add(roomInfo);
         }
         return hotelMap;
     }
-
 
 }
