@@ -14,4 +14,5 @@ public class AuthResponse {
     String userName;
     String token;
     String role;
+    boolean firstOauth2;
 }
