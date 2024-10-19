@@ -34,9 +34,15 @@ public class UserMapper implements MapperInterface<AccountUserResponse, User, Us
     @Override
     public AccountUserResponse toResponse(User user) {
         AccountUserResponse response = modelMapper.map(user, AccountUserResponse.class);
-        Optional<Image> image = imageRepository.findById(user.getImage().getId());
-        if (image.isPresent()) {
-            response.setImage(image.get());
+        if (user.getImage() != null) {
+            Optional<Image> image = imageRepository.findById(user.getImage().getId());
+            if (image.isPresent()) {
+                response.setImage(image.get());
+            } else {
+                response.setImage(null);
+            }
+        } else {
+            response.setImage(null);
         }
         return response;
     }

@@ -187,7 +187,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public AccountUserResponse getUserByIdActive(Long id) {
         User user = this.userRepository.findByIdActive(id);
-        if (user == null){
+        if (user == null) {
             throw new RuntimeException("Taì khoản không tồn tại hoặc có thể bị khóa");
         }
         return this.userMapper.toResponse(user);
@@ -221,7 +221,6 @@ public class UserServiceImpl implements IUserService {
 
         return avatarUrl;
     }
-
 
 
 }
