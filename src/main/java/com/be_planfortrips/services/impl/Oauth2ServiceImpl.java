@@ -1,5 +1,6 @@
 package com.be_planfortrips.services.impl;
 
+import com.be_planfortrips.dto.OauthModel.TypeLogin;
 import com.be_planfortrips.dto.OauthModel.UserGoogleInfo;
 import com.be_planfortrips.dto.response.AuthResponse;
 import com.be_planfortrips.entity.Image;
@@ -73,6 +74,7 @@ public class Oauth2ServiceImpl implements IAuth2Service {
                             .build())
                     .retrieve()
                     .bodyToMono(UserGoogleInfo.class).block();
+            System.out.println(userGoogleInfo);
             assert userGoogleInfo != null;
             System.out.println("Hello");
             return getUserGoogle(userGoogleInfo);
@@ -89,7 +91,7 @@ public class Oauth2ServiceImpl implements IAuth2Service {
         if (user.isPresent()) {
             // Nếu User tồn tại
             User userExist = user.get();
-            String token = jwtProvider.createToken(userExist.getUserName(), userExist.getRole().getName());
+            String token = jwtProvider.createToken(userExist.getUserName(), userExist.getRole().getName(), TypeLogin.LOGIN_GOOGLE);
             return AuthResponse.builder()
                     .userName(userExist.getUserName())
                     .token(token)
@@ -117,7 +119,7 @@ public class Oauth2ServiceImpl implements IAuth2Service {
 
         // Sau đó, cập nhật đối tượng user cho userProfile nếu cần thiết
         userRepository.save(userGoogle);
-        String token = jwtProvider.createToken(userGoogle.getUserName(), userGoogle.getRole().getName());
+        String token = jwtProvider.createToken(userGoogle.getUserName(), userGoogle.getRole().getName(),TypeLogin.LOGIN_GOOGLE);
         return AuthResponse.builder()
                 .token(token)
                 .firstOauth2(true)

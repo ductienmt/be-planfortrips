@@ -43,13 +43,8 @@ public class User extends BaseEntity{
     @Column(name = "birthdate", nullable = true)
     Date birthdate;
 
-    @ColumnDefault("0")
-    @Column(name = "facebook_account_id")
-    int isFacebook;
-
-    @ColumnDefault("0")
-    @Column(name = "google_account_id")
-    int isGoogle;
+    @Column(name = "facebook_id")
+    String facebookId;
 
     @Column(name = "google_id")
     String googleId;
@@ -64,12 +59,10 @@ public class User extends BaseEntity{
     @JoinColumn(name = "image_id")
     Image image;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    SocialAccount socialAccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    Role role;
 
 
 }
