@@ -18,6 +18,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -54,7 +55,8 @@ public class CouponService implements ICouponService {
             throw new Exception("Shopping date must be at least today!");
         }
         if(coupon.getDiscountType().equals(DiscountType.PERCENT)){
-            int percent = Integer.parseInt(String.valueOf(coupon.getDiscountValue()));
+            BigDecimal discountValue = coupon.getDiscountValue();
+            int percent = discountValue.intValue();
             if(percent<0 || percent>100){
                 throw new AppException(ErrorType.percentIsUnprocessed);
             }

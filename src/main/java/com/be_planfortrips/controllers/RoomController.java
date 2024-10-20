@@ -18,6 +18,7 @@ import java.util.Set;
 @RequestMapping("${api.prefix}/rooms")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@CrossOrigin(origins = "http://localhost:5050/")
 public class RoomController {
 
     IRoomService roomService;
