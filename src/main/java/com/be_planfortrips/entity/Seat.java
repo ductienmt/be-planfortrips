@@ -24,7 +24,7 @@ public class Seat {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_code")
     @JsonBackReference
-    Vehicle vehicleCode;
+    Vehicle vehicle;
 
     @Column(name = "seat_number", length = 5)
     String seatNumber;
