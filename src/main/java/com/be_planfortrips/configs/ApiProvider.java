@@ -6,7 +6,9 @@ public class ApiProvider {
     };
 
     public static final String[] ADMIN_API = {
-        "/api/v1/accounts/**"
+            "/api/v1/accounts/",
+            "/api/v1/users/**",
+
     };
 
     public static final String[] USER_API = {
@@ -18,6 +20,6 @@ public class ApiProvider {
     };
 
     public static final String[] ENTERPRISE_API = {
-        "/api/v1/account-enterprises/**"
+            "/api/v1/account-enterprises/**"
     };
 }

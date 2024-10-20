@@ -57,7 +57,7 @@ public class AccountEnterprise extends BaseEntity{
     @JsonBackReference
     TypeEnterpriseDetail typeEnterpriseDetail;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 

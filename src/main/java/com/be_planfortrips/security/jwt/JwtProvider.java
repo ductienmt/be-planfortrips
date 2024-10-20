@@ -31,29 +31,26 @@ public class JwtProvider {
     private CustomUserServiceDetails userDetailsService;
 
     public String createToken(String userIdentify, String role, TypeLogin typeLogin) {
-
-        // Tạo một instance Claims mới với username và role
         Map<String, Object> claims = new HashMap<>();
-        // Xử lý logic khác dựa trên typeLogin
+
         switch (typeLogin) {
             case LOGIN_GOOGLE:
-                // Logic cho login Google
                 claims.put("loginType", "Google");
                 break;
             case LOGIN_FACEBOOK:
-                // Logic cho login Facebook
                 claims.put("loginType", "Facebook");
                 break;
             case LOGIN_NORMAL:
             default:
-                // Logic cho login thông thường
                 claims.put("loginType", "Normal");
                 break;
         }
 
         claims.put("role", role);
+
         Date now = new Date();
         Date validity = new Date(now.getTime() + jwtExpiration);
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userIdentify)
@@ -62,6 +59,7 @@ public class JwtProvider {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
+
 
 
 

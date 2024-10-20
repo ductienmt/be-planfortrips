@@ -17,7 +17,8 @@ import java.util.regex.Pattern;
 @Component
 public class Utils {
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
-    private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^\\+(?:[0-9] ?){6,14}[0-9]$");
+    private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^(\\+84|0)(?:[0-9] ?){8,13}[0-9]$");
+
 
     public static boolean isValidEmail(String email) {
         return EMAIL_PATTERN.matcher(email).matches();
