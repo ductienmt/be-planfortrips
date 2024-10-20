@@ -4,11 +4,13 @@ import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.dto.request.ChangePasswordDto;
 import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.entity.Image;
+import com.be_planfortrips.entity.Role;
 import com.be_planfortrips.entity.User;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.UserMapper;
 import com.be_planfortrips.repositories.ImageRepository;
+import com.be_planfortrips.repositories.RoleRepository;
 import com.be_planfortrips.repositories.UserRepository;
 import com.be_planfortrips.dto.response.AccountUserResponse;
 import com.be_planfortrips.services.interfaces.IUserService;
@@ -52,6 +54,9 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Override
     public AccountUserResponse createUser(UserDto userDto) {
         try {
@@ -69,6 +74,7 @@ public class UserServiceImpl implements IUserService {
             }
 
             User newUser = this.userMapper.toEntity(userDto);
+            newUser.setRole(roleRepository.findById(1L).orElseThrow(() -> new RuntimeException("Không tìm thấy role với id: 1")));
             newUser.setActive(true);
             newUser.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
             this.userRepository.save(newUser);

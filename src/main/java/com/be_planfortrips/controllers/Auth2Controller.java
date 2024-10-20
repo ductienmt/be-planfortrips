@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-//@CrossOrigin(origins = "http://localhost:5050/")
-//@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-//@RequiredArgsConstructor
 @RestController
 @Slf4j
 @RequestMapping("${api.prefix}/auth")

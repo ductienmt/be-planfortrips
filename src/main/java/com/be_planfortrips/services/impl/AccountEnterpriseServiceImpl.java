@@ -7,6 +7,7 @@ import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.AccountEnterpriseMapper;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
+import com.be_planfortrips.repositories.RoleRepository;
 import com.be_planfortrips.services.interfaces.IAccountEnterpriseService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     AccountEnterpriseRepository accountEnterpriseRepository;
     AccountEnterpriseMapper accountEnterpriseMapper;
     PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
 
     @Override
     public List<AccountEnterpriseResponse> getAllAccountEnterprises() {
@@ -48,6 +50,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         // Chuyển đổi DTO thành entity và lưu vào repository
         AccountEnterprise accountEnterprise = accountEnterpriseMapper.toEntity(accountEnterpriseDto);
         accountEnterprise.setPassword(passwordEncoder.encode(accountEnterpriseDto.getPassword()));
+        accountEnterprise.setRole(roleRepository.findById(3L).orElseThrow(() -> new RuntimeException("Không tìm thấy role với id: 2")));
         accountEnterprise = accountEnterpriseRepository.save(accountEnterprise);
         return accountEnterpriseMapper.toResponse(accountEnterprise); // Trả về response DTO
     }
