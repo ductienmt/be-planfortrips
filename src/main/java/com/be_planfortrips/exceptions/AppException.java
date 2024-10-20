@@ -14,14 +14,21 @@ public class AppException extends RuntimeException{
      * Loại lỗi đã gây ra ngoại lệ.
      */
     private ErrorType errorType;
+    private Object dataError;
 
     /**
      * Xây dựng một AppException mới với loại lỗi đã chỉ định.
      *
      * @param errorType Loại lỗi đã gây ra ngoại lệ.
      */
+
     public AppException(ErrorType errorType) {
+        super(errorType.getMessage());
+    }
+    public AppException(ErrorType errorType, Object dataError) {
             super(errorType.getMessage());
+            this.errorType = errorType;
+            this.dataError = dataError;
     }
 
 }

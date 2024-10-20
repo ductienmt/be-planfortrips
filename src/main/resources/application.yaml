@@ -1,15 +1,16 @@
 spring:
   datasource:
-#    url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
-#    username: postgres
-#    password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
+    # dữ liệu demo thì dùng cái này nha, t insert kha khá dữ liệu
+    #        url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
+    #        username: postgres
+    #        password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
+    driver-class-name: org.postgresql.Driver
 
-     url: jdbc:postgresql://localhost:5432/Planfortrips
-     username: postgres
-     password: 123
-#     username: admin
-#     password: admin
-     driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/Planfortrips
+    #    username: postgres
+    #    password: 123
+    username: admin
+    password: admin
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -18,10 +19,18 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+  security:
+    user:
+      name: admin
+      password: admin
 api:
-  prefix : api/v1
+  prefix: api/v1
 
 cloudinary:
   cloud_name: dzbtsco86
   api_key: 458554894698284
   api_secret: 5JqucoX6jWiaB4xikpQb5wpjbJo
+
+google:
+  clientId: 424498509357-mdqgg2eferdtjkeh6s89ooce1rmcjdmi.apps.googleusercontent.com
+  clientSecret: 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

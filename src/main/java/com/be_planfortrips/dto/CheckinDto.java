@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CheckinDto {
-    Integer cityId;
+    String cityId;
     String name;
     String address;
     BigDecimal latitude;

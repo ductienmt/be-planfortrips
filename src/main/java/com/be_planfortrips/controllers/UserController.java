@@ -30,6 +30,16 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
+    // Phương thức hỗ trợ để tạo ApiResponse
+    private ResponseEntity<ApiResponse<Void>> buildApiResponse(HttpStatus status, String message) {
+        return ResponseEntity.status(status).body(
+                ApiResponse.<Void>builder()
+                        .code(status.value())
+                        .message(message)
+                        .build()
+        );
+    }
+
     @GetMapping("/all")
     public ResponseEntity<?> getAllUsers(@RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {
         try {
@@ -44,12 +54,8 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Lấy danh sách người dùng thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy danh sách người dùng thất bại.")
+                    ;
         }
     }
 
@@ -67,12 +73,7 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Tạo người dùng thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Tạo người dùng thất bại.");
         }
     }
 
@@ -90,12 +91,7 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Cập nhật người dùng thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Cập nhật người dùng thất bại.");
         }
     }
 
@@ -112,12 +108,7 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Xóa người dùng thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Xóa người dùng thất bại.");
         }
     }
 
@@ -135,12 +126,7 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Cập nhật trạng thái người dùng thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Cập nhật trạng thái người dùng thất bại.");
         }
     }
 
@@ -157,12 +143,7 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Đổi mật khẩu thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Đổi mật khẩu thất bại.");
         }
     }
 
@@ -197,12 +178,7 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Lấy thông tin người dùng thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy thông tin người dùng thất bại.");
         }
     }
 
@@ -220,12 +196,7 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    ApiResponse.<Void>builder()
-                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                            .message("Upload ảnh thất bại.")
-                            .build()
-            );
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Upload ảnh thất bại.");
         }
     }
 

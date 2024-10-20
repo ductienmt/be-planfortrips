@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
@@ -35,6 +36,4 @@ public class Schedule extends BaseEntity{
 
     @Column(name = "arrival_time")
     LocalDateTime arrivalTime;
-
-
 }

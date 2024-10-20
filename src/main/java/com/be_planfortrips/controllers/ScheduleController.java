@@ -64,7 +64,8 @@ public class ScheduleController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/getByTime") //    need review and edit sql and data type LocalDateTime
+    // test get data by time, don't care
+    @GetMapping("/getByTime") // need review and edit sql and data type LocalDateTime
     public ResponseEntity<?> getScheduleByTime(
             @RequestParam("departureTime") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime departureTime,
             @RequestParam("returnTime") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime returnTime) {
@@ -90,6 +91,5 @@ public class ScheduleController {
             throw new AppException(ErrorType.internalServerError);
         }
     }
-
 
 }

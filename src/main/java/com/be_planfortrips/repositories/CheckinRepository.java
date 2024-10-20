@@ -7,11 +7,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface CheckinRepository extends JpaRepository<Checkin, Long> {
     @Query("SELECT c FROM Checkin c WHERE c.city.nameCity like concat('%', :cityName, '%')")
     Page<Checkin> findByCityName(@Param("cityName") String cityName, Pageable pageable);
 
     @Query("SELECT c FROM Checkin c WHERE c.name like concat('%', :name, '%')")
     Page<Checkin> findByName(@Param("name") String name, Pageable pageable);
+
+    @Query(value = "SELECT * FROM checkins ORDER BY RANDOM() LIMIT :limit", nativeQuery = true)
+    List<Checkin> findRandomCheckins(@Param("limit") int limit);
 
 }

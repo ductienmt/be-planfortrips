@@ -4,11 +4,13 @@ import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.dto.request.ChangePasswordDto;
 import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.entity.Image;
+import com.be_planfortrips.entity.Role;
 import com.be_planfortrips.entity.User;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.UserMapper;
 import com.be_planfortrips.repositories.ImageRepository;
+import com.be_planfortrips.repositories.RoleRepository;
 import com.be_planfortrips.repositories.UserRepository;
 import com.be_planfortrips.dto.response.AccountUserResponse;
 import com.be_planfortrips.services.interfaces.IUserService;
@@ -21,9 +23,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +48,15 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private ImageRepository imageRepository;
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Override
     public AccountUserResponse createUser(UserDto userDto) {
         try {
@@ -61,7 +74,9 @@ public class UserServiceImpl implements IUserService {
             }
 
             User newUser = this.userMapper.toEntity(userDto);
+            newUser.setRole(roleRepository.findById(1L).orElseThrow(() -> new RuntimeException("Không tìm thấy role với id: 1")));
             newUser.setActive(true);
+            newUser.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
             this.userRepository.save(newUser);
             return this.userMapper.toResponse(newUser);
 
@@ -74,7 +89,7 @@ public class UserServiceImpl implements IUserService {
             throw new RuntimeException("Có lỗi xảy ra khi tạo tài khoản, vui lòng thử lại.");
         } catch (Exception e) {
             // Bắt các lỗi khác
-            throw new AppException(ErrorType.internalServerError);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -85,6 +100,7 @@ public class UserServiceImpl implements IUserService {
             throw new RuntimeException("Username đã tồn tại, vui lòng đổi username khác");
         } else {
             this.userMapper.updateEntityFromDto(userDto, user);
+            user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
             this.userRepository.saveAndFlush(user);
             return this.userMapper.toResponse(user);
         }
@@ -135,7 +151,7 @@ public class UserServiceImpl implements IUserService {
             throw new RuntimeException("Mật khẩu cũ không đúng");
         }
 
-        user.setPassword(changePasswordDto.getNewPassword());
+        user.setPassword(this.passwordEncoder.encode(changePasswordDto.getNewPassword()));
         this.userRepository.saveAndFlush(user);
     }
 
@@ -177,7 +193,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public AccountUserResponse getUserByIdActive(Long id) {
         User user = this.userRepository.findByIdActive(id);
-        if (user == null){
+        if (user == null) {
             throw new RuntimeException("Taì khoản không tồn tại hoặc có thể bị khóa");
         }
         return this.userMapper.toResponse(user);
@@ -185,27 +201,31 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public String uploadAvatar(Long userId, MultipartFile file) {
-        if(file == null || file.isEmpty()) {
-            throw new RuntimeException("Vui lòng chọn ảnh");
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Vui lòng chọn ảnh hợp lệ");
         }
+
         User user = this.getUserById(userId);
-        if (user == null) {
-            throw new RuntimeException("Tài khoản không tồn tại");
-        }
+
         this.utils.isValidImage(file);
         this.utils.checkSize(file);
 
-        String avatar = this.utils.saveImage(file);
-        System.out.println(avatar);
+        String avatarUrl;
+        try {
+            Map<String, Object> uploadResult = this.cloudinaryService.uploadFile(file, "");
+            avatarUrl = uploadResult.get("url").toString();
+        } catch (IOException e) {
+            throw new AppException(ErrorType.internalServerError);
+        }
 
         Image image = new Image();
-        image.setUrl(avatar);
+        image.setUrl(avatarUrl);
         this.imageRepository.saveAndFlush(image);
+
         user.setImage(image);
         this.userRepository.saveAndFlush(user);
 
-
-        return image.getUrl();
+        return avatarUrl;
     }
 
 

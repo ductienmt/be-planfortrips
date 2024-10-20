@@ -1,6 +1,6 @@
 package com.be_planfortrips.controllers;
 
-import com.be_planfortrips.dto.CouponDTO;
+import com.be_planfortrips.dto.CouponDto;
 import com.be_planfortrips.dto.response.TListResponse;
 import com.be_planfortrips.dto.response.CouponResponse;
 import com.be_planfortrips.services.interfaces.ICouponService;
@@ -16,9 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${api.prefix}/coupons")
@@ -27,7 +25,7 @@ import java.util.stream.Collectors;
 public class CouponController {
     ICouponService iCouponService;
     @PostMapping()
-    public ResponseEntity<?> createCoupon(@RequestBody @Valid CouponDTO CouponDTO,
+    public ResponseEntity<?> createCoupon(@RequestBody @Valid CouponDto CouponDTO,
                                           BindingResult result){
         try {
             if(result.hasErrors()) {
@@ -45,7 +43,7 @@ public class CouponController {
         }
     }
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCoupon(@PathVariable Integer id, @RequestBody @Valid CouponDTO CouponDTO,
+    public ResponseEntity<?> updateCoupon(@PathVariable Integer id, @RequestBody @Valid CouponDto CouponDTO,
                                           BindingResult result){
         try {
             if(result.hasErrors()) {

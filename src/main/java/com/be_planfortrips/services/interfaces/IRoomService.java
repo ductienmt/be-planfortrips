@@ -3,6 +3,9 @@ package com.be_planfortrips.services.interfaces;
 import com.be_planfortrips.dto.RoomDto;
 import com.be_planfortrips.dto.response.RoomResponse;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface IRoomService {
@@ -16,5 +19,9 @@ public interface IRoomService {
     void deleteRoomById(Long roomId);
 
     RoomResponse updateRoomById(Long roomId, RoomDto roomDto);
+
+    List<RoomResponse> getRoomByHotelId(Long hotelId);
+
+    List<RoomResponse> getRoomAvailable(Integer numberPeople, LocalDateTime checkIn, LocalDateTime checkOut);
 
 }

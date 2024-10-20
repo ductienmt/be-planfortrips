@@ -29,20 +29,21 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CarCompanyService implements ICarCompanyService {
     CarCompanyRepository carCompanyRepository;
     AccountEnterpriseRepository enterpriseRepository;
     CarCompanyMapper carCompanyMapper;
     CloudinaryService cloudinaryService;
     ImageRepository imageRepository;
+
     @Override
     @Transactional
     public CarResponse createCar(CarCompanyDTO carCompanyDto) throws Exception {
-        AccountEnterprise accountEnterprise = enterpriseRepository.findById(Long.valueOf(carCompanyDto.getEnterpriseId()))
+        AccountEnterprise accountEnterprise = enterpriseRepository
+                .findById(Long.valueOf(carCompanyDto.getEnterpriseId()))
                 .orElseThrow(
-                        ()->new Exception("Enterprise not found")
-                );
+                        () -> new Exception("Enterprise not found"));
         CarCompany carCompany = carCompanyMapper.toEntity(carCompanyDto);
         carCompany.setEnterprise(accountEnterprise);
         carCompanyRepository.saveAndFlush(carCompany);
@@ -52,13 +53,12 @@ public class CarCompanyService implements ICarCompanyService {
     @Override
     @Transactional
     public CarResponse updateCar(Integer id, CarCompanyDTO carCompanyDto) throws Exception {
-        AccountEnterprise accountEnterprise = enterpriseRepository.findById(Long.valueOf(carCompanyDto.getEnterpriseId()))
+        AccountEnterprise accountEnterprise = enterpriseRepository
+                .findById(Long.valueOf(carCompanyDto.getEnterpriseId()))
                 .orElseThrow(
-                        ()->new Exception("Enter prise not found")
-                );
+                        () -> new Exception("Enter prise not found"));
         CarCompany existingCar = carCompanyRepository.findById(id).orElseThrow(
-                ()->new Exception("car company not found")
-        );
+                () -> new Exception("car company not found"));
         existingCar = carCompanyMapper.toEntity(carCompanyDto);
         existingCar.setId(id);
         existingCar.setEnterprise(accountEnterprise);
@@ -74,7 +74,8 @@ public class CarCompanyService implements ICarCompanyService {
     @Override
     public CarResponse getByCarId(Integer id) throws Exception {
         Optional<CarCompany> carCompany = carCompanyRepository.findById(Math.toIntExact(id));
-        if(!carCompany.isPresent())  new Exception("Not found");
+        if (!carCompany.isPresent())
+            new Exception("Not found");
         return carCompanyMapper.toResponse(carCompany.get());
     }
 
@@ -89,22 +90,21 @@ public class CarCompanyService implements ICarCompanyService {
     @Transactional
     public CarResponse uploadImage(Integer id, List<MultipartFile> files) throws Exception {
         CarCompany carCompany = carCompanyRepository.findById(id).orElseThrow(
-                ()-> new Exception("Not found")
-        );
+                () -> new Exception("Not found"));
         List<Image> imageList = new ArrayList<>();
-        for(MultipartFile file: files){
-            if(file.getSize() == 0) {
+        for (MultipartFile file : files) {
+            if (file.getSize() == 0) {
                 continue;
             }
             // Kiểm tra kích thước file và định dạng
-            if(file.getSize() > 10 * 1024 * 1024) { // Kích thước > 10MB
+            if (file.getSize() > 10 * 1024 * 1024) { // Kích thước > 10MB
                 new Exception("File is too large! Maximum size is 10MB");
             }
             String contentType = file.getContentType();
-            if(contentType == null || !contentType.startsWith("image/")) {
+            if (contentType == null || !contentType.startsWith("image/")) {
                 new Exception("File must be an image");
             }
-            Map<String, Object> uploadResult = cloudinaryService.uploadFile(file,"cars");
+            Map<String, Object> uploadResult = cloudinaryService.uploadFile(file, "cars");
             String imageUrl = (String) uploadResult.get("secure_url");
             Image image = new Image();
             image.setUrl(imageUrl);
@@ -115,12 +115,12 @@ public class CarCompanyService implements ICarCompanyService {
         carCompanyRepository.saveAndFlush(carCompany);
         return carCompanyMapper.toResponse(carCompany);
     }
+
     @Override
     @Transactional
     public CarResponse deleteImage(Integer id, List<Integer> imageIds) throws Exception {
         CarCompany carCompany = carCompanyRepository.findById(id).orElseThrow(
-                () -> new AppException(ErrorType.notFound)
-        );
+                () -> new AppException(ErrorType.notFound));
         List<Image> images = carCompany.getImages();
         List<Image> imagesToDelete = images.stream()
                 .filter(image -> imageIds.contains(Integer.valueOf(String.valueOf(image.getId()))))

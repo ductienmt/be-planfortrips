@@ -13,5 +13,5 @@ public class TypeEnterpriseDetailResponse {
     Long id;
     String name;
     String description;
-    Long typeEnterpriseId; // Chỉ cần trả về ID của TypeEnterprise
+    Long typeEnterpriseId;
 }

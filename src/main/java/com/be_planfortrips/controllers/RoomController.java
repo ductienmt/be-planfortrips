@@ -3,6 +3,7 @@ package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.RoomDto;
 import com.be_planfortrips.dto.response.RoomResponse;
+import com.be_planfortrips.services.interfaces.IHotelService;
 import com.be_planfortrips.services.interfaces.IRoomService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @RestController
@@ -22,6 +24,8 @@ import java.util.Set;
 public class RoomController {
 
     IRoomService roomService;
+
+    IHotelService hotelService;
 
     @GetMapping
     public ResponseEntity<Set<RoomResponse>> getAllRoom() {
@@ -61,5 +65,15 @@ public class RoomController {
         return ResponseEntity.noContent().build();
     }
 
+
+    // test this endpoint, don't care about the response
+    @GetMapping("/getRoomAvailable")
+    public ResponseEntity<?> getRoomAvailable(
+            @RequestParam Integer numberPeople,
+            @RequestParam LocalDateTime checkIn,
+            @RequestParam LocalDateTime checkOut
+    ) {
+        return ResponseEntity.ok(hotelService.getRoomAvailable(numberPeople, checkIn, checkOut));
+    }
 
 }

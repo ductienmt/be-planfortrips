@@ -1,13 +1,12 @@
 package com.be_planfortrips.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.ColumnDefault;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
 
 @Data
 @AllArgsConstructor
@@ -19,7 +18,8 @@ import java.util.List;
 public class AccountEnterprise extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @Column(name = "accountEnterprise_id")
+    Long accountEnterpriseId;
 
     @Column(name = "username", length = 20, unique = true)
     String username;
@@ -56,6 +56,11 @@ public class AccountEnterprise extends BaseEntity{
     @JoinColumn(name = "type_detail_id")
     @JsonBackReference
     TypeEnterpriseDetail typeEnterpriseDetail;
-//    @OneToMany
-//    List<Hotel> hotels;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
+
+
+
 }

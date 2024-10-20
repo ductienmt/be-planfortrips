@@ -1,6 +1,7 @@
 package com.be_planfortrips.dto.response;
 
 
+import com.be_planfortrips.entity.Image;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -25,7 +26,7 @@ public class AccountUserResponse {
     Date birthdate;
     String fullName;
     String email;
-    Integer imageId;
+    Image image;
 }
 
 

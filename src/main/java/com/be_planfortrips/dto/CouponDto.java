@@ -6,10 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
-public class CouponDTO {
+public class CouponDto {
     @JsonProperty("code")
     @NotBlank(message = "code is required")
     String code;
