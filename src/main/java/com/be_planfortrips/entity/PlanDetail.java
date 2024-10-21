@@ -19,7 +19,7 @@ public class PlanDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "plan_id")
     private Plan plan;
 
@@ -45,5 +45,6 @@ public class PlanDetail {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private StatusPlan status;
+
 
 }
