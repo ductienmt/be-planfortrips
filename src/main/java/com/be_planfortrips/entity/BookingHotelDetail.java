@@ -41,6 +41,7 @@ public class BookingHotelDetail extends BaseEntity{
     BigDecimal price;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     Status status = Status.Pending;
 
     @ManyToOne
