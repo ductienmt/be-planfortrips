@@ -13,10 +13,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -30,6 +32,37 @@ public class TicketService implements ITicketService {
     UserRepository userRepository;
     ScheduleRepository scheduleRepository;
     CouponRepository couponRepository;
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void cancelUnpaidTickets() {
+        LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
+        List<Ticket> unpaidTickets = ticketRepository.findPendingTicketsBefore(oneDayAgo);
+        for (Ticket ticket : unpaidTickets) {
+            ticket.setStatus(Status.Cancelled);
+            ticketRepository.save(ticket);
+        }
+    }
+
+    @Scheduled(cron = "*/30 * * * * *")
+    @Transactional
+    public void ticketStatusIsCancelled() {
+        List<Ticket> tickets = ticketRepository.findByStatusCancelled();
+        for (Ticket ticket : tickets) {
+            List<Coupon> coupons = ticket.getCoupons();
+            Coupon coupon = coupons.get(0);
+            coupon.setUseCount(coupon.getUseCount() - 1);
+            if (coupon.isActive() == false) {
+                coupon.setActive(true);
+            } else {
+                coupon.setActive(false);
+            }
+            coupons.set(0, coupon);
+            couponRepository.saveAll(coupons);
+            ticket.setCoupons(coupons);
+            ticketRepository.delete(ticket);
+        }
+    }
 
     @Override
     @Transactional
@@ -52,17 +85,14 @@ public class TicketService implements ITicketService {
         ticket.setSchedule(schedule);
 
         validateTicketStatus(ticketDto.getStatus());
-
-        List<Seat> seats = validateAndUpdateSeats(ticketDto.getSeatIds());
-        ticket.setSeats(seats);
-
         if (coupon != null) {
             applyCouponDiscount(ticket, coupon);
         }
 
         ticket.setTotalPrice(ticket.getTotalPrice().subtract(BigDecimal.valueOf(payment.getFee())));
         ticket.setStatus(Status.Pending);
-
+        List<Seat> seats = validateAndUpdateSeats(ticketDto.getSeatIds(), ticket.getStatus());
+        ticket.setSeats(seats);
         ticketRepository.saveAndFlush(ticket);
 
         updateCouponUsage(coupon);
@@ -95,16 +125,14 @@ public class TicketService implements ITicketService {
 
         validateTicketStatus(ticketDto.getStatus());
 
-        List<Seat> seats = validateAndUpdateSeats(ticketDto.getSeatIds());
-        ticketExisting.setSeats(seats);
-
         if (coupon != null) {
             applyCouponDiscount(ticketExisting, coupon);
         }
 
         ticketExisting.setTotalPrice(ticketExisting.getTotalPrice().subtract(BigDecimal.valueOf(payment.getFee())));
         ticketExisting.setStatus(Status.valueOf(ticketDto.getStatus()));
-
+        List<Seat> seats = validateAndUpdateSeats(ticketDto.getSeatIds(), ticketExisting.getStatus());
+        ticketExisting.setSeats(seats);
         ticketRepository.saveAndFlush(ticketExisting);
 
         updateCouponUsage(coupon);
@@ -153,7 +181,7 @@ public class TicketService implements ITicketService {
         }
     }
 
-    private List<Seat> validateAndUpdateSeats(List<Integer> seatIds) throws Exception {
+    private List<Seat> validateAndUpdateSeats(List<Integer> seatIds, Status status) throws Exception {
         List<Seat> seats = (seatIds == null) ? new ArrayList<>() : seatRepository.findAllById(seatIds);
         if (seats.isEmpty()) {
             throw new Exception("Vui lòng chọn ghế");
@@ -163,10 +191,12 @@ public class TicketService implements ITicketService {
         for (Seat seat : seats) {
             if (seat.getStatus() == StatusSeat.Full) {
                 sb.append(String.format("Ghế số %s - mã số xe %s đã có người ngồi \n", seat.getSeatNumber(),
-                        seat.getVehicleCode().getCode()));
+                        seat.getVehicle().getCode()));
             } else {
-                seat.setStatus(StatusSeat.Full);
-                seatRepository.saveAndFlush(seat);
+                if (status == Status.Completed) {
+                    seat.setStatus(StatusSeat.Full);
+                    seatRepository.saveAndFlush(seat);
+                }
             }
         }
 

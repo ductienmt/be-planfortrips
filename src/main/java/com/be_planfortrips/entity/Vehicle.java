@@ -38,7 +38,8 @@ public class Vehicle {
     @Column(name = "type_vehicle")
     @Enumerated(EnumType.STRING)
     TypeVehicle typeVehicle;
-    @OneToMany(mappedBy = "vehicleCode",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "vehicle",cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     List<Seat> seats;
 //     @Column(name = "type_vehicle") 
 //     @Enumerated(EnumType.STRING) sài cái này nó chuyển dữ liệu về String 

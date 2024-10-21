@@ -33,7 +33,7 @@ public class SeatService implements ISeatService {
             throw new Exception("Vehicle not found");
         }
         Seat seat = seatMapper.toEntity(seatDTO);
-        seat.setVehicleCode(vehicle);
+        seat.setVehicle(vehicle);
         seatRepository.saveAndFlush(seat);
         return seatMapper.toResponse(seat);
     }
@@ -50,7 +50,8 @@ public class SeatService implements ISeatService {
                         ()-> new Exception("Seat not found")
                 );
         existingSeat = seatMapper.toEntity(seatDTO);
-        existingSeat.setVehicleCode(vehicle);
+        existingSeat.setVehicle(vehicle);
+        existingSeat.setId(id);
         seatRepository.saveAndFlush(existingSeat);
         return seatMapper.toResponse(existingSeat);
     }
