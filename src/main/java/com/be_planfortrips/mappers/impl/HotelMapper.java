@@ -23,15 +23,20 @@ public class HotelMapper implements MapperInterface<HotelResponse,Hotel,HotelDto
     ModelMapper modelMapper;
     @Override
     public Hotel toEntity(HotelDto hotelDto) {
-        TypeMap<HotelDto, Hotel> typeMap = modelMapper.createTypeMap(hotelDto, Hotel.class);
-        typeMap.addMappings(mapper -> mapper.skip(Hotel::setId));
-        Hotel hotel = modelMapper.map(hotelDto, Hotel.class);
-        return hotel;
+        TypeMap<HotelDto, Hotel> typeMap = modelMapper.getTypeMap(HotelDto.class, Hotel.class);
+
+        if (typeMap == null) {
+            typeMap = modelMapper.createTypeMap(HotelDto.class, Hotel.class);
+            typeMap.addMappings(mapper -> mapper.skip(Hotel::setId));
+        }
+        Hotel Hotel = modelMapper.map(hotelDto, Hotel.class);
+        return Hotel;
     }
 
     @Override
     public HotelResponse toResponse(Hotel hotel) {
         HotelResponse hotelResponse = modelMapper.map(hotel, HotelResponse.class);
+        hotelResponse.setRooms(hotel.getRooms());
         return hotelResponse;
     }
     @Override

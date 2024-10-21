@@ -1,5 +1,6 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -28,6 +29,7 @@ public class Room {
 
     @ManyToOne()
     @JoinColumn(name = "hotel_id")
+    @JsonBackReference
     Hotel hotel;
 
     @Enumerated(EnumType.STRING)
