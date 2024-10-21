@@ -24,7 +24,7 @@ import java.util.Set;
 public class BookingHotel extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "booking_hotel_id")
+    @Column(name = "id")
     Long bookingHotelId;
 
     @ManyToOne(fetch = FetchType.LAZY)

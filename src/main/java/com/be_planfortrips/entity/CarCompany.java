@@ -20,7 +20,6 @@ import java.util.List;
 public class CarCompany {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "car_company_id")
     private Integer id;
 
     @Column(name = "name", length = 100)

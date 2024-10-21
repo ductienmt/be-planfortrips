@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Data
@@ -18,7 +16,7 @@ import java.util.Set;
 public class AccountEnterprise extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "accountEnterprise_id")
+    @Column(name = "id")
     Long accountEnterpriseId;
 
     @Column(name = "username", length = 20, unique = true)

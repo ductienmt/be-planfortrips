@@ -14,7 +14,6 @@ import org.hibernate.annotations.ColumnDefault;
 @Table(name = "stations")
 public class Station {
     @Id
-//    @ColumnDefault("nextval('stations_id_seq'::regclass)") // gio'ng generateValue ma`??
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     Integer id;

@@ -48,6 +48,7 @@ public class AuthServiceImpl implements IAuthService {
 
         List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
         String role = authorities.isEmpty() ? null : authorities.get(0).getAuthority();
+        System.out.println("Role: " + role);
 
         if (role == null) {
             throw new RuntimeException("User has no role assigned");
