@@ -16,7 +16,9 @@ import java.time.LocalDateTime;
 public class DataEssentialPlan {
     String location;
     String destination;
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime startDate;
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime endDate;
     Integer numberPeople;
     BigDecimal budget;

@@ -81,7 +81,7 @@ public class SecurityConfig {
                         .requestMatchers(ApiProvider.ADMIN_API).hasAuthority("ROLE_ADMIN")
                         .requestMatchers(ApiProvider.USER_API).hasAuthority("ROLE_USER")
                         .requestMatchers(ApiProvider.ENTERPRISE_API).hasAuthority("ROLE_ENTERPRISE")
-                        .requestMatchers(ApiProvider.ADMIN_USER_ENTERPRISE_API).hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ENTERPRISE")
+//                        .requestMatchers(ApiProvider.ADMIN_USER_ENTERPRISE_API).hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ENTERPRISE")
                         .anyRequest().authenticated());
         http
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtEntryPoint))
