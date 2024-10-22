@@ -9,8 +9,11 @@ import java.util.List;
 
 public interface SeatRepository extends JpaRepository<Seat, Integer> {
 
-    @Query(value = "SELECT COUNT(*) FROM seats s JOIN vehicles v ON s.vehicle_code = v.code WHERE s.status = 'Empty' AND v.code = :vehicleCode", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM schedule_seats ss JOIN seats s ON ss.seat_id = s.id JOIN vehicles v ON s.vehicle_code = v.code WHERE ss.status = 'Empty' AND v.code = :vehicleCode", nativeQuery = true)
     long countEmptySeatsByVehicleCode(@Param("vehicleCode") String vehicleCode);
+
+    @Query("SELECT s FROM Seat s WHERE s.vehicleCode = :vehicleCode")
+    List<Seat> findByVehicleCode(@Param("vehicleCode") String vehicleCode);
 
 
 }

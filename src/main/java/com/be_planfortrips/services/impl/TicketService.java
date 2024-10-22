@@ -32,6 +32,7 @@ public class TicketService implements ITicketService {
     UserRepository userRepository;
     ScheduleRepository scheduleRepository;
     CouponRepository couponRepository;
+    ScheduleSeatRepository scheduleSeatRepository;
 
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
@@ -85,6 +86,10 @@ public class TicketService implements ITicketService {
         ticket.setSchedule(schedule);
 
         validateTicketStatus(ticketDto.getStatus());
+      
+        List<Seat> seats = validateAndUpdateSeats(ticketDto.getSeatIds(), ticketDto.getScheduleId());
+        ticket.setSeats(seats);
+
         if (coupon != null) {
             applyCouponDiscount(ticket, coupon);
         }
@@ -124,6 +129,9 @@ public class TicketService implements ITicketService {
         ticketExisting.setSchedule(schedule);
 
         validateTicketStatus(ticketDto.getStatus());
+
+        List<Seat> seats = validateAndUpdateSeats(ticketDto.getSeatIds(), ticketDto.getScheduleId());
+        ticketExisting.setSeats(seats);
 
         if (coupon != null) {
             applyCouponDiscount(ticketExisting, coupon);
@@ -181,7 +189,7 @@ public class TicketService implements ITicketService {
         }
     }
 
-    private List<Seat> validateAndUpdateSeats(List<Integer> seatIds, Status status) throws Exception {
+    private List<Seat> validateAndUpdateSeats(List<Integer> seatIds, Integer scheduleId) throws Exception {
         List<Seat> seats = (seatIds == null) ? new ArrayList<>() : seatRepository.findAllById(seatIds);
         if (seats.isEmpty()) {
             throw new Exception("Vui lòng chọn ghế");
@@ -189,14 +197,16 @@ public class TicketService implements ITicketService {
 
         StringBuilder sb = new StringBuilder();
         for (Seat seat : seats) {
-            if (seat.getStatus() == StatusSeat.Full) {
-                sb.append(String.format("Ghế số %s - mã số xe %s đã có người ngồi \n", seat.getSeatNumber(),
-                        seat.getVehicle().getCode()));
+            ScheduleSeat scheduleSeat = scheduleSeatRepository
+                    .findByScheduleIdAndSeatId(scheduleId, seat.getId())
+                    .orElseThrow(() -> new Exception(String.format("Không tìm thấy ghế %s trong lịch trình", seat.getSeatNumber())));
+
+            if (scheduleSeat.getStatus() == StatusSeat.Full) {
+                sb.append(String.format("Ghế số %s - mã số xe %s đã có người ngồi trong lịch trình này\n",
+                        seat.getSeatNumber(), seat.getVehicleCode().getCode()));
             } else {
-                if (status == Status.Completed) {
-                    seat.setStatus(StatusSeat.Full);
-                    seatRepository.saveAndFlush(seat);
-                }
+                scheduleSeat.setStatus(StatusSeat.Full);
+                scheduleSeatRepository.saveAndFlush(scheduleSeat);
             }
         }
 
@@ -206,6 +216,7 @@ public class TicketService implements ITicketService {
 
         return seats;
     }
+
 
     private void applyCouponDiscount(Ticket ticket, Coupon coupon) {
         BigDecimal discountPrice = BigDecimal.ZERO;

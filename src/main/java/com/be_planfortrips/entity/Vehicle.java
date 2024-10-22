@@ -41,9 +41,6 @@ public class Vehicle {
     @OneToMany(mappedBy = "vehicle",cascade = CascadeType.REMOVE)
     @JsonManagedReference
     List<Seat> seats;
-//     @Column(name = "type_vehicle") 
-//     @Enumerated(EnumType.STRING) sài cái này nó chuyển dữ liệu về String 
-//     TypeVehicle typeVehicle;
 
 
 }

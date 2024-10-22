@@ -2,9 +2,11 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.SeatDTO;
 import com.be_planfortrips.dto.response.SeatResponse;
+import com.be_planfortrips.entity.ScheduleSeat;
 import com.be_planfortrips.entity.Seat;
 import com.be_planfortrips.entity.Vehicle;
 import com.be_planfortrips.mappers.impl.SeatMapper;
+import com.be_planfortrips.repositories.ScheduleSeatRepository;
 import com.be_planfortrips.repositories.SeatRepository;
 import com.be_planfortrips.repositories.VehicleRepository;
 import com.be_planfortrips.services.interfaces.ISeatService;
@@ -16,7 +18,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -25,6 +29,8 @@ public class SeatService implements ISeatService {
     SeatRepository seatRepository;
     SeatMapper seatMapper;
     VehicleRepository vehicleRepository;
+    ScheduleSeatRepository scheduleSeatRepository;
+
     @Override
     @Transactional
     public SeatResponse createSeat(SeatDTO seatDTO) throws Exception {
@@ -76,4 +82,14 @@ public class SeatService implements ISeatService {
         Optional<Seat> seat = seatRepository.findById(id);
         seat.ifPresent(seatRepository::delete);
     }
+
+    @Override
+    public List<SeatResponse> getEmptySeatsByScheduleId(Integer scheduleId) {
+        List<Seat> emptySeats = scheduleSeatRepository.findEmptySeatsByScheduleId(scheduleId);
+        for(Seat seat: emptySeats){
+            System.out.println(seat.getSeatNumber());
+        }
+        return emptySeats.stream().map(seatMapper::toResponse).collect(Collectors.toList());
+    }
+
 }
