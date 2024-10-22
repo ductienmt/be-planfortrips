@@ -27,7 +27,8 @@ import java.util.Map;
 @Component
 @Slf4j
 public class JwtProvider {
-    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+//    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    private final String secretKey = "planfortripsdinhtangductiendangthanhhunghominhnhuthuynhanhquanhuynhhaonamnguyenanhtai";
     private final int jwtExpiration = 86400 * 1000;
     @Autowired
     private CustomUserServiceDetails userDetailsService;

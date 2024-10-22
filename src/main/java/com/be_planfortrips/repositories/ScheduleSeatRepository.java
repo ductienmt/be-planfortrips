@@ -15,5 +15,6 @@ public interface ScheduleSeatRepository extends JpaRepository<ScheduleSeat, Inte
 
     @Query("SELECT ss.seat FROM ScheduleSeat ss WHERE ss.schedule.id = :scheduleId AND ss.status = 'Empty'")
     List<Seat> findEmptySeatsByScheduleId(@Param("scheduleId") Integer scheduleId);
+
 }
 

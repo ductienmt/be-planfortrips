@@ -7,10 +7,10 @@ spring:
     driver-class-name: org.postgresql.Driver
 
     url: jdbc:postgresql://localhost:5432/Planfortrips
-    username: postgres
-    password: 123
-#    username: admin
-#    password: admin
+#    username: postgres
+#    password: 123
+    username: admin
+    password: admin
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
