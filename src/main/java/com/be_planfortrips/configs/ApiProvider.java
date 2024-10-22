@@ -5,6 +5,8 @@ public class ApiProvider {
             "/api/v1/auth/**",
             "/api/v1/schedules/getByTime",
             "/api/v1/plans/prepare"
+            "/api/v1/hotels/**",
+
     };
 
     public static final String[] ADMIN_API = {
