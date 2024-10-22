@@ -9,6 +9,7 @@ import org.hibernate.annotations.ColumnDefault;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -36,4 +37,8 @@ public class Schedule extends BaseEntity{
 
     @Column(name = "arrival_time")
     LocalDateTime arrivalTime;
+
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ScheduleSeat> scheduleSeats;
+
 }

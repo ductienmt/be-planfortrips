@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -64,7 +65,6 @@ public class ScheduleController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // test get data by time, don't care
     @GetMapping("/getByTime") // need review and edit sql and data type LocalDateTime
     public ResponseEntity<?> getScheduleByTime(
             @RequestParam("departureTime") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime departureTime,
@@ -79,15 +79,12 @@ public class ScheduleController {
                     .build());
         } catch (DateTimeParseException e) {
             log.error(e.getMessage());
-            // Xử lý lỗi định dạng ngày giờ và ném ngoại lệ tùy chỉnh
             throw new AppException(ErrorType.notValidDateFormat);
         } catch (AppException e) {
             log.error(e.getMessage());
-            // Ném lại AppException nếu có
             throw e;
         } catch (Exception e) {
             log.error(e.getMessage());
-            // Bắt mọi lỗi khác và trả về Internal Server Error
             throw new AppException(ErrorType.internalServerError);
         }
     }

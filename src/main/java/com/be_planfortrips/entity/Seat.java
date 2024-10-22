@@ -29,9 +29,10 @@ public class Seat {
     @Column(name = "seat_number", length = 5)
     String seatNumber;
 
-    @Column(name = "status_seat")
-    @Enumerated(EnumType.STRING)
-    StatusSeat status = StatusSeat.Empty;
+//    @Column(name = "status")
+//    @Enumerated(EnumType.STRING)
+//    StatusSeat status = StatusSeat.Empty;
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinTable(name = "ticket_seats",
             joinColumns = @JoinColumn(name = "seat_id"),

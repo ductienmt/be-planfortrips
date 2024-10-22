@@ -35,8 +35,7 @@ public class SeatMapper implements MapperInterface<SeatResponse, Seat, SeatDTO> 
     @Override
     public SeatResponse toResponse(Seat seat) {
         modelMapper.typeMap(Seat.class,SeatResponse.class).addMappings(mapper -> {
-            mapper.map(src -> src.getVehicleCode(), SeatResponse::setVehicle);
-            mapper.map(src -> src.getStatus(), SeatResponse::setStatusSeat);
+//            mapper.map(src -> src.getVehicleCode(), SeatResponse::setVehicle);
         });return modelMapper.map(seat, SeatResponse.class);
     }
 

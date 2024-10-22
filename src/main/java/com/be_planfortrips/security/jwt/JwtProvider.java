@@ -65,13 +65,17 @@ public class JwtProvider {
 
     public Boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token);
+            Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             log.error("JWT token không hợp lệ: " + e.getMessage());
             throw new AppException(ErrorType.internalServerError);
         }
     }
+
 
     public String getUsernameFromToken(String token) {
         return Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();

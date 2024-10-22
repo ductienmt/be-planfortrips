@@ -13,9 +13,7 @@ import lombok.experimental.FieldDefaults;
 public class SeatResponse {
     @JsonProperty("seat_id")
     Integer id;
-    Vehicle vehicle;
+//    Vehicle vehicle;
     @JsonProperty("seat_number")
     String seatNumber;
-    @JsonProperty("status_seat")
-    String statusSeat;
 }

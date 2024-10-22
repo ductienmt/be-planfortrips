@@ -2,11 +2,14 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.ScheduleDto;
 import com.be_planfortrips.dto.response.ScheduleResponse;
-import com.be_planfortrips.entity.Schedule;
+import com.be_planfortrips.dto.response.SeatResponse;
+import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.ScheduleMapper;
 import com.be_planfortrips.repositories.ScheduleRepository;
+import com.be_planfortrips.repositories.ScheduleSeatRepository;
+import com.be_planfortrips.repositories.SeatRepository;
 import com.be_planfortrips.services.interfaces.IScheduleService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,6 +30,11 @@ public class ScheduleServiceImpl implements IScheduleService {
 
     ScheduleRepository scheduleRepository;
     ScheduleMapper scheduleMapper;
+    SeatService seatService;
+    private final SeatRepository seatRepository;
+    private final ScheduleSeatRepository scheduleSeatRepository;
+
+
     @Override
     public List<ScheduleResponse> getAllSchedule() {
         return scheduleRepository.findAll().
@@ -43,8 +52,21 @@ public class ScheduleServiceImpl implements IScheduleService {
     @Override
     public ScheduleResponse createSchedule(ScheduleDto scheduleDto) {
         Schedule schedule = scheduleMapper.toEntity(scheduleDto);
-        return scheduleMapper.toResponse(
-                scheduleRepository.save(schedule));
+        Schedule savedSchedule = scheduleRepository.save(schedule);
+        List<Seat> seats = seatRepository.findByVehicleCode(scheduleDto.getVehicleCode());
+
+        if (seats.isEmpty()) {
+            throw new AppException(ErrorType.notFound);
+        }
+
+        for (Seat seat : seats) {
+            ScheduleSeat scheduleSeat = new ScheduleSeat();
+            scheduleSeat.setSeat(seat);
+            scheduleSeat.setSchedule(savedSchedule);
+            scheduleSeat.setStatus(StatusSeat.Empty);
+            scheduleSeatRepository.save(scheduleSeat);
+        }
+        return scheduleMapper.toResponse(savedSchedule);
     }
 
     @Override
@@ -68,20 +90,45 @@ public class ScheduleServiceImpl implements IScheduleService {
 
     @Override
     public Map<String, Object> getAllScheduleByTime(LocalDateTime departureTime, LocalDateTime returnTime) {
-        List<ScheduleResponse> departure = this.scheduleRepository.findSchedulesAfterSpecificTime(
-                departureTime.toLocalDate(),
-                departureTime.toLocalTime()
-        ).stream().map(scheduleMapper::toResponse).collect(Collectors.toList());
-        List<ScheduleResponse> returnSchedules = this.scheduleRepository.findSchedulesAfterSpecificTime(
-                returnTime.toLocalDate(),
-                returnTime.toLocalTime()
-        ).stream().map(scheduleMapper::toResponse).collect(Collectors.toList());
+        Map<String, Object> departureResponse = fetchSchedules(departureTime, "departure");
+        Map<String, Object> returnResponse = fetchSchedules(returnTime, "return");
+
         Map<String, Object> response = new HashMap<>();
-        response.put("departure", departure);
-        response.put("return", returnSchedules);
-        if (response.isEmpty()) {
+        response.put("departure", departureResponse);
+        response.put("return", returnResponse);
+
+        if (response.isEmpty() || (departureResponse.isEmpty() && returnResponse.isEmpty())) {
             throw new AppException(ErrorType.notFound);
         }
+
         return response;
     }
+
+    private Map<String, Object> fetchSchedules(LocalDateTime time, String type) {
+        List<ScheduleResponse> schedules = this.scheduleRepository.findSchedulesAfterSpecificTime(
+                time.toLocalDate(),
+                time.toLocalTime()
+        ).stream().map(scheduleMapper::toResponse).toList();
+
+        Map<String, Object> scheduleResponseMap = new HashMap<>();
+        for (ScheduleResponse scheduleResponse : schedules) {
+            ScheduleResponse schedule = this.getScheduleById(scheduleResponse.getId());
+            List<SeatResponse> seatResponses = seatService.getEmptySeatsByScheduleId(scheduleResponse.getId());
+
+            if (!seatResponses.isEmpty()) {
+                Map<String, Object> scheduleMap = new HashMap<>();
+                scheduleMap.put("scheduleId", schedule.getId());
+                scheduleMap.put("vehicleCode", schedule.getCode());
+                scheduleMap.put("carName", schedule.getCarCompanyName());
+                scheduleMap.put("departureTime", schedule.getDepartureTime());
+                scheduleMap.put("arrivalTime", schedule.getArrivalTime());
+                scheduleMap.put("seatAvailable", seatResponses);
+
+                scheduleResponseMap.put(schedule.getCarCompanyName(), scheduleMap);
+            }
+        }
+
+        return scheduleResponseMap;
+    }
+
 }
