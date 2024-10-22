@@ -3,12 +3,10 @@ package com.be_planfortrips.services.impl;
 import com.be_planfortrips.configs.VnPayConfig;
 import com.be_planfortrips.dto.VnPayDTO;
 import com.be_planfortrips.dto.response.VnpPayResponse;
-import com.be_planfortrips.entity.Seat;
-import com.be_planfortrips.entity.Status;
-import com.be_planfortrips.entity.StatusSeat;
-import com.be_planfortrips.entity.Ticket;
+import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.repositories.ScheduleSeatRepository;
 import com.be_planfortrips.repositories.SeatRepository;
 import com.be_planfortrips.repositories.TicketRepository;
 import com.be_planfortrips.services.interfaces.IVnPayService;
@@ -31,6 +29,8 @@ import java.util.*;
 public class VnPayService implements IVnPayService {
     TicketRepository ticketRepository; // tạm thời test book xe trc
     SeatRepository seatRepository;
+    private final ScheduleSeatRepository scheduleSeatRepository;
+
     @Override
     @Transactional
     public VnpPayResponse createPayment(
@@ -111,11 +111,16 @@ public class VnPayService implements IVnPayService {
                 .orElseThrow(() -> new AppException(ErrorType.notFound));
         if ("00".equals(requestParams.get("vnp_ResponseCode")) && "00".equals(requestParams.get("vnp_TransactionStatus"))) {
             if (orderId != null) {
-                ticket.setStatus(Status.Completed);
+                ticket.setStatus(Status.Complete);
                 ticketRepository.save(ticket);
-                for(Seat seat: ticket.getSeats()){
-                    seat.setStatus(StatusSeat.Full);
-                    seatRepository.saveAndFlush(seat);
+                List<ScheduleSeat> scheduleSeats = scheduleSeatRepository.findByScheduleId(ticket.getSchedule().getId());
+                for (ScheduleSeat scheduleSeat : scheduleSeats) {
+                    for (Seat seat : ticket.getSeats()) {
+                        if (scheduleSeat.getSeat().getId().equals(seat.getId())) {
+                            scheduleSeat.setStatus(StatusSeat.Full);
+                            scheduleSeatRepository.save(scheduleSeat);
+                        }
+                    }
                 }
             }
             return "00";

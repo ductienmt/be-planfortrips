@@ -4,7 +4,7 @@ public class ApiProvider {
     public static final String[] PUBLIC_API = {
             "/api/v1/auth/**",
             "/api/v1/schedules/getByTime",
-            "/api/v1/plans/prepare"
+            "/api/v1/plans/prepare",
             "/api/v1/hotels/**",
 
     };

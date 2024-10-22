@@ -96,8 +96,6 @@ public class TicketService implements ITicketService {
 
         ticket.setTotalPrice(ticket.getTotalPrice().subtract(BigDecimal.valueOf(payment.getFee())));
         ticket.setStatus(Status.Pending);
-        List<Seat> seats = validateAndUpdateSeats(ticketDto.getSeatIds(), ticket.getStatus());
-        ticket.setSeats(seats);
         ticketRepository.saveAndFlush(ticket);
 
         updateCouponUsage(coupon);
@@ -139,8 +137,6 @@ public class TicketService implements ITicketService {
 
         ticketExisting.setTotalPrice(ticketExisting.getTotalPrice().subtract(BigDecimal.valueOf(payment.getFee())));
         ticketExisting.setStatus(Status.valueOf(ticketDto.getStatus()));
-        List<Seat> seats = validateAndUpdateSeats(ticketDto.getSeatIds(), ticketExisting.getStatus());
-        ticketExisting.setSeats(seats);
         ticketRepository.saveAndFlush(ticketExisting);
 
         updateCouponUsage(coupon);
@@ -203,7 +199,7 @@ public class TicketService implements ITicketService {
 
             if (scheduleSeat.getStatus() == StatusSeat.Full) {
                 sb.append(String.format("Ghế số %s - mã số xe %s đã có người ngồi trong lịch trình này\n",
-                        seat.getSeatNumber(), seat.getVehicleCode().getCode()));
+                        seat.getSeatNumber(), seat.getVehicle().getCode()));
             } else {
                 scheduleSeat.setStatus(StatusSeat.Full);
                 scheduleSeatRepository.saveAndFlush(scheduleSeat);
