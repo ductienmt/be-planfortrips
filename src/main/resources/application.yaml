@@ -1,21 +1,23 @@
 spring:
   datasource:
     # dữ liệu demo thì dùng cái này nha, t insert kha khá dữ liệu
-    #        url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
-    #        username: postgres
-    #        password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
-    driver-class-name: org.postgresql.Driver
+    #    url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
+    #    username: postgres
+    #    password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
+    #    driver-class-name: org.postgresql.Driver
 
-    url: jdbc:postgresql://localhost:5432/a
-    username: postgres
-    password: 123
-#    username: admin
-#    password: admin
+
+    url: jdbc:postgresql://localhost:5432/Planfortrips
+    #    username: postgres
+    #    password: 123
+    username: admin
+    password: admin
+
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   jackson:
     serialization:
       fail-on-empty-beans: false
