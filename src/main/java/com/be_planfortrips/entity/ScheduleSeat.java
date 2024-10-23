@@ -1,5 +1,6 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -18,10 +19,12 @@ public class ScheduleSeat {
 
     @ManyToOne
     @JoinColumn(name = "schedule_id")
+    @JsonBackReference
     private Schedule schedule;
 
     @ManyToOne
     @JoinColumn(name = "seat_id")
+    @JsonBackReference
     private Seat seat;
 
     @Column(name = "status")

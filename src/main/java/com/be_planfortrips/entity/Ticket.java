@@ -1,5 +1,6 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -44,6 +45,7 @@ public class Ticket extends BaseEntity {
     @JoinTable(name = "ticket_seats",
             joinColumns = @JoinColumn(name = "ticket_id"),
             inverseJoinColumns = @JoinColumn(name = "seat_id"))
+    @JsonManagedReference
     List<Seat> seats;
     @ManyToMany
     @JoinTable(name = "ticket_coupons",
