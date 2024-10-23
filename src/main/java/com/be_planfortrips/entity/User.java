@@ -42,10 +42,10 @@ public class User extends BaseEntity{
     @Column(name = "birthdate", nullable = true)
     Date birthdate;
 
-    @Column(name = "facebook_id")
+    @Column(name = "facebook_account_id")
     String facebookId;
 
-    @Column(name = "google_id")
+    @Column(name = "google_account_id")
     String googleId;
 
     @Column(name = "fullname", length = 50, nullable = true)

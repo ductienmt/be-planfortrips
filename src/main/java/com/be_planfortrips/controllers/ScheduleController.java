@@ -65,6 +65,23 @@ public class ScheduleController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/getStationByScheduleId")
+    public ResponseEntity<?> getStationByScheduleId(
+            @RequestParam("scheduleId") Long scheduleId) {
+        try {
+            Map<String, Object> response = scheduleService.getRouteByScheduleId(scheduleId);
+
+            return ResponseEntity.ok(ApiResponse.<Map<String, Object>>builder()
+                    .code(HttpStatus.OK.value())
+                    .data(response)
+                    .message("")
+                    .build());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new AppException(ErrorType.internalServerError);
+        }
+    }
+
     @GetMapping("/getByTime") // need review and edit sql and data type LocalDateTime
     public ResponseEntity<?> getScheduleByTime(
             @RequestParam("departureTime") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime departureTime,

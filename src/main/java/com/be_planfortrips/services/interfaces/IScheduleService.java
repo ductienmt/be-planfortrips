@@ -19,5 +19,7 @@ public interface IScheduleService {
 
     void deleteScheduleById(Integer scheduleId);
 
+    Map<String, Object> getRouteByScheduleId(Long scheduleId);
+
     Map<String, Object> getAllScheduleByTime(LocalDateTime departureTime, LocalDateTime returnTime);
 }

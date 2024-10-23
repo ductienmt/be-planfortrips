@@ -89,6 +89,12 @@ public class ScheduleServiceImpl implements IScheduleService {
     }
 
     @Override
+    public Map<String, Object> getRouteByScheduleId(Long scheduleId) {
+        Map<String, Object> station = scheduleRepository.findStationsByScheduleId(scheduleId);
+        return station;
+    }
+
+    @Override
     public Map<String, Object> getAllScheduleByTime(LocalDateTime departureTime, LocalDateTime returnTime) {
         Map<String, Object> departureResponse = fetchSchedules(departureTime, "departure");
         Map<String, Object> returnResponse = fetchSchedules(returnTime, "return");
@@ -122,6 +128,7 @@ public class ScheduleServiceImpl implements IScheduleService {
                 scheduleMap.put("carName", schedule.getCarCompanyName());
                 scheduleMap.put("departureTime", schedule.getDepartureTime());
                 scheduleMap.put("arrivalTime", schedule.getArrivalTime());
+                scheduleMap.put("routeId", schedule.getRouteId());
                 scheduleMap.put("seatAvailable", seatResponses);
 
                 scheduleResponseMap.put(schedule.getCarCompanyName(), scheduleMap);
