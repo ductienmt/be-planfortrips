@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 @RequestMapping("${api.prefix}/hotels")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
-@CrossOrigin(origins = "http://localhost:5050/")
 public class HotelController {
     IHotelService iHotelService;
     @PostMapping("")

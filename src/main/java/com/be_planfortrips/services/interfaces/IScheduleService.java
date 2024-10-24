@@ -1,6 +1,7 @@
 package com.be_planfortrips.services.interfaces;
 
 import com.be_planfortrips.dto.ScheduleDto;
+import com.be_planfortrips.dto.request.DataSchedule;
 import com.be_planfortrips.dto.response.ScheduleResponse;
 
 import java.time.LocalDateTime;
@@ -22,4 +23,6 @@ public interface IScheduleService {
     Map<String, Object> getRouteByScheduleId(Long scheduleId);
 
     Map<String, Object> getAllScheduleByTime(LocalDateTime departureTime, LocalDateTime returnTime);
+
+    List<ScheduleResponse> getSchedules(DataSchedule dataSchedule);
 }

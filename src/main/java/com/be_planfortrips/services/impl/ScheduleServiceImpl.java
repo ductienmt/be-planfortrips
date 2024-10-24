@@ -1,6 +1,7 @@
 package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.ScheduleDto;
+import com.be_planfortrips.dto.request.DataSchedule;
 import com.be_planfortrips.dto.response.ScheduleResponse;
 import com.be_planfortrips.dto.response.SeatResponse;
 import com.be_planfortrips.entity.*;
@@ -108,6 +109,20 @@ public class ScheduleServiceImpl implements IScheduleService {
         }
 
         return response;
+    }
+
+    @Override
+    public List<ScheduleResponse> getSchedules(DataSchedule dataSchedule) {
+        if (dataSchedule.getEndDate() == null) {
+            dataSchedule.setEndDate(dataSchedule.getStartDate());
+        }
+        List<Schedule> schedules = this.scheduleRepository.findSchedule(
+                dataSchedule.getOriginalLocation(),
+                dataSchedule.getDestination(),
+                dataSchedule.getStartDate(),
+                dataSchedule.getEndDate()
+        );
+        return schedules.stream().map(scheduleMapper::toResponse).collect(Collectors.toList());
     }
 
     private Map<String, Object> fetchSchedules(LocalDateTime time, String type) {
