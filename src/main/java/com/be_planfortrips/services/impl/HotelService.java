@@ -71,8 +71,8 @@ public class HotelService implements IHotelService {
     }
 
     @Override
-    public Page<HotelResponse> getHotels(PageRequest request) {
-        return hotelRepository.findAll(request).map(hotel -> hotelMapper.toResponse(hotel));
+    public Page<HotelResponse> searchHotels(PageRequest request,String keyword) {
+        return hotelRepository.searchHotels(request,keyword).map(hotel -> hotelMapper.toResponse(hotel));
     }
 
     @Override
