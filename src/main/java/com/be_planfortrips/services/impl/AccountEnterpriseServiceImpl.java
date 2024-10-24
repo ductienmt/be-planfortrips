@@ -1,6 +1,7 @@
 package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.AccountEnterpriseDto;
+import com.be_planfortrips.dto.TypeEnterpriseDetailDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
 import com.be_planfortrips.entity.AccountEnterprise;
 import com.be_planfortrips.exceptions.AppException;
@@ -27,6 +28,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     AccountEnterpriseMapper accountEnterpriseMapper;
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
+    TypeEnterpriseDetailServiceImpl typeEnterpriseDetailService;
 
     @Override
     public List<AccountEnterpriseResponse> getAllAccountEnterprises() {

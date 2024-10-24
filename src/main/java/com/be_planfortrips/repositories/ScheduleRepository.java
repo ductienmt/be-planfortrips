@@ -29,4 +29,20 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
             + "JOIN r.destinationStation ds "
             + "WHERE s.id = :scheduleId")
     Map<String, Object> findStationsByScheduleId(@Param("scheduleId") Long scheduleId);
+
+
+    @Query("SELECT s FROM Schedule s "
+            + "JOIN s.route r "
+            + "JOIN r.originStation os "
+            + "JOIN r.destinationStation ds "
+            + "WHERE os.name = :originalLocation "
+            + "AND ds.name = :destination "
+            + "AND CAST(s.departureTime AS DATE) = :departureDate "
+            + "AND CAST(s.arrivalTime AS DATE) >= :arrivalDate")
+    List<Schedule> findSchedule(@Param("originalLocation") String originalLocation,
+                                @Param("destination") String destination,
+                                @Param("departureDate") LocalDate departureDate,
+                                @Param("arrivalDate") LocalDate arrivalDate);
+
+
 }
