@@ -1,6 +1,7 @@
 package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.ScheduleDto;
+import com.be_planfortrips.dto.request.DataSchedule;
 import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.dto.response.ScheduleResponse;
 import com.be_planfortrips.exceptions.AppException;
@@ -24,7 +25,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("${api.prefix}/schedules")
-@CrossOrigin(origins = "http://localhost:5050/")
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -82,6 +82,24 @@ public class ScheduleController {
             throw new AppException(ErrorType.internalServerError);
         }
     }
+
+    @PostMapping("getSchedules")
+    public ResponseEntity<?> getSchedules(@RequestBody DataSchedule dataSchedule){
+        try {
+//            this.scheduleService.getSchedules(dataSchedule);
+            return ResponseEntity.ok(ApiResponse.<List<ScheduleResponse>>builder()
+                    .code(HttpStatus.OK.value())
+                    .data(this.scheduleService.getSchedules(dataSchedule))
+                    .message("")
+                    .build());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new AppException(ErrorType.internalServerError);
+        }
+    }
+
+
+
 
     @GetMapping("/getByTime") // need review and edit sql and data type LocalDateTime
     public ResponseEntity<?> getScheduleByTime(
