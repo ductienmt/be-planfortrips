@@ -46,7 +46,9 @@ public class VnPayService implements IVnPayService {
             vnp_Params.put("vnp_Version", VnPayConfig.vnp_Version);
             vnp_Params.put("vnp_Command", VnPayConfig.vnp_Command);
             vnp_Params.put("vnp_TmnCode", VnPayConfig.vnp_TmnCode);
-            vnp_Params.put("vnp_Amount", String.valueOf(ticket.getTotalPrice().multiply(BigDecimal.valueOf(100)).intValue()));
+//            vnp_Params.put("vnp_Amount", String.valueOf(ticket.getTotalPrice().multiply(BigDecimal.valueOf(100)).intValue()));
+            vnp_Params.put("vnp_Amount", String.valueOf(vnPayDTO.getAmount().multiply(BigDecimal.valueOf(100)).intValue()));
+
             vnp_Params.put("vnp_CurrCode", "VND");
 
             vnp_Params.put("vnp_BankCode", vnPayDTO.getBankCode());
