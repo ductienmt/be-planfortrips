@@ -6,9 +6,7 @@ import com.be_planfortrips.dto.response.VnpPayResponse;
 import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
-import com.be_planfortrips.repositories.ScheduleSeatRepository;
-import com.be_planfortrips.repositories.SeatRepository;
-import com.be_planfortrips.repositories.TicketRepository;
+import com.be_planfortrips.repositories.*;
 import com.be_planfortrips.services.interfaces.IVnPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
@@ -23,96 +21,128 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class VnPayService implements IVnPayService {
     TicketRepository ticketRepository; // tạm thời test book xe trc
-    SeatRepository seatRepository;
-    private final ScheduleSeatRepository scheduleSeatRepository;
-
+    ScheduleSeatRepository scheduleSeatRepository;
+    BookingHotelRepository bookingHotelRepository;
+    BookingHotelDetailRepository bookingHotelDetailRepository;
+    RoomRepository roomRepository;
     @Override
     @Transactional
     public VnpPayResponse createPayment(
             VnPayDTO vnPayDTO,
             HttpServletRequest httpServletRequest) throws IOException {
-            Ticket ticket = ticketRepository.findById(vnPayDTO.getOrderId())
-                .orElseThrow(()-> new AppException(ErrorType.notFound));
-            String orderType = "other";
-            String vnp_TxnRef = VnPayConfig.getRandomNumber(8);
-            String vnp_IpAddr = getClientIp(httpServletRequest);
+            try {
+                Optional<Ticket> optionalTicket = ticketRepository.findById(vnPayDTO.getTicketId());
+                Optional<BookingHotel> optionalBookingHotel = bookingHotelRepository.findById(Long.valueOf(vnPayDTO.getBookingId()));
+                Ticket ticket = new Ticket();
+                BookingHotel bookingHotel = new BookingHotel();
+                if (optionalTicket.isPresent() && optionalBookingHotel.isPresent()) {
+                    ticket = optionalTicket.get();
+                    bookingHotel = optionalBookingHotel.get();
+                }
+                String orderType = "other";
+                String vnp_TxnRef = VnPayConfig.getRandomNumber(8);
+                String vnp_IpAddr = getClientIp(httpServletRequest);
 
-            Map<String, String> vnp_Params = new HashMap<>();
-            vnp_Params.put("vnp_Version", VnPayConfig.vnp_Version);
-            vnp_Params.put("vnp_Command", VnPayConfig.vnp_Command);
-            vnp_Params.put("vnp_TmnCode", VnPayConfig.vnp_TmnCode);
-//            vnp_Params.put("vnp_Amount", String.valueOf(ticket.getTotalPrice().multiply(BigDecimal.valueOf(100)).intValue()));
-            vnp_Params.put("vnp_Amount", String.valueOf(vnPayDTO.getAmount().multiply(BigDecimal.valueOf(100)).intValue()));
+                Map<String, String> vnp_Params = new HashMap<>();
+                vnp_Params.put("vnp_Version", VnPayConfig.vnp_Version);
+                vnp_Params.put("vnp_Command", VnPayConfig.vnp_Command);
+                vnp_Params.put("vnp_TmnCode", VnPayConfig.vnp_TmnCode);
+//              vnp_Params.put("vnp_Amount", String.valueOf(ticket.getTotalPrice().multiply(BigDecimal.valueOf(100)).intValue()));
+                vnp_Params.put("vnp_Amount", String.valueOf(vnPayDTO.getAmount().multiply(BigDecimal.valueOf(100)).intValue()));
 
-            vnp_Params.put("vnp_CurrCode", "VND");
+                vnp_Params.put("vnp_CurrCode", "VND");
 
-            vnp_Params.put("vnp_BankCode", vnPayDTO.getBankCode());
-            vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-            vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef + "-" +ticket.getId());
-            vnp_Params.put("vnp_OrderType", orderType);
+                vnp_Params.put("vnp_BankCode", vnPayDTO.getBankCode());
+                vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
+                vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef
+                        + "Ticket:" +(ticket.getId()==null?0:ticket.getId())
+                        +" Booking:"+(bookingHotel.getBookingHotelId()==null?0:bookingHotel.getBookingHotelId()));
+                vnp_Params.put("vnp_OrderType", orderType);
 
-            vnp_Params.put("vnp_Locale", "vn");
-            vnp_Params.put("vnp_ReturnUrl", VnPayConfig.vnp_ReturnUrl);
-            vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
+                vnp_Params.put("vnp_Locale", "vn");
+                vnp_Params.put("vnp_ReturnUrl", VnPayConfig.vnp_ReturnUrl);
+                vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
-            Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-            String vnp_CreateDate = formatter.format(cld.getTime());
-            vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
+                Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+                String vnp_CreateDate = formatter.format(cld.getTime());
+                vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
 
-            cld.add(Calendar.MINUTE, 15);
-            String vnp_ExpireDate = formatter.format(cld.getTime());
-            vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
+                cld.add(Calendar.MINUTE, 15);
+                String vnp_ExpireDate = formatter.format(cld.getTime());
+                vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
-            List fieldNames = new ArrayList(vnp_Params.keySet());
-            Collections.sort(fieldNames);
-            StringBuilder hashData = new StringBuilder();
-            StringBuilder query = new StringBuilder();
-            Iterator itr = fieldNames.iterator();
-            while (itr.hasNext()) {
-                String fieldName = (String) itr.next();
-                String fieldValue = (String) vnp_Params.get(fieldName);
-                if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                    //Build hash data
-                    hashData.append(fieldName);
-                    hashData.append('=');
-                    hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                    //Build query
-                    query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
-                    query.append('=');
-                    query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                    if (itr.hasNext()) {
-                        query.append('&');
-                        hashData.append('&');
+                List fieldNames = new ArrayList(vnp_Params.keySet());
+                Collections.sort(fieldNames);
+                StringBuilder hashData = new StringBuilder();
+                StringBuilder query = new StringBuilder();
+                Iterator itr = fieldNames.iterator();
+                while (itr.hasNext()) {
+                    String fieldName = (String) itr.next();
+                    String fieldValue = (String) vnp_Params.get(fieldName);
+                    if ((fieldValue != null) && (fieldValue.length() > 0)) {
+                        //Build hash data
+                        hashData.append(fieldName);
+                        hashData.append('=');
+                        hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                        //Build query
+                        query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
+                        query.append('=');
+                        query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                        if (itr.hasNext()) {
+                            query.append('&');
+                            hashData.append('&');
+                        }
                     }
                 }
-            }
-            String queryUrl = query.toString();
-            String vnp_SecureHash = VnPayConfig.hmacSHA512(VnPayConfig.secretKey, hashData.toString());
-            queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
-            String paymentUrl = VnPayConfig.vnp_PayUrl + "?" + queryUrl;
+                String queryUrl = query.toString();
+                String vnp_SecureHash = VnPayConfig.hmacSHA512(VnPayConfig.secretKey, hashData.toString());
+                queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
+                String paymentUrl = VnPayConfig.vnp_PayUrl + "?" + queryUrl;
 
-            VnpPayResponse vnpPayResponse = new VnpPayResponse();
-            vnpPayResponse.setStatus("00");
-            vnpPayResponse.setMessage("Successfully");
-            vnpPayResponse.setUrl(paymentUrl);
-            return vnpPayResponse;
+                VnpPayResponse vnpPayResponse = new VnpPayResponse();
+                vnpPayResponse.setStatus("00");
+                vnpPayResponse.setMessage("Successfully");
+                vnpPayResponse.setUrl(paymentUrl);
+                return vnpPayResponse;
+            }catch (Exception e){
+                e.printStackTrace();
+                return null;
+            }
     }
 
     @Override
     @Transactional
     public String returnPage(Map<String, String> requestParams) throws IOException {
         VnPayConfig.hashAllFields(requestParams);
-        String orderId = requestParams.get("vnp_OrderInfo").substring(requestParams.get("vnp_OrderInfo").lastIndexOf("-")+1);
-        Ticket ticket = ticketRepository.findById(Integer.parseInt(orderId))
-                .orElseThrow(() -> new AppException(ErrorType.notFound));
+        Pattern pattern = Pattern.compile("Ticket:(\\d+) Booking:(\\d+)");
+        Matcher matcher = pattern.matcher(requestParams.get("vnp_OrderInfo"));
+        String ticketId = "";
+        String bookingId = "";
+        if (matcher.find()) {
+             ticketId = matcher.group(1);
+             bookingId = matcher.group(2);
+        } else {
+            System.out.println("Không tìm thấy ticket id và booking id trong chuỗi.");
+        }
+        Optional<Ticket> optionalTicket = ticketRepository.findById(Integer.valueOf(ticketId));
+        Optional<BookingHotel> optionalBookingHotel = bookingHotelRepository.findById(Long.valueOf(bookingId));
+        Ticket ticket = new Ticket();
+        BookingHotel bookingHotel = new BookingHotel();
+        if (optionalTicket.isPresent() && optionalBookingHotel.isPresent()) {
+            ticket = optionalTicket.get();
+            bookingHotel = optionalBookingHotel.get();
+        }
         if ("00".equals(requestParams.get("vnp_ResponseCode")) && "00".equals(requestParams.get("vnp_TransactionStatus"))) {
-            if (orderId != null) {
+            if (optionalTicket.isPresent()) {
                 ticket.setStatus(Status.Complete);
                 ticketRepository.save(ticket);
                 List<ScheduleSeat> scheduleSeats = scheduleSeatRepository.findByScheduleId(ticket.getSchedule().getId());
@@ -123,6 +153,17 @@ public class VnPayService implements IVnPayService {
                             scheduleSeatRepository.save(scheduleSeat);
                         }
                     }
+                }
+            }if(bookingHotel != null){
+                bookingHotel.setStatus(Status.Complete);
+                bookingHotelRepository.save(bookingHotel);
+                List<BookingHotelDetail> bookingHotelDetails = bookingHotelDetailRepository
+                            .findByBookingHotelBookingHotelId(bookingHotel.getBookingHotelId());
+                for(BookingHotelDetail bookingHotelDetail: bookingHotelDetails){
+                    Room room = roomRepository.findById(bookingHotelDetail.getRoom().getId())
+                            .orElseThrow(()-> new AppException(ErrorType.notFound));
+                    room.setAvailable(false);
+                    roomRepository.save(room);
                 }
             }
             return "00";
