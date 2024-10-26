@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface VehicleRepository extends JpaRepository<Vehicle,String> {
     Vehicle findByCode(String code);
-
 }

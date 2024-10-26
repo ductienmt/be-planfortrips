@@ -2,10 +2,7 @@ package com.be_planfortrips.configs;
 
 public class ApiProvider {
     public static final String[] PUBLIC_API = {
-            "/api/v1/**",
-            "/api/v1/hotels/**",
-
-
+            "/api/v1/auth/**",
     };
 
     public static final String[] ADMIN_API = {

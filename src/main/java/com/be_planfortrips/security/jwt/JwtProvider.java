@@ -5,10 +5,7 @@ import com.be_planfortrips.entity.Role;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.security.userPrincipal.CustomUserServiceDetails;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -27,28 +24,16 @@ import java.util.Map;
 @Component
 @Slf4j
 public class JwtProvider {
-//    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-    private final String secretKey = "planfortripsdinhtangductiendangthanhhunghominhnhuthuynhanhquanhuynhhaonamnguyenanhtai";
+
+    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     private final int jwtExpiration = 86400 * 1000;
+
     @Autowired
     private CustomUserServiceDetails userDetailsService;
 
     public String createToken(String userIdentify, String role, TypeLogin typeLogin) {
         Map<String, Object> claims = new HashMap<>();
-
-        switch (typeLogin) {
-            case LOGIN_GOOGLE:
-                claims.put("loginType", "Google");
-                break;
-            case LOGIN_FACEBOOK:
-                claims.put("loginType", "Facebook");
-                break;
-            case LOGIN_NORMAL:
-            default:
-                claims.put("loginType", "Normal");
-                break;
-        }
-
+        claims.put("loginType", typeLogin.name());
         claims.put("role", role);
 
         Date now = new Date();
@@ -59,26 +44,25 @@ public class JwtProvider {
                 .setSubject(userIdentify)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(secretKey, SignatureAlgorithm.HS512)
                 .compact();
     }
 
-
-
-
-    public Boolean validateToken(String token) {
+    public Boolean validateToken(String token){
         try {
-            Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token);
+            Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            log.error("JWT token không hợp lệ: " + e.getMessage());
-            throw new AppException(ErrorType.internalServerError);
+        } catch (ExpiredJwtException e){
+            log.error("Expired JWT token -> Message: {}",e);
+        } catch (MalformedJwtException e) {
+            log.error("Invalid format token -> Message: {}",e);
+        } catch (UnsupportedJwtException e){
+            log.error("Unsupported JWT token -> Message: {}",e);
+        } catch (IllegalArgumentException e){
+            log.error("JWT claims string is empty -> Message: {}",e);
         }
+        return false;
     }
-
 
     public String getUsernameFromToken(String token) {
         return Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
@@ -87,7 +71,8 @@ public class JwtProvider {
     public Authentication getAuthentication(String token, HttpServletRequest request) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(getUsernameFromToken(token));
         log.info("UserDetails: " + userDetails);
-        UsernamePasswordAuthenticationToken authenticationToken =new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         return authenticationToken;
     }
