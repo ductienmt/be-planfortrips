@@ -4,6 +4,7 @@ import com.be_planfortrips.dto.ScheduleDto;
 import com.be_planfortrips.dto.request.DataSchedule;
 import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.dto.response.ScheduleResponse;
+import com.be_planfortrips.entity.Schedule;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.services.interfaces.IScheduleService;
@@ -87,7 +88,7 @@ public class ScheduleController {
     public ResponseEntity<?> getSchedules(@RequestBody DataSchedule dataSchedule){
         try {
 //            this.scheduleService.getSchedules(dataSchedule);
-            return ResponseEntity.ok(ApiResponse.<List<ScheduleResponse>>builder()
+            return ResponseEntity.ok(ApiResponse.<List<Schedule>>builder()
                     .code(HttpStatus.OK.value())
                     .data(this.scheduleService.getSchedules(dataSchedule))
                     .message("")

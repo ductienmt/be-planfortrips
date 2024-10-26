@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class HotelController {
     IHotelService iHotelService;
-    @PostMapping("")
+    @PostMapping()
     public ResponseEntity<?> createHotel(@Valid @RequestBody HotelDto hotelDto,
                                          BindingResult result){
         try {
