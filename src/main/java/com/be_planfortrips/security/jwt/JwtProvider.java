@@ -28,8 +28,6 @@ public class JwtProvider {
     private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     private final int jwtExpiration = 86400 * 1000;
 
-    @Autowired
-    private CustomUserServiceDetails userDetailsService;
 
     public String createToken(String userIdentify, String role, TypeLogin typeLogin) {
         Map<String, Object> claims = new HashMap<>();
@@ -68,12 +66,7 @@ public class JwtProvider {
         return Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
     }
 
-    public Authentication getAuthentication(String token, HttpServletRequest request) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getUsernameFromToken(token));
-        log.info("UserDetails: " + userDetails);
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
-        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        return authenticationToken;
+    public String getRoleFromToken(String token) {
+        return Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().get("role", String.class);
     }
 }

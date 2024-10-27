@@ -30,8 +30,8 @@ public class CarCompany {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "car_images",
-        joinColumns = @JoinColumn(name = "car_id"),
-            inverseJoinColumns =  @JoinColumn(name = "image_id")
+            joinColumns = @JoinColumn(name = "car_id"),
+            inverseJoinColumns = @JoinColumn(name = "image_id")
     )
     @JsonManagedReference
     private List<Image> images = new ArrayList<>();
@@ -40,7 +40,7 @@ public class CarCompany {
     @JoinColumn(name = "enterprise_id")
     @JsonBackReference
     private AccountEnterprise enterprise;
-    @OneToMany(mappedBy = "carCompany", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "carCompany", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Vehicle> vehicles;
 

@@ -28,8 +28,8 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserServiceDetails userDetailsService;
+//    @Autowired
+//    private CustomUserServiceDetails userDetailsService;
 
     @Autowired
     private JwtEntryPoint jwtEntryPoint;
@@ -44,13 +44,13 @@ public class SecurityConfig {
         return new JwtTokenFilter();
     }
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
+//    @Bean
+//    public DaoAuthenticationProvider authenticationProvider() {
+//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+//        authProvider.setUserDetailsService(userDetailsService);
+//        authProvider.setPasswordEncoder(passwordEncoder());
+//        return authProvider;
+//    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -81,8 +81,7 @@ public class SecurityConfig {
                         .requestMatchers(ApiProvider.ADMIN_API).hasAuthority("ROLE_ADMIN")
                         .requestMatchers(ApiProvider.USER_API).hasAuthority("ROLE_USER")
                         .requestMatchers(ApiProvider.ENTERPRISE_API).hasAuthority("ROLE_ENTERPRISE")
-                        .requestMatchers(ApiProvider.ADMIN_USER_ENTERPRISE_API)
-                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ENTERPRISE")
+                        .requestMatchers(ApiProvider.ADMIN_USER_ENTERPRISE_API).hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ENTERPRISE")
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtEntryPoint))
