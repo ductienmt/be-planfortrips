@@ -18,25 +18,25 @@ public class FeedbackController {
 
     private final IFeedbackService feedbackService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<FeedbackResponse>> getAllFeedbacks() {
         List<FeedbackResponse> feedbacks = feedbackService.getAllFeedbacks();
         return ResponseEntity.ok(feedbacks);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("getById/{id}")
     public ResponseEntity<FeedbackResponse> getFeedbackById(@PathVariable UUID id) {
         FeedbackResponse response = feedbackService.getFeedbackById(id);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<FeedbackResponse> createFeedback(@RequestBody FeedbackDto dto) {
         FeedbackResponse response = feedbackService.createFeedback(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("update/{id}")
     public ResponseEntity<FeedbackResponse> updateFeedback(
             @PathVariable UUID id,
             @RequestBody FeedbackDto dto
@@ -45,7 +45,7 @@ public class FeedbackController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<Void> deleteFeedback(@PathVariable UUID id) {
         feedbackService.deleteFeedbackById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

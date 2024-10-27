@@ -26,7 +26,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class RouteController {
     IRouteService iRouteService;
-    @PostMapping()
+    @PostMapping("/create")
     public ResponseEntity<?> createRoute(@RequestBody @Valid RouteDTO RouteDTO,
                                            BindingResult result){
         try {
@@ -43,7 +43,7 @@ public class RouteController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PutMapping("/{code}")
+    @PutMapping("update/{code}")
     public ResponseEntity<?> updateRoute(@PathVariable String code,@RequestBody @Valid RouteDTO RouteDTO,
                                            BindingResult result){
         try {
@@ -60,7 +60,7 @@ public class RouteController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping()
+    @GetMapping("all")
     public ResponseEntity<?> getCarCompanies(@RequestParam int page,
                                              @RequestParam int limit){
         try {
@@ -76,12 +76,12 @@ public class RouteController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteCarCompanyById(@PathVariable String id) throws Exception {
         iRouteService.deleteRouteById(id);
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("/{id}")
+    @GetMapping("getById/{id}")
     public ResponseEntity<?> getCarCompanyById(@PathVariable String id){
         try {
             RouteResponse response = iRouteService.getByRouteId(id);

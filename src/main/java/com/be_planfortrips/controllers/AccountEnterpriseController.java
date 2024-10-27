@@ -26,8 +26,8 @@ public class AccountEnterpriseController {
         return new ResponseEntity<>(accountEnterprises, HttpStatus.OK);
     }
 
-    @GetMapping("/getById")
-    public ResponseEntity<AccountEnterpriseResponse> getAccountEnterpriseById(@RequestParam("id") Long id) {
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<AccountEnterpriseResponse> getAccountEnterpriseById(@PathVariable Long id) {
         AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.getAccountEnterpriseById(id);
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.OK);
     }

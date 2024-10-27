@@ -22,7 +22,7 @@ public class PlanController {
     @Autowired
     private IPlanService planService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<?> getAllPlanByUserId(@RequestParam("userId") Integer userId) {
         try {
             return ResponseEntity.ok().body(this.planService.getAllPlanByUserId(userId.longValue()));

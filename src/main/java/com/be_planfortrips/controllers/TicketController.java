@@ -25,8 +25,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class TicketController {
+
     ITicketService iTicketService;
-    @PostMapping()
+
+    @PostMapping("/create")
     public ResponseEntity<?> createTicket(@RequestBody @Valid TicketDTO ticketDTO,
                                           @RequestParam String seatIds,
                                           @RequestParam(required = false) String codeCoupon,
@@ -51,7 +53,8 @@ public class TicketController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PutMapping("/{id}")
+
+    @PutMapping("update/{id}")
     public ResponseEntity<?> updateTicket(@PathVariable Integer id,@RequestBody @Valid TicketDTO ticketDTO,
                                           @RequestParam String ids,
                                           BindingResult result){
@@ -73,7 +76,8 @@ public class TicketController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping()
+
+    @GetMapping("all")
     public ResponseEntity<?> getCarCompanies(@RequestParam int page,
                                              @RequestParam int limit){
         try {
@@ -89,12 +93,14 @@ public class TicketController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/{id}")
+
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteCarCompanyById(@PathVariable Integer id) throws Exception {
         iTicketService.deleteTicketById(id);
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("/{id}")
+
+    @GetMapping("getById/{id}")
     public ResponseEntity<?> getCarCompanyById(@PathVariable Integer id){
         try {
             TicketResponse response = iTicketService.getByTicketId(id);
