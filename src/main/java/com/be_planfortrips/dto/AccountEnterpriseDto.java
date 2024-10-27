@@ -19,6 +19,7 @@ public class AccountEnterpriseDto {
     String address;
     Boolean status;
     Integer imageId;
+    String cityId;
     Long typeEnterpriseDetailId;
 }
 

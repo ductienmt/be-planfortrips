@@ -6,7 +6,7 @@ import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.HotelMapper;
-import com.be_planfortrips.repositories.EnterpriseRepository;
+import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.HotelRepository;
 import com.be_planfortrips.repositories.ImageRepository;
 import com.be_planfortrips.dto.response.HotelResponse;
@@ -35,7 +35,7 @@ public class HotelService implements IHotelService {
 
     HotelRepository hotelRepository;
 
-    EnterpriseRepository enterpriseRepository;
+    AccountEnterpriseRepository enterpriseRepository;
 
     ImageRepository imageRepository;
 

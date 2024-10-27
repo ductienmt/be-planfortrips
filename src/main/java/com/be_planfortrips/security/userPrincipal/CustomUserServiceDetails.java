@@ -30,28 +30,11 @@ public class CustomUserServiceDetails implements UserDetailsService {
     @Autowired
     private AccountEnterpriseRepository enterpriseRepository;
 
+
+
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username));
-        if (user.isPresent()) {
-            GrantedAuthority authority = new SimpleGrantedAuthority(user.get().getRole().getName());
-            List<GrantedAuthority> authorities = Collections.singletonList(authority);
-
-            return new UserPrincipal(user.get());
-        }
-        Optional<Admin> admin = Optional.ofNullable(adminRepository.findByUsername(username));
-        if (admin.isPresent()) {
-            GrantedAuthority authority = new SimpleGrantedAuthority(admin.get().getRole().getName());
-            List<GrantedAuthority> authorities = Collections.singletonList(authority);
-            return new UserPrincipal(admin.get());
-        }
-        Optional<AccountEnterprise> enterprise = Optional.ofNullable(enterpriseRepository.findByUsername(username));
-        if (enterprise.isPresent()) {
-            GrantedAuthority authority = new SimpleGrantedAuthority(enterprise.get().getRole().getName());
-            List<GrantedAuthority> authorities = Collections.singletonList(authority);
-            return new UserPrincipal(enterprise.get());
-        }
-
-        throw new UsernameNotFoundException("Không tìm thấy tài khoản có username: " + username + " trong hệ thống");
+        return null;
     }
 }
