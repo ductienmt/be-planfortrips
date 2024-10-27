@@ -22,13 +22,13 @@ public class BookingHotelDetailController {
 
     IBookingHotelDetailService bookingHotelDetailService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<BookingHotelDetailResponse>> getAllBookingHotelDetail() {
         List<BookingHotelDetailResponse> responses = bookingHotelDetailService.getAllBookingHotelDetail();
         return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("/{bookingHotelDtlId}")
+    @GetMapping("getById/{bookingHotelDtlId}")
     public ResponseEntity<BookingHotelDetailResponse> getBookingHotelDetailById(
             @PathVariable UUID bookingHotelDtlId
             ) {

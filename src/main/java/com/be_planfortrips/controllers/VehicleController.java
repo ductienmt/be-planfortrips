@@ -25,8 +25,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class VehicleController {
+
     IVehicleService iVehicleService;
-    @PostMapping()
+
+    @PostMapping("/create")
     public ResponseEntity<?> createVehicle(@RequestBody @Valid VehicleDTO vehicleDTO,
                                               BindingResult result){
         try {
@@ -43,7 +45,8 @@ public class VehicleController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PutMapping("/{code}")
+
+    @PutMapping("update/{code}")
     public ResponseEntity<?> updateVehicle(@PathVariable String code,@RequestBody @Valid VehicleDTO vehicleDTO,
                                               BindingResult result){
         try {
@@ -60,7 +63,8 @@ public class VehicleController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping()
+
+    @GetMapping("all")
     public ResponseEntity<?> getCarCompanies(@RequestParam int page,
                                              @RequestParam int limit){
         try {
@@ -76,12 +80,14 @@ public class VehicleController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/{code}")
+
+    @DeleteMapping("delete/{code}")
     public ResponseEntity<?> deleteCarCompanyById(@PathVariable String code) throws Exception {
         iVehicleService.deleteVehicleById(code);
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("/{code}")
+
+    @GetMapping("getById/{code}")
     public ResponseEntity<?> getCarCompanyById(@PathVariable String code){
         try {
             VehicleResponse response = iVehicleService.getByVehicleId(code);

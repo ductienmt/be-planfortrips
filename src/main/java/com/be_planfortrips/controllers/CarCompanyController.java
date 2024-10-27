@@ -24,13 +24,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("${api.prefix}/car_companies")
+@RequestMapping("${api.prefix}/car-companies")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class CarCompanyController {
     ICarCompanyService iCarService;
 
-    @PostMapping()
+    @PostMapping("/create")
     public ResponseEntity<?> createCarCompany(@RequestBody @Valid CarCompanyDTO carCompanyDTO,
                                               BindingResult result){
         try {
@@ -47,7 +47,7 @@ public class CarCompanyController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PutMapping("/{id}")
+    @PutMapping("update/{id}")
     public ResponseEntity<?> updateCarCompany(@PathVariable int id,@RequestBody @Valid CarCompanyDTO carCompanyDTO,
                                               BindingResult result){
         try {
@@ -64,7 +64,7 @@ public class CarCompanyController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping()
+    @GetMapping("/all")
     public ResponseEntity<?> getCarCompanies(@RequestParam int page,
                                              @RequestParam int limit){
         try {
@@ -80,12 +80,14 @@ public class CarCompanyController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/{id}")
+
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteCarCompanyById(@PathVariable int id){
         iCarService.deleteCarById(id);
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("/{id}")
+
+    @GetMapping("getById/{id}")
     public ResponseEntity<?> getCarCompanyById(@PathVariable int id){
         try {
             CarResponse response = iCarService.getByCarId(id);
@@ -104,7 +106,7 @@ public class CarCompanyController {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
-    @DeleteMapping("/{id}/images")
+    @DeleteMapping("deleteImages/{id}")
     public ResponseEntity<?> deleteImages(@PathVariable Integer id,
                                           @RequestParam String imageIds){
         try {

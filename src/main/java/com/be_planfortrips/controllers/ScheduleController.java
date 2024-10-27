@@ -33,34 +33,34 @@ public class ScheduleController {
 
     IScheduleService scheduleService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<ScheduleResponse>> getAllSchedules() {
         List<ScheduleResponse> responses = scheduleService.getAllSchedule();
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
-    @GetMapping("/{scheduleId}")
+    @GetMapping("getById/{scheduleId}")
     public ResponseEntity<ScheduleResponse> getScheduleById(
             @PathVariable Integer scheduleId) {
         ScheduleResponse response = scheduleService.getScheduleById(scheduleId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ScheduleResponse> createSchedule(
             @RequestBody ScheduleDto scheduleDto) {
         ScheduleResponse response = scheduleService.createSchedule(scheduleDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{scheduleId}")
+    @PutMapping("update/{scheduleId}")
     public ResponseEntity<ScheduleResponse> updateSchedule(
             @PathVariable Integer scheduleId, @RequestBody ScheduleDto scheduleDto) {
         ScheduleResponse response = scheduleService.updateSchedule(scheduleDto, scheduleId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{scheduleId}")
+    @DeleteMapping("delete/{scheduleId}")
     public ResponseEntity<Void> deleteScheduleById(
             @PathVariable Integer scheduleId) {
         scheduleService.deleteScheduleById(scheduleId);
@@ -98,9 +98,6 @@ public class ScheduleController {
             throw new AppException(ErrorType.internalServerError);
         }
     }
-
-
-
 
     @GetMapping("/getByTime") // need review and edit sql and data type LocalDateTime
     public ResponseEntity<?> getScheduleByTime(

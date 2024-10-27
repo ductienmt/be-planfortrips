@@ -20,20 +20,19 @@ import java.util.Set;
 @RequestMapping("${api.prefix}/rooms")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
-@CrossOrigin(origins = "http://localhost:5050/")
 public class RoomController {
 
     IRoomService roomService;
 
     IHotelService hotelService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<Set<RoomResponse>> getAllRoom() {
         Set<RoomResponse> responses = roomService.getAllRoom();
         return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("/{roomId}")
+    @GetMapping("getById/{roomId}")
     public ResponseEntity<RoomResponse> getRoomById(
             @PathVariable Long roomId
             ) {
@@ -41,7 +40,7 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/create")
     public ResponseEntity<RoomResponse> createRoom(
            @RequestBody RoomDto roomDto
     ) {
@@ -49,7 +48,7 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{roomId}")
+    @PutMapping("update/{roomId}")
     public ResponseEntity<RoomResponse> updateRoom(
             @RequestBody RoomDto roomDto, @PathVariable Long roomId
     )  {
@@ -57,14 +56,13 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{roomId}")
+    @DeleteMapping("delete/{roomId}")
     public ResponseEntity<Void> deleteRoom(
             @PathVariable Long roomId
     ) {
         roomService.deleteRoomById(roomId);
         return ResponseEntity.noContent().build();
     }
-
 
     // test this endpoint, don't care about the response
     @GetMapping("/getRoomAvailable")

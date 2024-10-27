@@ -21,13 +21,13 @@ public class BookingHotelController {
 
     IBookingHotelService bookingHotelService;
 
-    @GetMapping
+    @GetMapping("all")
     public ResponseEntity<Set<BookingHotelResponse>> getAllBookingHotel() {
         Set<BookingHotelResponse> responses = bookingHotelService.getAllBookingHotel();
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
-    @GetMapping("/{bookingId}")
+    @GetMapping("getById/{bookingId}")
     public ResponseEntity<BookingHotelResponse> getBookingHotelByBookingId(
             @PathVariable Long bookingId) {
         BookingHotelResponse response = bookingHotelService.getBookingHotelByBookingId(bookingId);
@@ -41,21 +41,21 @@ public class BookingHotelController {
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<BookingHotelResponse> createBookingHotel(
             @RequestBody BookingHotelDto bookingHotelDto) {
         BookingHotelResponse response = bookingHotelService.createBookingHotel(bookingHotelDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{bookingId}")
+    @PutMapping("update/{bookingId}")
     public ResponseEntity<BookingHotelResponse> updateBookingHotel(
             @PathVariable Long bookingId, @RequestBody BookingHotelDto bookingHotelDto) {
         BookingHotelResponse response = bookingHotelService.updateBookingHotel(bookingHotelDto, bookingId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{bookingId}")
+    @DeleteMapping("delete/{bookingId}")
     public ResponseEntity<Void> deleteBookingHotelByBookingId(
             @PathVariable Long bookingId) {
         bookingHotelService.deleteBookingHotelByBookingId(bookingId);
