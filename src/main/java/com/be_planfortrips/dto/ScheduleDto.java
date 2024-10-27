@@ -23,4 +23,5 @@ public class ScheduleDto {
     LocalDateTime departureTime;
     LocalDateTime arrivalTime;
     List<SeatDTO> seat;
+
 }

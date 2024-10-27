@@ -20,25 +20,25 @@ public class AccountEnterpriseController {
 
     IAccountEnterpriseService accountEnterpriseService;
 
-    @GetMapping
+    @GetMapping("all")
     public ResponseEntity<List<AccountEnterpriseResponse>> getAllAccountEnterprises() {
         List<AccountEnterpriseResponse> accountEnterprises = accountEnterpriseService.getAllAccountEnterprises();
         return new ResponseEntity<>(accountEnterprises, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById/{id}")
     public ResponseEntity<AccountEnterpriseResponse> getAccountEnterpriseById(@PathVariable Long id) {
         AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.getAccountEnterpriseById(id);
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<AccountEnterpriseResponse> createAccountEnterprise(@RequestBody AccountEnterpriseDto accountEnterpriseDto) {
         AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.createAccountEnterprise(accountEnterpriseDto);
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("update/{id}")
     public ResponseEntity<AccountEnterpriseResponse> updateAccountEnterprise(
             @PathVariable Long id,
             @RequestBody AccountEnterpriseDto accountEnterpriseDto) {
@@ -46,7 +46,7 @@ public class AccountEnterpriseController {
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<Void> deleteAccountEnterpriseById(@PathVariable Long id) {
         accountEnterpriseService.deleteAccountEnterpriseById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

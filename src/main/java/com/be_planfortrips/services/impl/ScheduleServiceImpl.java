@@ -112,7 +112,7 @@ public class ScheduleServiceImpl implements IScheduleService {
     }
 
     @Override
-    public List<ScheduleResponse> getSchedules(DataSchedule dataSchedule) {
+    public List<Schedule> getSchedules(DataSchedule dataSchedule) {
         if (dataSchedule.getEndDate() == null) {
             dataSchedule.setEndDate(dataSchedule.getStartDate());
         }
@@ -122,7 +122,7 @@ public class ScheduleServiceImpl implements IScheduleService {
                 dataSchedule.getStartDate(),
                 dataSchedule.getEndDate()
         );
-        return schedules.stream().map(scheduleMapper::toResponse).collect(Collectors.toList());
+        return schedules;
     }
 
     private Map<String, Object> fetchSchedules(LocalDateTime time, String type) {

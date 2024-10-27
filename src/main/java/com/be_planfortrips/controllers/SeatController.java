@@ -24,8 +24,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class SeatController {
+
     ISeatService iSeatService;
-    @PostMapping()
+
+    @PostMapping("/create")
     public ResponseEntity<?> createSeat(@RequestBody @Valid SeatDTO SeatDTO,
                                            BindingResult result){
         try {
@@ -42,7 +44,8 @@ public class SeatController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PutMapping("/{id}")
+
+    @PutMapping("update/{id}")
     public ResponseEntity<?> updateSeat(@PathVariable Integer id,@RequestBody @Valid SeatDTO SeatDTO,
                                            BindingResult result){
         try {
@@ -59,7 +62,8 @@ public class SeatController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping()
+
+    @GetMapping("all")
     public ResponseEntity<?> getCarCompanies(@RequestParam int page,
                                              @RequestParam int limit){
         try {
@@ -75,12 +79,14 @@ public class SeatController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/{id}")
+
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteCarCompanyById(@PathVariable Integer id) throws Exception {
         iSeatService.deleteSeatById(id);
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("/{id}")
+
+    @GetMapping("getById/{id}")
     public ResponseEntity<?> getCarCompanyById(@PathVariable Integer id){
         try {
             SeatResponse response = iSeatService.getBySeatId(id);

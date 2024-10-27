@@ -28,12 +28,11 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserServiceDetails userDetailsService;
+//    @Autowired
+//    private CustomUserServiceDetails userDetailsService;
 
     @Autowired
     private JwtEntryPoint jwtEntryPoint;
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -45,13 +44,13 @@ public class SecurityConfig {
         return new JwtTokenFilter();
     }
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
+//    @Bean
+//    public DaoAuthenticationProvider authenticationProvider() {
+//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+//        authProvider.setUserDetailsService(userDetailsService);
+//        authProvider.setPasswordEncoder(passwordEncoder());
+//        return authProvider;
+//    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -61,10 +60,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:5050");
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5050"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
         configuration.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -72,8 +73,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
-        http
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
@@ -81,10 +81,10 @@ public class SecurityConfig {
                         .requestMatchers(ApiProvider.ADMIN_API).hasAuthority("ROLE_ADMIN")
                         .requestMatchers(ApiProvider.USER_API).hasAuthority("ROLE_USER")
                         .requestMatchers(ApiProvider.ENTERPRISE_API).hasAuthority("ROLE_ENTERPRISE")
-//                        .requestMatchers(ApiProvider.ADMIN_USER_ENTERPRISE_API).hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ENTERPRISE")
-                        .anyRequest().authenticated());
-        http
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtEntryPoint))
+                        .requestMatchers(ApiProvider.ADMIN_USER_ENTERPRISE_API).hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ENTERPRISE")
+                        .anyRequest().authenticated())
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(jwtEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 

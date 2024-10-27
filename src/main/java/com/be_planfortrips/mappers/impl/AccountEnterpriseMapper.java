@@ -3,6 +3,7 @@ package com.be_planfortrips.mappers.impl;
 import com.be_planfortrips.dto.AccountEnterpriseDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
 import com.be_planfortrips.entity.AccountEnterprise;
+import com.be_planfortrips.entity.City;
 import com.be_planfortrips.entity.TypeEnterpriseDetail;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
@@ -22,6 +23,7 @@ public class AccountEnterpriseMapper implements
 
     ModelMapper modelMapper;
     TypeEnterpriseDetailRepository typeEnterpriseDetailRepository;
+
     @Override
     public AccountEnterprise toEntity(AccountEnterpriseDto accountEnterpriseDto) {
         AccountEnterprise enterprise = modelMapper.map(accountEnterpriseDto, AccountEnterprise.class);
@@ -29,6 +31,8 @@ public class AccountEnterpriseMapper implements
         if (!typeEnterpriseDetailRepository.existsById(typeEtpDtlId)) {
             throw new AppException(ErrorType.typeEnterpriseIdNotFound, typeEtpDtlId);
         }
+        City city = City.builder().id(accountEnterpriseDto.getCityId()).build();
+        enterprise.setCity(city);
         enterprise.setTypeEnterpriseDetail(TypeEnterpriseDetail.builder().id(typeEtpDtlId).build());
         return enterprise;
     }
@@ -38,8 +42,17 @@ public class AccountEnterpriseMapper implements
         AccountEnterpriseResponse accountEnterpriseResponse =
                 modelMapper.map(accountEnterprise, AccountEnterpriseResponse.class);
         accountEnterpriseResponse.setTypeEnterpriseDetailId(accountEnterprise.getTypeEnterpriseDetail().getId());
+
+        City city = accountEnterprise.getCity();
+        if (city != null) {
+            accountEnterpriseResponse.setCityName(city.getNameCity());
+        } else {
+            accountEnterpriseResponse.setCityName("No city assigned");
+        }
+
         return accountEnterpriseResponse;
     }
+
 
     @Override
     public void updateEntityFromDto(AccountEnterpriseDto accountEnterpriseDto, AccountEnterprise accountEnterprise) {

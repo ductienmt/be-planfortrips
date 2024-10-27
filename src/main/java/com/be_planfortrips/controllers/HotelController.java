@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class HotelController {
     IHotelService iHotelService;
-    @PostMapping("")
+    @PostMapping("/create")
     public ResponseEntity<?> createHotel(@Valid @RequestBody HotelDto hotelDto,
                                          BindingResult result){
         try {
@@ -46,7 +46,7 @@ public class HotelController {
             return ResponseEntity.badRequest().body("error"+e.getMessage());
         }
     }
-    @GetMapping("")
+    @GetMapping("all")
     public ResponseEntity<HotelListResponse> getHotels(@RequestParam("page")     int page,
                                                        @RequestParam("limit")    int limit,
                                                        @RequestParam(defaultValue = "") String keyword
@@ -62,7 +62,7 @@ public class HotelController {
                         .build());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("update/{id}")
     public ResponseEntity<?> updateHotel(@Valid @RequestBody HotelDto hotelDto,
                                          @PathVariable Long id,
                                          BindingResult result){
@@ -80,12 +80,12 @@ public class HotelController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<Void> deleteHotelById(@PathVariable Long id) {
         iHotelService.deleteHotelById(id);
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("/{id}")
+    @GetMapping("getById/{id}")
     public ResponseEntity<?> getHotelById(@PathVariable Long id){
         try {
             HotelResponse hotelResponse = iHotelService.getByHotelId(id);
@@ -105,7 +105,7 @@ public class HotelController {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
-    @DeleteMapping("/{id}/images")
+    @DeleteMapping("deleteImages/{id}")
     public ResponseEntity<?> deleteImages(@PathVariable Long id,
                                           @RequestParam String imageIds){
         try {

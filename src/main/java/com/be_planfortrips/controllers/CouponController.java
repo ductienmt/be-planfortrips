@@ -24,7 +24,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class CouponController {
     ICouponService iCouponService;
-    @PostMapping()
+    @PostMapping("/create")
     public ResponseEntity<?> createCoupon(@RequestBody @Valid CouponDto CouponDTO,
                                           BindingResult result){
         try {
@@ -42,7 +42,7 @@ public class CouponController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PutMapping("/{id}")
+    @PutMapping("update/{id}")
     public ResponseEntity<?> updateCoupon(@PathVariable Integer id, @RequestBody @Valid CouponDto CouponDTO,
                                           BindingResult result){
         try {
@@ -59,7 +59,7 @@ public class CouponController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping()
+    @GetMapping("/all")
     public ResponseEntity<?> getCoupons(@RequestParam int page,
                                              @RequestParam int limit){
         try {
@@ -76,12 +76,12 @@ public class CouponController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteCouponById(@PathVariable Integer id) throws Exception {
         iCouponService.deleteCouponById(id);
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("/{id}")
+    @GetMapping("getById/{id}")
     public ResponseEntity<?> getCouponById(@PathVariable Integer id){
         try {
             CouponResponse response = iCouponService.getByCouponId(id);

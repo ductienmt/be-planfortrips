@@ -4,6 +4,7 @@ import com.be_planfortrips.dto.ScheduleDto;
 import com.be_planfortrips.dto.request.DataSchedule;
 import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.dto.response.ScheduleResponse;
+import com.be_planfortrips.entity.Schedule;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.services.interfaces.IScheduleService;
@@ -32,34 +33,34 @@ public class ScheduleController {
 
     IScheduleService scheduleService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<ScheduleResponse>> getAllSchedules() {
         List<ScheduleResponse> responses = scheduleService.getAllSchedule();
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
-    @GetMapping("/{scheduleId}")
+    @GetMapping("getById/{scheduleId}")
     public ResponseEntity<ScheduleResponse> getScheduleById(
             @PathVariable Integer scheduleId) {
         ScheduleResponse response = scheduleService.getScheduleById(scheduleId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ScheduleResponse> createSchedule(
             @RequestBody ScheduleDto scheduleDto) {
         ScheduleResponse response = scheduleService.createSchedule(scheduleDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{scheduleId}")
+    @PutMapping("update/{scheduleId}")
     public ResponseEntity<ScheduleResponse> updateSchedule(
             @PathVariable Integer scheduleId, @RequestBody ScheduleDto scheduleDto) {
         ScheduleResponse response = scheduleService.updateSchedule(scheduleDto, scheduleId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{scheduleId}")
+    @DeleteMapping("delete/{scheduleId}")
     public ResponseEntity<Void> deleteScheduleById(
             @PathVariable Integer scheduleId) {
         scheduleService.deleteScheduleById(scheduleId);
@@ -87,7 +88,7 @@ public class ScheduleController {
     public ResponseEntity<?> getSchedules(@RequestBody DataSchedule dataSchedule){
         try {
 //            this.scheduleService.getSchedules(dataSchedule);
-            return ResponseEntity.ok(ApiResponse.<List<ScheduleResponse>>builder()
+            return ResponseEntity.ok(ApiResponse.<List<Schedule>>builder()
                     .code(HttpStatus.OK.value())
                     .data(this.scheduleService.getSchedules(dataSchedule))
                     .message("")
@@ -97,9 +98,6 @@ public class ScheduleController {
             throw new AppException(ErrorType.internalServerError);
         }
     }
-
-
-
 
     @GetMapping("/getByTime") // need review and edit sql and data type LocalDateTime
     public ResponseEntity<?> getScheduleByTime(

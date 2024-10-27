@@ -1,5 +1,6 @@
 package com.be_planfortrips.dto.response;
 
+import com.be_planfortrips.entity.City;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,5 +18,6 @@ public class AccountEnterpriseResponse {
     String address;
     String taxCode;
     Long typeEnterpriseDetailId;
+    String cityName;
 
 }
