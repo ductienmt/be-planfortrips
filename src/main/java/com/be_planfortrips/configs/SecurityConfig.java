@@ -2,12 +2,10 @@ package com.be_planfortrips.configs;
 
 import com.be_planfortrips.security.jwt.JwtEntryPoint;
 import com.be_planfortrips.security.jwt.JwtTokenFilter;
-import com.be_planfortrips.security.userPrincipal.CustomUserServiceDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,9 +26,6 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
-//    @Autowired
-//    private CustomUserServiceDetails userDetailsService;
-
     @Autowired
     private JwtEntryPoint jwtEntryPoint;
 
@@ -43,14 +38,6 @@ public class SecurityConfig {
     public JwtTokenFilter jwtFilter() {
         return new JwtTokenFilter();
     }
-
-//    @Bean
-//    public DaoAuthenticationProvider authenticationProvider() {
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(userDetailsService);
-//        authProvider.setPasswordEncoder(passwordEncoder());
-//        return authProvider;
-//    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -77,11 +64,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(ApiProvider.PUBLIC_API).permitAll()
-                        .requestMatchers(ApiProvider.ADMIN_API).hasAuthority("ROLE_ADMIN")
-                        .requestMatchers(ApiProvider.USER_API).hasAuthority("ROLE_USER")
-                        .requestMatchers(ApiProvider.ENTERPRISE_API).hasAuthority("ROLE_ENTERPRISE")
-                        .requestMatchers(ApiProvider.ADMIN_USER_ENTERPRISE_API).hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ENTERPRISE")
+                        .requestMatchers(API_Provider.PUBLIC_API).permitAll()
+                        .requestMatchers(API_Provider.ADMIN_API).hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(API_Provider.USER_API).hasAuthority("ROLE_USER")
+                        .requestMatchers(API_Provider.ENTERPRISE_API).hasAuthority("ROLE_ENTERPRISE")
+                        .requestMatchers(API_Provider.ADMIN_USER_ENTERPRISE_API).hasAnyAuthority("ROLE_ADMIN", "ROLE_USER", "ROLE_ENTERPRISE")
+                        .requestMatchers(API_Provider.USER_ADMIN_API).hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                        .requestMatchers(API_Provider.USER_ENTERPRISE_API).hasAnyAuthority("ROLE_USER", "ROLE_ENTERPRISE")
+                        .requestMatchers(API_Provider.ADMIN_ENTERPRISE_API).hasAnyAuthority("ROLE_ADMIN", "ROLE_ENTERPRISE")
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtEntryPoint))

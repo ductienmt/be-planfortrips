@@ -1,19 +1,9 @@
 package com.be_planfortrips.security.jwt;
 
 import com.be_planfortrips.dto.OauthModel.TypeLogin;
-import com.be_planfortrips.entity.Role;
-import com.be_planfortrips.exceptions.AppException;
-import com.be_planfortrips.exceptions.ErrorType;
-import com.be_planfortrips.security.userPrincipal.CustomUserServiceDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -25,9 +15,8 @@ import java.util.Map;
 @Slf4j
 public class JwtProvider {
 
-    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    private final String secretKey = "planfortripsdinhtangductiendangthanhhunghominhnhuthuynhanhquanhuynhhaonamnguyenanhtai";
     private final int jwtExpiration = 86400 * 1000;
-
 
     public String createToken(String userIdentify, String role, TypeLogin typeLogin) {
         Map<String, Object> claims = new HashMap<>();
@@ -37,12 +26,13 @@ public class JwtProvider {
         Date now = new Date();
         Date validity = new Date(now.getTime() + jwtExpiration);
 
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userIdentify)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(secretKey, SignatureAlgorithm.HS512)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
