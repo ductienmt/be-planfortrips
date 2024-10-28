@@ -2,25 +2,25 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.controllers.PlanController;
 import com.be_planfortrips.dto.request.DataEssentialPlan;
-import com.be_planfortrips.dto.response.BookingHotelResponse;
-import com.be_planfortrips.dto.response.CheckinResponse;
-import com.be_planfortrips.dto.response.HotelResponse;
-import com.be_planfortrips.dto.response.PlanResponse;
-import com.be_planfortrips.entity.Plan;
-import com.be_planfortrips.entity.PlanDetail;
+import com.be_planfortrips.dto.response.*;
+import com.be_planfortrips.entity.*;
+import com.be_planfortrips.repositories.BookingHotelRepository;
+import com.be_planfortrips.repositories.CheckinRepository;
 import com.be_planfortrips.repositories.PlanRepository;
+import com.be_planfortrips.repositories.TicketRepository;
 import com.be_planfortrips.services.interfaces.IPlanService;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PlanServiceImpl implements IPlanService {
-    private static final String CHATGPT_API = "sk-OI3g1CMDw2XatjAOR2ITR57Siu0oOXP7Dq5vwLzmVlT3BlbkFJyCZHBKMikCuFGb6f_DfnvlrA3PoeKzz000dJWZ0sEA";
 
     @Autowired
     private PlanRepository planRepository;
@@ -36,7 +36,12 @@ public class PlanServiceImpl implements IPlanService {
 
     @Autowired
     private ScheduleServiceImpl scheduleService;
-
+    @Autowired
+    private BookingHotelRepository bookingHotelRepository;
+    @Autowired
+    private CheckinRepository checkinRepository;
+    @Autowired
+    private TicketRepository ticketRepository;
 
     @Override
     public Map<String, Object> prepareDataPlan(DataEssentialPlan dataEssentialPlan) {
@@ -57,7 +62,7 @@ public class PlanServiceImpl implements IPlanService {
     }
 
     @Override
-    public List<PlanResponse> getAllPlanByUserId(Long userId){
+    public List<PlanResponse> getAllPlanByUserId(Long userId) {
         List<Plan> plans = planRepository.findAllByUserId(userId);
 
         return plans.stream().map(
@@ -67,46 +72,77 @@ public class PlanServiceImpl implements IPlanService {
                     planResponse.setPlan_name(plan.getPlanName());
                     planResponse.setBudget(plan.getBudget());
                     planResponse.setNumberPeople(plan.getNumberPeople());
-
-                    List<PlanDetail> planDetails = planDetailService.getAllPlanDetailByPlanId(Long.valueOf(plan.getId()));
-
-//                    planDetails.stream().map(
-//                            planDetail -> {
-//                                if (planDetail.getTypeEde().getName().trim().equals("Khách sạn")){
-//                                    planResponse.setHotel_id(Long.valueOf(planDetail.getServiceId()));
-//                                    HotelResponse hotel =  null;
-//                                    try {
-//                                        hotel =  hotelService.getByHotelId(Long.valueOf(planDetail.getServiceId()));
-//                                    } catch (Exception e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                    planResponse.setHotel_name(hotel.getName());
-//                                    BookingHotelResponse bookingHotel = null;
-//                                    try {
-//                                        bookingHotel = bookingHotelService.getBookingHotelById(Long.valueOf(planDetail.getTicketId()));
-//                                    } catch (Exception e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                    planResponse.setRoom_id(bookingHotel.getRoom().getId());
-//                                    planResponse.setRoom_name(bookingHotel.getRoom().getRoomName());
-//                                    planResponse.setRoom_price(bookingHotel.getRoom().getPrice());
-//                                }
-//                                return planDetail;
-//                            }
-//                    ).collect(Collectors.toList());
-
-//                    for (PlanDetail planDetail : planDetails) {
-//                        System.out.println(planDetail.getId() + " " + planDetail.getTypeEde().getName() +" "+ planDetail.getPlan().getId() + " "
-//                                + planDetail.getServiceId() + " " + planDetail.getTicketId());
-//                    }
-
                     return planResponse;
                 }).collect(Collectors.toList());
     }
 
     @Override
-    public PlanResponse getPlanById(Long id) {
+    public PlanResponseDetail getPlanDetail(Long id) {
+        List<PlanDetail> planDetails = planDetailService.getAllPlanDetailByPlanId(id);
+        PlanResponseDetail planResponseDetail = new PlanResponseDetail();
+        List<CheckinResponse> checkinList = new ArrayList<>();
+        planDetails.stream().map(
+                planDetail -> {
+                    String nameType = planDetail.getTypeEde().getName().trim();
+                    if (nameType.equals("Khách sạn") || nameType.equals("Homestay") || nameType.equals("Resort")) {
+                        BookingHotel bookingHotel = null;
+                        try {
+                            bookingHotel = bookingHotelRepository.findById(Long.valueOf(planDetail.getTicketId())).orElseThrow(() -> new RuntimeException("Lỗi lấy thông tin plan"));
+                        } catch (Exception e) {
+                            log.error("Lỗi lấy thông tin booking hotel: {}", e.getMessage());
+                        }
+                        planResponseDetail.setHotel_id(bookingHotel.getBookingHotelId());
+                        try {
+                            planResponseDetail.setHotel_name(hotelService.getByHotelId(bookingHotel.getBookingHotelId()).getName());
+                        } catch (Exception e) {
+                            log.error("Lỗi set info hotel: {}", e.getMessage());
+                            throw new RuntimeException("Lỗi lấy thông tin plan");
+                        }
+                        List<Map<String, Object>> rooms = new ArrayList<>();
+                        for (BookingHotelDetail bookingHotelDetail : bookingHotel.getBookingHotelDetails()) {
+                            Map<String, Object> room = new HashMap<>();
+                            room.put("room_id", bookingHotelDetail.getRoom().getId());
+                            room.put("room_name", bookingHotelDetail.getRoom().getRoomName());
+                            room.put("room_price", bookingHotelDetail.getRoom().getPrice());
+//                            room.put("room_discount", bookingHotelDetail.);
+                            room.put("room_status", bookingHotelDetail.getStatus());
+                            rooms.add(room);
+                        }
+                    }
 
+//                    if (nameType.equals("Checkin")) {
+//                        try {
+//                            CheckinResponse checkin = checkinService.getCheckin(Long.valueOf(planDetail.getTicketId()));
+//                            checkinList.add(checkin);
+//                        } catch (Exception e) {
+//                            log.error("Lỗi lấy thông tin checkin: {}", e.getMessage());
+//                        }
+//                    }
+//
+//                    if (nameType.equals("Xe khách")) {
+//                        try {
+//                            Ticket ticket = ticketRepository.findById(planDetail.getTicketId()).orElseThrow(() -> new RuntimeException("Lỗi lấy thông tin plan"));
+//                            planResponseDetail.setTicket(ticket);
+//                        } catch (Exception e) {
+//                            log.error("Lỗi lấy thông tin schedule: {}", e.getMessage());
+//                        }
+//                    }
+
+                    return planDetail;
+                }
+        ).collect(Collectors.toList());
+
+//        planResponseDetail.setCheckin(checkinList);
+
+        for (PlanDetail planDetail : planDetails) {
+            System.out.println(planDetail.getId() + " " + planDetail.getTypeEde().getName() + " " + planDetail.getPlan().getId() + " "
+                    + planDetail.getServiceId() + " " + planDetail.getTicketId());
+        }
+        return planResponseDetail;
+    }
+
+    @Override
+    public PlanResponse getPlanById(Long id) {
         return null;
     }
 }

@@ -22,10 +22,21 @@ public class PlanController {
     @Autowired
     private IPlanService planService;
 
+
+
     @GetMapping("/all")
     public ResponseEntity<?> getAllPlanByUserId(@RequestParam("userId") Integer userId) {
         try {
             return ResponseEntity.ok().body(this.planService.getAllPlanByUserId(userId.longValue()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<?> getPlanById(@RequestParam("id") Integer id) {
+        try {
+            return ResponseEntity.ok().body(this.planService.getPlanDetail(id.longValue()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -19,4 +19,5 @@ public interface CheckinRepository extends JpaRepository<Checkin, Long> {
     @Query(value = "SELECT * FROM checkins ORDER BY RANDOM() LIMIT :limit", nativeQuery = true)
     List<Checkin> findRandomCheckins(@Param("limit") int limit);
 
+
 }
