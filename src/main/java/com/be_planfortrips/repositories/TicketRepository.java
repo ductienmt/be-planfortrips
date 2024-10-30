@@ -1,5 +1,6 @@
 package com.be_planfortrips.repositories;
 
+import com.be_planfortrips.entity.Schedule;
 import com.be_planfortrips.entity.Status;
 import com.be_planfortrips.entity.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +16,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     List<Ticket> findPendingTicketsBefore(LocalDateTime timeLimit);
     @Query("select t from Ticket t where t.status = 'Cancelled'")
     List<Ticket> findByStatusCancelled();
+    List<Ticket> findByUser_Id(Long id);
+    List<Ticket> findBySchedule_Id(Integer id);
 }
 

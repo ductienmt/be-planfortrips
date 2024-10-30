@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageRequest;
 public interface IVehicleService {
     VehicleResponse createVehicle(VehicleDTO VehicleDto) throws Exception;
     VehicleResponse updateVehicle(String code,VehicleDTO VehicleDto) throws Exception;
-    Page<VehicleResponse> getVehicles(PageRequest request);
+    Page<VehicleResponse> getVehicles(PageRequest request,String keyword);
     VehicleResponse getByVehicleId(String code) throws Exception;
     void deleteVehicleById(String code) throws Exception;
 }
