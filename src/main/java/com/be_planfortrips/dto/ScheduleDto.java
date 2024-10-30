@@ -20,6 +20,7 @@ public class ScheduleDto {
     String vehicleCode;
     String driverName;
     String driverPhone;
+    BigDecimal priceForOneSeat;
     LocalDateTime departureTime;
     LocalDateTime arrivalTime;
     List<SeatDTO> seat;

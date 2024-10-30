@@ -7,11 +7,12 @@ public class API_Provider {
             "/api/v1/banners/allUser",
             "/api/v1/schedules/getStationByScheduleId",
             "/api/v1/schedules/getSchedules",
-            "/api/v1/coupons/**",
-            "/api/v1/coupons/all",
-            "/api/v1/tickets/**",
-            "/api/v1/tickets/getByUserId",
-            "/api/v1/routes/all"
+            "/api/v1/plans/save",
+            "/api/v1/vehicles/getById/**",
+            "/api/v1/hotels/getById/**",
+            "/api/v1/check-in/all",
+            "/api/v1/check-in/getImages",
+
     };
 
     public static final String[] ADMIN_API = {
@@ -59,6 +60,7 @@ public class API_Provider {
             "/api/v1/users/update",
             "/api/v1/users/changePassword",
             "/api/v1/users/upload",
+            "/api/v1/users/getImage",
             "/api/v1/payments/vnpay/create-payment",
     };
 
@@ -80,7 +82,6 @@ public class API_Provider {
 
     public static final String[] ADMIN_USER_ENTERPRISE_API = {
             "/api/v1/areas/all",
-            "/api/v1/plan/check-in/all",
             "/api/v1/plan/check-in/detail",
             "/api/v1/plan/check-in/search",
             "/api/v1/car-companies/getById/**",

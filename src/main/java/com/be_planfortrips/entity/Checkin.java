@@ -38,4 +38,7 @@ public class Checkin extends BaseEntity {
 
     @Column(name = "payFee", precision = 10, scale = 2)
     BigDecimal payFee;
+
+    @OneToMany(mappedBy = "checkin", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    List<CheckinImage> checkinImages;
 }

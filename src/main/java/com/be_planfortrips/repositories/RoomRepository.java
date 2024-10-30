@@ -12,19 +12,13 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     @Query("SELECT r FROM Room r WHERE r.hotel.id = :hotelId")
     List<Room> findByHotelId(@Param("hotelId") Long hotelId);
 
-    @Query(value = "SELECT r.* " +
-            "FROM rooms r " +
-            "WHERE r.is_available = TRUE " +
-            "AND r.max_size >= :numberOfPeople " +
-            "AND r.id NOT IN ( " +
-            "SELECT b.room_id " +
-            "FROM booking_hotels_details b " +
-            "WHERE b.check_in_time < :checkOutDate " +
-            "AND b.check_out_time > :checkInDate)",
-            nativeQuery = true)
+    @Query("SELECT r FROM Room r WHERE r.isAvailable = true " +
+            "AND r.id NOT IN (" +
+            "  SELECT b.room.id FROM BookingHotelDetail b " +
+            "  WHERE b.checkInTime < :checkOutDate AND b.checkOutTime > :checkInDate" +
+            ")")
     List<Room> findAvailableRooms(@Param("checkInDate") LocalDateTime checkInDate,
-                                  @Param("checkOutDate") LocalDateTime checkOutDate,
-                                  @Param("numberOfPeople") int numberOfPeople);
+                                  @Param("checkOutDate") LocalDateTime checkOutDate);
 
     @Override
     boolean existsById(Long roomId);

@@ -12,7 +12,9 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -49,6 +51,11 @@ public class CheckinMapper implements MapperInterface<CheckinResponse, Checkin, 
         } else {
             response.setCityName("Unknown City");  // Hoặc xử lý tùy ý
         }
+
+        List<Image> images = checkin.getCheckinImages().stream()
+                .map(CheckinImage::getImage)
+                .collect(Collectors.toList());
+        response.setImages(images);
 
         return response;
     }

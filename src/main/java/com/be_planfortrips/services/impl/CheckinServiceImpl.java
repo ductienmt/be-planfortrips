@@ -197,5 +197,15 @@ public class CheckinServiceImpl implements ICheckinService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Image> getImagesByCheckinId(Long checkinId) {
+        Checkin checkin = this.checkinRepository.findById(checkinId)
+                .orElseThrow(() -> new AppException(ErrorType.notFound));
+        List<Image> images = checkin.getCheckinImages().stream()
+                .map(CheckinImage::getImage)
+                .collect(Collectors.toList());
+        return images;
+    }
+
 
 }
