@@ -7,7 +7,11 @@ public class API_Provider {
             "/api/v1/banners/allUser",
             "/api/v1/schedules/getStationByScheduleId",
             "/api/v1/schedules/getSchedules",
-            // thieu 1 vai api
+            "/api/v1/coupons/**",
+            "/api/v1/coupons/all",
+            "/api/v1/tickets/**",
+            "/api/v1/tickets/getByUserId",
+            "/api/v1/routes/all"
     };
 
     public static final String[] ADMIN_API = {

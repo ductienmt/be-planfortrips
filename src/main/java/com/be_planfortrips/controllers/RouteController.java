@@ -62,11 +62,13 @@ public class RouteController {
     }
     @GetMapping("all")
     public ResponseEntity<?> getCarCompanies(@RequestParam int page,
-                                             @RequestParam int limit){
+                                             @RequestParam int limit,
+                                             @RequestParam(defaultValue = "") String oriName,
+                                             @RequestParam(defaultValue = "") String desName){
         try {
             PageRequest request = PageRequest.of(page,limit, Sort.by("id").ascending());
             int totalPage = 0;
-            Page<RouteResponse> RouteResponses = iRouteService.getRoutes(request);
+            Page<RouteResponse> RouteResponses = iRouteService.getRoutes(request,oriName,desName);
             totalPage = RouteResponses.getTotalPages();
             TListResponse<RouteResponse> listResponse= new TListResponse<>();
             listResponse.setListResponse(RouteResponses.toList());

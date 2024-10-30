@@ -1,5 +1,6 @@
 package com.be_planfortrips.dto.response;
 
+import com.be_planfortrips.entity.AccountEnterprise;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,5 +25,6 @@ public class CouponResponse {
     int useLimit;
     int useCount;
     boolean isActive;
+    Long enterpriseId;
 }
 

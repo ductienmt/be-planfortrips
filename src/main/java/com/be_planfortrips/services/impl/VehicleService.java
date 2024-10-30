@@ -60,8 +60,8 @@ public class VehicleService implements IVehicleService {
     }
 
     @Override
-    public Page<VehicleResponse> getVehicles(PageRequest request) {
-        return vehicleRepository.findAll(request).map(vehicleMapper::toResponse);
+    public Page<VehicleResponse> getVehicles(PageRequest request,String keyword) {
+        return vehicleRepository.searchVehicles(request,keyword).map(vehicleMapper::toResponse);
     }
 
     @Override

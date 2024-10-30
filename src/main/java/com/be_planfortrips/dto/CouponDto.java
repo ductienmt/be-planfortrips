@@ -24,9 +24,11 @@ public class CouponDto {
     @JsonProperty("use_limit")
     @Min(value = 1, message = "Use limit must be greater than 1")
     Integer useLimit;
-//    @JsonProperty("use_count")
-//    @Min(value = 1, message = "Use count must be greater than 1")
-//    Integer useCount;
-//    @JsonProperty("is_active")
-//    Boolean isActive;
+    @JsonProperty("use_count")
+    @Min(value = 1, message = "Use count must be greater than 1")
+    Integer useCount;
+    @JsonProperty("is_active")
+    Boolean isActive;
+    @JsonProperty("enterprise_id")
+    Long enterpriseId = null;
 }
