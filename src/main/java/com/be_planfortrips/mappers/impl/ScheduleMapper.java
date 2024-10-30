@@ -54,10 +54,9 @@ public class ScheduleMapper implements MapperInterface<ScheduleResponse, Schedul
         scheduleResponse.setCarCompanyName(vehicle.getCarCompany().getName());
         scheduleResponse.setCarCompanyRating(vehicle.getCarCompany().getRating());
 
-
-        Long countSeatsEmpty = seatRepository.countEmptySeatsByVehicleCode(vehicle.getCode());
-        scheduleResponse.setCountSeatsEmpty(countSeatsEmpty);
-
+        scheduleResponse.setDepartureName(schedule.getRoute().getOriginStation().getName());
+        scheduleResponse.setArrivalName(schedule.getRoute().getDestinationStation().getName());
+        scheduleResponse.setScheduleSeat(schedule.getScheduleSeats());
         return scheduleResponse;
     }
 
