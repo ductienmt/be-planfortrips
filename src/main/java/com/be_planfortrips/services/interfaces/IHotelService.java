@@ -16,7 +16,7 @@ import java.util.Map;
 public interface IHotelService {
     HotelResponse createHotel(HotelDto hotelDto) throws Exception;
     HotelResponse updateHotel(Long id,HotelDto hotelDto) throws Exception;
-    Page<HotelResponse> searchHotels(PageRequest request,String keyword);
+    Page<HotelResponse> searchHotels(PageRequest request,String keyword,Integer rating);
     HotelResponse getByHotelId(Long id) throws Exception;
     void deleteHotelById(Long id);
     HotelResponse createHotelImage(Long hotelId,  List<MultipartFile>  file) throws Exception ;

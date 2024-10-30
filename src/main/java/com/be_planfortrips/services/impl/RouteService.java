@@ -95,8 +95,8 @@ public class RouteService implements IRouteService {
     }
 
     @Override
-    public Page<RouteResponse> getRoutes(PageRequest request) {
-        return routeRepository.findAll(request).map(route -> RouteResponse.builder()
+    public Page<RouteResponse> getRoutes(PageRequest request,String originStationName,String desStationName) {
+        return routeRepository.getRouteByOriginStation_NameAndDestinationStation_Name(request,originStationName,desStationName).map(route -> RouteResponse.builder()
                 .id(route.getId())
                 .originStation(route.getOriginStation())
                 .destinationStation(route.getDestinationStation())

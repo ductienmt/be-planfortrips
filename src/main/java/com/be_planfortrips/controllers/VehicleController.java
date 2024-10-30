@@ -66,11 +66,12 @@ public class VehicleController {
 
     @GetMapping("all")
     public ResponseEntity<?> getCarCompanies(@RequestParam int page,
-                                             @RequestParam int limit){
+                                             @RequestParam int limit,
+                                             @RequestParam(defaultValue = "") String keyword){
         try {
             PageRequest request = PageRequest.of(page,limit, Sort.by("code").ascending());
             int totalPage = 0;
-            Page<VehicleResponse> vehicleResponses = iVehicleService.getVehicles(request);
+            Page<VehicleResponse> vehicleResponses = iVehicleService.getVehicles(request,keyword);
             totalPage = vehicleResponses.getTotalPages();
             TListResponse<VehicleResponse> listResponse= new TListResponse<>();
             listResponse.setListResponse(vehicleResponses.toList());
