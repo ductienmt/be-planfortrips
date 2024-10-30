@@ -88,6 +88,7 @@ public class VehicleController {
         return ResponseEntity.noContent().build();
     }
 
+
     @GetMapping("getById/{code}")
     public ResponseEntity<?> getCarCompanyById(@PathVariable String code){
         try {

@@ -181,6 +181,7 @@ public class TicketService implements ITicketService {
                 .map(ticket -> ticketMapper.toResponse(ticket))
                 .collect(Collectors.toList());
     }
+
     private Coupon getCoupon(String codeCoupon) throws Exception {
         if (codeCoupon != null && !codeCoupon.isEmpty()) {
             Coupon coupon = couponRepository.findByCode(codeCoupon);

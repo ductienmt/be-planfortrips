@@ -118,6 +118,7 @@ public class TicketController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @GetMapping("getByScheduleId/{id}")
     public ResponseEntity<?> getCarCompanyByScheduleId(@PathVariable Integer id){
         try {

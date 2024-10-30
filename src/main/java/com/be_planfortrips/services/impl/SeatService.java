@@ -31,6 +31,7 @@ public class SeatService implements ISeatService {
     VehicleRepository vehicleRepository;
     ScheduleSeatRepository scheduleSeatRepository;
 
+
     @Override
     @Transactional
     public SeatResponse createSeat(SeatDTO seatDTO) throws Exception {
