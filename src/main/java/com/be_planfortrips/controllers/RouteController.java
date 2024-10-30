@@ -78,6 +78,7 @@ public class RouteController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteCarCompanyById(@PathVariable String id) throws Exception {
         iRouteService.deleteRouteById(id);

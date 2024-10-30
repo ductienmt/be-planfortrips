@@ -16,3 +16,4 @@ public interface ITicketService {
     List<TicketResponse> findByUserId(Long id);
     List<TicketResponse> findByScheduleId(Integer id);
 }
+

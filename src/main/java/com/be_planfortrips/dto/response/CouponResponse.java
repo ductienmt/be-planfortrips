@@ -26,5 +26,6 @@ public class CouponResponse {
     int useCount;
     boolean isActive;
     Long enterpriseId;
+
 }
 

@@ -33,6 +33,7 @@ public class ScheduleController {
 
     IScheduleService scheduleService;
 
+
     @GetMapping("/all")
     public ResponseEntity<List<ScheduleResponse>> getAllSchedules() {
         List<ScheduleResponse> responses = scheduleService.getAllSchedule();
