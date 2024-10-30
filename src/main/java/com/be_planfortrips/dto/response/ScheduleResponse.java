@@ -18,6 +18,7 @@ public class ScheduleResponse {
     String routeId;
     String code;
     String carCompanyName;
+    BigDecimal priceForOneTicket;
     BigDecimal carCompanyRating;
     Long countSeatsEmpty;
     LocalDateTime departureTime;

@@ -144,6 +144,7 @@ public class ScheduleServiceImpl implements IScheduleService {
                 scheduleMap.put("departureTime", schedule.getDepartureTime());
                 scheduleMap.put("arrivalTime", schedule.getArrivalTime());
                 scheduleMap.put("routeId", schedule.getRouteId());
+                scheduleMap.put("priceForOneSeat", schedule.getPriceForOneTicket());
                 scheduleMap.put("seatAvailable", seatResponses);
 
                 scheduleResponseMap.put(schedule.getCarCompanyName(), scheduleMap);

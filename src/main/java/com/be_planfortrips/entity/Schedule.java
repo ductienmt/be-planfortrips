@@ -34,6 +34,9 @@ public class Schedule extends BaseEntity{
     @JsonIgnore
     Vehicle vehicleCode;
 
+    @Column(name = "price_for_one_seat", precision = 10, scale = 2)
+    BigDecimal price_for_one_seat;
+
     @Column(name = "departure_time")
     LocalDateTime departureTime;
 

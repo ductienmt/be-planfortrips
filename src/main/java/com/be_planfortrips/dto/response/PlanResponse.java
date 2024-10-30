@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -15,8 +16,8 @@ import java.sql.Timestamp;
 public class PlanResponse {
     Long plan_id;
     String plan_name;
-    Timestamp start_date;
-    Timestamp end_date;
+    LocalDate start_date;
+    LocalDate end_date;
     BigDecimal budget;
     BigDecimal total_price;
     StatusPlan status;

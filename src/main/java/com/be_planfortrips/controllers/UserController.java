@@ -200,5 +200,21 @@ public class UserController {
         }
     }
 
+    @GetMapping("getImage")
+    public ResponseEntity<?> getImage() {
+        try {
+            return ResponseEntity.ok(
+                    ApiResponse.<Map<String, Object>>builder()
+                            .code(HttpStatus.OK.value())
+                            .data(this.userService.getAvatar())
+                            .message("Lấy ảnh thành công.")
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy ảnh thất bại.");
+        }
+    }
+
 
 }

@@ -8,6 +8,7 @@ import com.be_planfortrips.entity.Role;
 import com.be_planfortrips.entity.User;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.mappers.impl.UserMapper;
 import com.be_planfortrips.repositories.ImageRepository;
 import com.be_planfortrips.repositories.RoleRepository;
@@ -56,6 +57,8 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private TokenMapperImpl tokenMapperImpl;
 
     @Override
     public AccountUserResponse createUser(UserDto userDto) {
@@ -226,6 +229,24 @@ public class UserServiceImpl implements IUserService {
         this.userRepository.saveAndFlush(user);
 
         return avatarUrl;
+    }
+
+    @Override
+    public Map<String, Object> getAvatar() {
+        Map<String, Object> responseMap = new HashMap<>();
+        Long userId =  ((User) tokenMapperImpl.getUserByToken()).getId();
+        System.out.println(userId + "userId");
+        String url = this.userRepository.getAvatarUser(userId);
+        System.out.println(url + "url");
+        if (url == null) {
+            User user = this.getUserById(userId);
+            responseMap.put("fullname", user.getFullName());
+            responseMap.put("url", "");
+            responseMap.put("gender", user.getGender());
+        } else {
+            responseMap.put("url", url);
+        }
+        return responseMap;
     }
 
 

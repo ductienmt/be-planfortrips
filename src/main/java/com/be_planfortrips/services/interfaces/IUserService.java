@@ -21,4 +21,5 @@ public interface IUserService {
     AccountUserResponse updateStage(Long id, Integer stage);
     AccountUserResponse getUserByIdActive(Long id);
     String uploadAvatar(Long userId, MultipartFile file);
+    Map<String, Object> getAvatar();
 }

@@ -26,7 +26,6 @@ public class JwtProvider {
         Date now = new Date();
         Date validity = new Date(now.getTime() + jwtExpiration);
 
-
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userIdentify)

@@ -22,6 +22,6 @@ public interface IRoomService {
 
     List<RoomResponse> getRoomByHotelId(Long hotelId);
 
-    List<RoomResponse> getRoomAvailable(Integer numberPeople, LocalDateTime checkIn, LocalDateTime checkOut);
+    List<RoomResponse> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut);
 
 }

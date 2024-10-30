@@ -22,4 +22,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByUserNameAndPassword(@Param("username") String userName, @Param("password") String password);
 
     Optional<User> findUSerByGoogleId(String googleId);
+
+    @Query(value = "SELECT i.url AS image_url " +
+            "FROM users u LEFT JOIN images i ON u.image_id = i.id " +
+            "WHERE u.id = :userId", nativeQuery = true)
+    String getAvatarUser(@Param("userId") Long userId);
 }
