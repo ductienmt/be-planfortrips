@@ -63,7 +63,6 @@ public class HotelController {
                         .build());
     }
 
-
     @PutMapping("update/{id}")
     public ResponseEntity<?> updateHotel(@Valid @RequestBody HotelDto hotelDto,
                                          @PathVariable Long id,

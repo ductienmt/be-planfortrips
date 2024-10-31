@@ -8,8 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 public interface RouteRepository extends JpaRepository<Route,String> {
     boolean existsByOriginStationAndDestinationStationAndIdNot(Station originStation, Station destinationStation, String id);
     @Query("SELECT r FROM Route r " +
@@ -20,5 +18,4 @@ public interface RouteRepository extends JpaRepository<Route,String> {
     Page<Route> getRouteByOriginStation_NameAndDestinationStation_Name(Pageable pageable,
                                                                        @Param("keywordSo") String keywordSo,
                                                                        @Param("keywordSd") String keywordSd);
-
 }
