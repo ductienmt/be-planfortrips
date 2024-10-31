@@ -14,16 +14,22 @@ import com.be_planfortrips.repositories.ImageRepository;
 import com.be_planfortrips.repositories.RoleRepository;
 import com.be_planfortrips.repositories.UserRepository;
 import com.be_planfortrips.dto.response.AccountUserResponse;
+import com.be_planfortrips.security.jwt.JwtProvider;
+import com.be_planfortrips.security.jwt.JwtTokenFilter;
 import com.be_planfortrips.services.interfaces.IUserService;
 import com.be_planfortrips.utils.Utils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.internal.engine.messageinterpolation.parser.MessageDescriptorFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -97,8 +103,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public AccountUserResponse updateUser(Long id, UserDto userDto) {
-        User user = this.userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy user với id: " + id));
+    public AccountUserResponse updateUser(UserDto userDto) {
+        User user = this.userRepository.findById(((User) tokenMapperImpl.getUserByToken()).getId()).orElseThrow(() -> new RuntimeException("Không tìm thấy user với id: " + ((User) tokenMapperImpl.getUserByToken()).getId()));
         if (this.userRepository.findByUsername(userDto.getUserName()) != null) {
             throw new RuntimeException("Username đã tồn tại, vui lòng đổi username khác");
         } else {
@@ -203,12 +209,12 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public String uploadAvatar(Long userId, MultipartFile file) {
+    public String uploadAvatar(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("Vui lòng chọn ảnh hợp lệ");
         }
 
-        User user = this.getUserById(userId);
+        User user = this.getUserById(((User) tokenMapperImpl.getUserByToken()).getId());
 
         this.utils.isValidImage(file);
         this.utils.checkSize(file);
@@ -234,20 +240,26 @@ public class UserServiceImpl implements IUserService {
     @Override
     public Map<String, Object> getAvatar() {
         Map<String, Object> responseMap = new HashMap<>();
-        Long userId =  ((User) tokenMapperImpl.getUserByToken()).getId();
-        System.out.println(userId + "userId");
+        Long userId = ((User) tokenMapperImpl.getUserByToken()).getId();
         String url = this.userRepository.getAvatarUser(userId);
-        System.out.println(url + "url");
+        User user = this.getUserById(userId);
         if (url == null) {
-            User user = this.getUserById(userId);
             responseMap.put("fullname", user.getFullName());
             responseMap.put("url", "");
             responseMap.put("gender", user.getGender());
         } else {
             responseMap.put("url", url);
+            responseMap.put("fullname", user.getFullName());
+            responseMap.put("gender", user.getGender());
         }
         return responseMap;
     }
+
+    @Override
+    public AccountUserResponse getUserDetail() {
+        return this.userMapper.toResponse(this.userRepository.findByIdActive(((User) tokenMapperImpl.getUserByToken()).getId()));
+    }
+
 
 
 }

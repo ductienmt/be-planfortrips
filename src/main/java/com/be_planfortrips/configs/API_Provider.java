@@ -62,6 +62,7 @@ public class API_Provider {
             "/api/v1/users/upload",
             "/api/v1/users/getImage",
             "/api/v1/payments/vnpay/create-payment",
+            "/api/v1/users/verify-email",
     };
 
     public static final String[] USER_ADMIN_API = {
