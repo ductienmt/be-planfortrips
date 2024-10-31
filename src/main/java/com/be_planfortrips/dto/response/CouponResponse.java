@@ -24,5 +24,6 @@ public class CouponResponse {
     int useLimit;
     int useCount;
     boolean isActive;
+    Long enterpriseId;
 }
 

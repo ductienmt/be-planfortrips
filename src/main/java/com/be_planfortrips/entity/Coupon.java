@@ -53,4 +53,7 @@ public class Coupon extends BaseEntity {
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JsonIgnore
     List<CouponRoom> couponRooms;
+
+    @ManyToOne
+    AccountEnterprise accountEnterprise;
 }

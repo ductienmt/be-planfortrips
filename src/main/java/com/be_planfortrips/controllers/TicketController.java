@@ -109,4 +109,22 @@ public class TicketController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("getByUserId/{id}")
+    public ResponseEntity<?> getCarCompanyByUserId(@PathVariable Long id){
+        try {
+            List<TicketResponse> response = iTicketService.findByUserId(id);
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("getByScheduleId/{id}")
+    public ResponseEntity<?> getCarCompanyByScheduleId(@PathVariable Integer id){
+        try {
+            List<TicketResponse> response = iTicketService.findByScheduleId(id);
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

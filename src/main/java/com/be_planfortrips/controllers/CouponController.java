@@ -61,11 +61,11 @@ public class CouponController {
     }
     @GetMapping("/all")
     public ResponseEntity<?> getCoupons(@RequestParam int page,
-                                             @RequestParam int limit){
+                                             @RequestParam int limit, @RequestParam(defaultValue = "") Long id){
         try {
             PageRequest request = PageRequest.of(page,limit, Sort.by("endDate").ascending());
             int totalPage = 0;
-            Page<CouponResponse> CouponResponses = iCouponService.getCoupons(request);
+            Page<CouponResponse> CouponResponses = iCouponService.getCoupons(request,id);
             totalPage = CouponResponses.getTotalPages();
             TListResponse<CouponResponse> listResponse= new TListResponse<>();
             listResponse.setListResponse(CouponResponses.toList());

@@ -29,7 +29,9 @@ public class CouponMapper implements MapperInterface<CouponResponse, Coupon, Cou
 
     @Override
     public CouponResponse toResponse(Coupon coupon) {
-        return modelMapper.map(coupon, CouponResponse.class);
+        CouponResponse response = modelMapper.map(coupon, CouponResponse.class);
+        if(coupon.getAccountEnterprise() != null)response.setEnterpriseId(coupon.getAccountEnterprise().getAccountEnterpriseId());
+        return response;
     }
 
     @Override

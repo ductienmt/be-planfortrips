@@ -1,9 +1,11 @@
 package com.be_planfortrips.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
 
 
 @Data
@@ -62,4 +64,8 @@ public class AccountEnterprise extends BaseEntity{
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "city_id")
     City city;
+
+    @OneToMany(mappedBy = "accountEnterprise", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<Coupon> coupons;
 }

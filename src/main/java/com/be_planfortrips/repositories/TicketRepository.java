@@ -15,5 +15,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     List<Ticket> findPendingTicketsBefore(LocalDateTime timeLimit);
     @Query("select t from Ticket t where t.status = 'Cancelled'")
     List<Ticket> findByStatusCancelled();
+    List<Ticket> findByUser_Id(Long id);
+    List<Ticket> findBySchedule_Id(Integer id);
 }
 

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -162,6 +163,23 @@ public class TicketService implements ITicketService {
     public void deleteTicketById(Integer id) {
         Optional<Ticket> ticket = ticketRepository.findById(id);
         ticket.ifPresent(ticketRepository::delete);
+    }
+
+    @Override
+    public List<TicketResponse> findByUserId(Long id) {
+        User existingUser = userRepository.findByIdActive(id);
+        return ticketRepository.findByUser_Id(existingUser.getId()).stream()
+                .map(ticket -> ticketMapper.toResponse(ticket))
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<TicketResponse> findByScheduleId(Integer id) {
+        Schedule existingUser = scheduleRepository.findById(id).orElseThrow(
+                ()->new AppException(ErrorType.notFound)
+        );
+        return ticketRepository.findBySchedule_Id(existingUser.getId()).stream()
+                .map(ticket -> ticketMapper.toResponse(ticket))
+                .collect(Collectors.toList());
     }
 
     private Coupon getCoupon(String codeCoupon) throws Exception {

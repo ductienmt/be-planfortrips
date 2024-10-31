@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 public interface HotelRepository extends JpaRepository<Hotel,Long> {
     boolean existsByPhoneNumber(String phoneNumber);
     @Query("select h from Hotel h " +
-            " where (:keyword is null or :keyword = '' or h.name like %:keyword% or h.address like %:keyword%)")
-    Page<Hotel> searchHotels(Pageable pageable,@Param("keyword") String keyword);
+            " where (:keyword is null or :keyword = '' or h.name like %:keyword% or h.address like %:keyword% " +
+            "and h.rating <= :rating)")
+    Page<Hotel> searchHotels(Pageable pageable,@Param("keyword") String keyword,@Param("rating") Integer rating);
 }

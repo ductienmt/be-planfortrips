@@ -49,12 +49,13 @@ public class HotelController {
     @GetMapping("all")
     public ResponseEntity<HotelListResponse> getHotels(@RequestParam("page")     int page,
                                                        @RequestParam("limit")    int limit,
-                                                       @RequestParam(defaultValue = "") String keyword
+                                                       @RequestParam(defaultValue = "") String keyword,
+                                                        @RequestParam(defaultValue = "") Integer rating
                                                        ){
         PageRequest request = PageRequest.of(page, limit,
                 Sort.by("rating").ascending());
         int totalPage = 0;
-        Page<HotelResponse> hotelResponses = iHotelService.searchHotels(request,keyword);
+        Page<HotelResponse> hotelResponses = iHotelService.searchHotels(request,keyword,rating);
         totalPage = hotelResponses.getTotalPages();
         return ResponseEntity.ok(HotelListResponse.builder()
                         .hotelResponseList(hotelResponses.toList())

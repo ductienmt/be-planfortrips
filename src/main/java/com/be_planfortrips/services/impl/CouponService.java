@@ -2,11 +2,13 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.CouponDto;
 import com.be_planfortrips.dto.response.CouponResponse;
+import com.be_planfortrips.entity.AccountEnterprise;
 import com.be_planfortrips.entity.Coupon;
 import com.be_planfortrips.entity.DiscountType;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.CouponMapper;
+import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.CouponRepository;
 import com.be_planfortrips.services.interfaces.ICouponService;
 import lombok.AccessLevel;
@@ -30,6 +32,7 @@ import java.util.Optional;
 public class CouponService implements ICouponService {
     CouponRepository couponRepository;
     CouponMapper couponMapper;
+    AccountEnterpriseRepository enterpriseRepository;
     @Scheduled(cron = "0 0 0 * * ?")
     public void deactivateExpiredCoupons() {
         List<Coupon> coupons = couponRepository.findAll();
@@ -61,6 +64,10 @@ public class CouponService implements ICouponService {
                 throw new AppException(ErrorType.percentIsUnprocessed);
             }
         }
+        if(couponDto.getEnterpriseId() != null){
+            Optional<AccountEnterprise> accountEnterprise = enterpriseRepository.findById(couponDto.getEnterpriseId());
+            accountEnterprise.ifPresent(coupon::setAccountEnterprise);
+        }
         couponRepository.saveAndFlush(coupon);
         return couponMapper.toResponse(coupon);
     }
@@ -85,13 +92,17 @@ public class CouponService implements ICouponService {
                 throw new AppException(ErrorType.percentIsUnprocessed);
             }
         }
+        if(couponDto.getEnterpriseId() != null){
+            Optional<AccountEnterprise> accountEnterprise = enterpriseRepository.findById(couponDto.getEnterpriseId());
+            accountEnterprise.ifPresent(existingCoupon::setAccountEnterprise);
+        }
         couponRepository.saveAndFlush(existingCoupon);
         return couponMapper.toResponse(existingCoupon);
     }
 
     @Override
-    public Page<CouponResponse> getCoupons(PageRequest request) {
-        return couponRepository.findAll(request).map(couponMapper::toResponse);
+    public Page<CouponResponse> getCoupons(PageRequest request, Long id) {
+        return couponRepository.getCouponByEnterpriseId(request,id).map(couponMapper::toResponse);
     }
 
     @Override
