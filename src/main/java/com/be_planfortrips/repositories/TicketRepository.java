@@ -1,5 +1,6 @@
 package com.be_planfortrips.repositories;
 
+import com.be_planfortrips.entity.Schedule;
 import com.be_planfortrips.entity.Status;
 import com.be_planfortrips.entity.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;

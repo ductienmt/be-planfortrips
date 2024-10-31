@@ -50,7 +50,7 @@ public class HotelController {
     public ResponseEntity<HotelListResponse> getHotels(@RequestParam("page")     int page,
                                                        @RequestParam("limit")    int limit,
                                                        @RequestParam(defaultValue = "") String keyword,
-                                                        @RequestParam(defaultValue = "") Integer rating
+                                                       @RequestParam(defaultValue = "") Integer rating
                                                        ){
         PageRequest request = PageRequest.of(page, limit,
                 Sort.by("rating").ascending());

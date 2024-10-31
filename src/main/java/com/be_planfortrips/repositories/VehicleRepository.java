@@ -1,6 +1,7 @@
 package com.be_planfortrips.repositories;
 
 import com.be_planfortrips.dto.response.VehicleResponse;
+import com.be_planfortrips.entity.Hotel;
 import com.be_planfortrips.entity.Vehicle;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

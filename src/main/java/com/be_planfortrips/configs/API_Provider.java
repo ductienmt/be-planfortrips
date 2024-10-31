@@ -12,7 +12,7 @@ public class API_Provider {
             "/api/v1/hotels/getById/**",
             "/api/v1/check-in/all",
             "/api/v1/check-in/getImages",
-            // thieu 1 vai api
+
     };
 
     public static final String[] ADMIN_API = {
