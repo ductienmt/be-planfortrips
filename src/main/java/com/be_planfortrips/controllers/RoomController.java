@@ -40,6 +40,7 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
+
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/create")
     public ResponseEntity<RoomResponse> createRoom(
            @RequestBody RoomDto roomDto

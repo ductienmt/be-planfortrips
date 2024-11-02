@@ -2,10 +2,13 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.FeedbackDto;
 import com.be_planfortrips.dto.response.FeedbackResponse;
+import com.be_planfortrips.entity.AccountEnterprise;
 import com.be_planfortrips.entity.Feedback;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.FeedbackMapper;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
+import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.FeedbackRepository;
 import com.be_planfortrips.services.interfaces.IFeedbackService;
 import lombok.AccessLevel;
@@ -22,7 +25,11 @@ import java.util.UUID;
 public class FeedbackServiceImpl implements IFeedbackService {
 
     FeedbackRepository feedbackRepository;
+    AccountEnterpriseRepository accountEnterpriseRepository;
     FeedbackMapper feedbackMapper;
+
+    TokenMapperImpl tokenMapper;
+
 
     @Override
     public List<FeedbackResponse> getAllFeedbacks() {
@@ -60,5 +67,12 @@ public class FeedbackServiceImpl implements IFeedbackService {
         Feedback feedback = feedbackRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorType.notFound, id));
         feedbackRepository.delete(feedback);
+    }
+
+    @Override
+    public List<FeedbackResponse> getFeedBackByEnterpriseId() {
+        AccountEnterprise accountEnterprise = (AccountEnterprise) tokenMapper.getUserByToken();
+        return feedbackRepository.getFeedbackByAccountEnterprise(accountEnterprise)
+                .stream().map(feedbackMapper::toResponse).toList();
     }
 }

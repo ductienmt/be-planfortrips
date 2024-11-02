@@ -46,6 +46,15 @@ public class ScheduleController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/vehicle/{vehicleCode}/route/{routeId}")
+    public ResponseEntity<List<ScheduleResponse>> getScheduleByRouteId(
+            @PathVariable String vehicleCode, @PathVariable String routeId
+    ) {
+        List<ScheduleResponse> responses =
+                scheduleService.getScheduleByVehicleCodeAndRouteId(vehicleCode, routeId);
+        return ResponseEntity.ok(responses);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<ScheduleResponse> createSchedule(
             @RequestBody ScheduleDto scheduleDto) {
