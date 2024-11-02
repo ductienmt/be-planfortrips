@@ -22,4 +22,7 @@ public interface IFeedbackService {
 
     // Xóa feedback theo ID
     void deleteFeedbackById(UUID id);
+
+    // Lấy FeedBack By enterpriseId
+    List<FeedbackResponse> getFeedBackByEnterpriseId();
 }

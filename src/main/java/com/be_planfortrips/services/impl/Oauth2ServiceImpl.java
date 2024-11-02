@@ -76,7 +76,6 @@ public class Oauth2ServiceImpl implements IAuth2Service {
                     .bodyToMono(UserGoogleInfo.class).block();
             System.out.println(userGoogleInfo);
             assert userGoogleInfo != null;
-            System.out.println("Hello");
             return getUserGoogle(userGoogleInfo);
         } catch (Exception e) {
             e.printStackTrace();

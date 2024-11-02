@@ -33,6 +33,9 @@ public enum ErrorType {
     typeEnterpriseIdNotFound(705, "typeEnterpriseId không tồn tại", HttpStatus.NOT_FOUND),
     roleNameNotFound(706, "RoleName không tồn tại", HttpStatus.NOT_FOUND),
     ratingInvalid(707,"Đánh giá phaải từ 0 - 5 sao",HttpStatus.BAD_REQUEST),
+    AccountEnterpriseIdNotFound(708,"AccountEnterpriseId không tồn tại",HttpStatus.NOT_FOUND),
+    VehicleCodeNotFound(709, "VehicleCode không tồn tại",HttpStatus.NOT_FOUND),
+    RouteIdNotFound(710, "RouteId không tồn tại",HttpStatus.NOT_FOUND)
     ;
 
     private static String getString() {
