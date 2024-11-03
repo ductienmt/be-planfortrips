@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -56,11 +57,11 @@ public class RoomController {
 
     @PostMapping("/upload-image/{roomId}")
     public ResponseEntity<?> uploadImageRoomById(
-            @RequestParam("file") MultipartFile file,
+            @RequestParam("files") List<MultipartFile> files,
             @PathVariable Long roomId) {
         try {
-            Image image = roomService.uploadImageRoomById(file, roomId);
-            return ResponseEntity.ok().body(image);
+            boolean isSuccess = roomService.uploadImageRoomById(files, roomId);
+            return ResponseEntity.ok().body(isSuccess);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed.");
         }

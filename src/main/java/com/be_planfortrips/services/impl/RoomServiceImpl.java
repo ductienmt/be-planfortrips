@@ -86,40 +86,46 @@ public class RoomServiceImpl implements IRoomService {
         return roomResponses;
     }
 
+
     @Override
-    public Image uploadImageRoomById(MultipartFile file, Long roomId) throws IOException {
+    public boolean uploadImageRoomById(List<MultipartFile> files, Long roomId) throws IOException {
         // Check RoomId exist
         Room room = roomRepository.findById(roomId).orElseThrow(
                 () -> new AppException(ErrorType.roomIdNotFound)
         );
 
-        // Gọi Service Cloudinary
-        Map<String,Object> result = cloudinaryService.uploadFile(file, "Room");
-        if (result.isEmpty()) {
-            throw new AppException(ErrorType.UploadFailed);
-        }
-
-        // Result Exist
-
-        // Get RoomImage Existed in Room
+        // Get RoomImage list for the Room
         List<RoomImage> roomImages = room.getImages();
 
-        // Create Image
-        Image image = Image.builder().build();
-        image.setUrl(result.get("url").toString());
+        // Iterate over each file to upload
+        for (MultipartFile file : files) {
+            // Gọi Service Cloudinary cho mỗi file
+            Map<String, Object> result = cloudinaryService.uploadFile(file, "Room");
+            if (result.isEmpty()) {
+                throw new AppException(ErrorType.UploadFailed);
+            }
 
-        RoomImage roomImage = RoomImage.builder().build();
-        roomImages.add(RoomImage.builder()
-                .room(room)
-                .image(image).build());
-        // Add RoomImage To RoomImages
-        roomImages.add(roomImage);
+            // Create Image object and set URL
+            Image image = Image.builder().build();
+            image.setUrl(result.get("url").toString());
 
-        // Save Room To Repository
+            // Create RoomImage object and link it to the room
+            RoomImage roomImage = RoomImage.builder()
+                    .room(room)
+                    .image(image)
+                    .build();
+
+            // Add the new RoomImage to the list of images
+            roomImages.add(roomImage);
+        }
+
+        // Save the Room with updated images
         roomRepository.save(room);
 
-        return image;
+        // Return true to indicate successful upload of all files
+        return true;
     }
+
 
 
 }
