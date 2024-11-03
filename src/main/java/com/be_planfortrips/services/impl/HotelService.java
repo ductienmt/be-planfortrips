@@ -71,9 +71,10 @@ public class HotelService implements IHotelService {
     }
 
     @Override
-    public Page<HotelResponse> searchHotels(PageRequest request, String keyword) {
-        return hotelRepository.searchHotels(request, keyword).map(hotel -> hotelMapper.toResponse(hotel));
+    public Page<HotelResponse> searchHotels(PageRequest request, String keyword, Integer rating) {
+        return null;
     }
+
 
     @Override
     public HotelResponse getByHotelId(Long id) throws Exception {

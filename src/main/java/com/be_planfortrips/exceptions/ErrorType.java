@@ -22,6 +22,7 @@ public enum ErrorType {
     routeCodeExisted(602, "Mã nhà ga này đã tồn tại", HttpStatus.BAD_REQUEST),
     couponIsExpired(603, "Voucher đã hết hạn hoặc không còn khả dụng", HttpStatus.BAD_REQUEST),
     percentIsUnprocessed(604, "Phần trăm không hợp lệ", HttpStatus.UNPROCESSABLE_ENTITY),
+    UploadFailed(605,"Upload ảnh thất bại",HttpStatus.INTERNAL_SERVER_ERROR),
     // Case Not Found
     // (Trong trường hợp tạo đối tượng từ đối tượng khác, cần biết rõ đối tượng nào
     // không tồn tại)

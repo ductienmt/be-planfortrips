@@ -3,15 +3,20 @@ package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.RoomDto;
 import com.be_planfortrips.dto.response.RoomResponse;
+import com.be_planfortrips.entity.Image;
+import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.services.interfaces.IHotelService;
 import com.be_planfortrips.services.interfaces.IRoomService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -47,6 +52,18 @@ public class RoomController {
     ) {
         RoomResponse response = roomService.createRoom(roomDto);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/upload-image/{roomId}")
+    public ResponseEntity<?> uploadImageRoomById(
+            @RequestParam("file") MultipartFile file,
+            @PathVariable Long roomId) {
+        try {
+            Image image = roomService.uploadImageRoomById(file, roomId);
+            return ResponseEntity.ok().body(image);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed.");
+        }
     }
 
     @PutMapping("update/{roomId}")
