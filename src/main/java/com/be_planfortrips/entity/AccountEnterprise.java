@@ -64,6 +64,7 @@ public class AccountEnterprise extends BaseEntity{
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "city_id")
     City city;
+
     @OneToMany(mappedBy = "accountEnterprise", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JsonIgnore
     List<Coupon> coupons;

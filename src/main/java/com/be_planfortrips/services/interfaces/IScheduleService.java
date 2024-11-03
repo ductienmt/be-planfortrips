@@ -29,3 +29,4 @@ public interface IScheduleService {
 
     List<ScheduleResponse> getScheduleByVehicleCodeAndRouteId(String vehicleCode, String routeId);
 }
+

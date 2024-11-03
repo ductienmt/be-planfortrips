@@ -12,3 +12,4 @@ public interface ICouponService {
     CouponResponse getByCouponId(Integer id) throws Exception;
     void deleteCouponById(Integer id);
 }
+
