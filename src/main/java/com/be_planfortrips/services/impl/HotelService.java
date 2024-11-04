@@ -72,9 +72,11 @@ public class HotelService implements IHotelService {
 
     @Override
     public Page<HotelResponse> searchHotels(PageRequest request,String keyword,Integer rating) {
-        if(rating < 0 || rating > 5) throw new AppException(ErrorType.ratingInvalid);
-        return hotelRepository.searchHotels(request,keyword,rating).map(hotel -> hotelMapper.toResponse(hotel));
+//         if(rating < 0 || rating > 5) throw new AppException(ErrorType.ratingInvalid);
+//         return hotelRepository.searchHotels(request,keyword,rating).map(hotel -> hotelMapper.toResponse(hotel));
+return null;
     }
+
 
     @Override
     public HotelResponse getByHotelId(Long id) throws Exception {

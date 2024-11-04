@@ -3,17 +3,23 @@ package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.RoomDto;
 import com.be_planfortrips.dto.response.RoomResponse;
+import com.be_planfortrips.entity.Image;
+import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.services.interfaces.IHotelService;
 import com.be_planfortrips.services.interfaces.IRoomService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -40,12 +46,25 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
+
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/create")
     public ResponseEntity<RoomResponse> createRoom(
            @RequestBody RoomDto roomDto
     ) {
         RoomResponse response = roomService.createRoom(roomDto);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/upload-image/{roomId}")
+    public ResponseEntity<?> uploadImageRoomById(
+            @RequestParam("files") List<MultipartFile> files,
+            @PathVariable Long roomId) {
+        try {
+            boolean isSuccess = roomService.uploadImageRoomById(files, roomId);
+            return ResponseEntity.ok().body(isSuccess);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed.");
+        }
     }
 
     @PutMapping("update/{roomId}")

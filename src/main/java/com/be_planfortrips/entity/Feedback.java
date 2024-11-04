@@ -31,6 +31,6 @@ public class Feedback extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "enterprise_id")
-    AccountEnterprise typeEnterprise;
+    AccountEnterprise accountEnterprise;
 
 }
