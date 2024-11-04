@@ -61,7 +61,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<?> createUser(@RequestBody UserDto userDto) {
         try {
             AccountUserResponse user = this.userService.createUser(userDto);
 
@@ -79,7 +79,7 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateUser(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<?> updateUser(@RequestBody UserDto userDto) {
         try {
             AccountUserResponse user = this.userService.updateUser(userDto);
 
@@ -91,8 +91,7 @@ public class UserController {
                             .build()
             );
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.METHOD_FAILURE, "Cập nhật người dùng thất bại.");
+            return buildApiResponse(HttpStatus.METHOD_FAILURE, e.getMessage());
         }
     }
 
@@ -145,6 +144,23 @@ public class UserController {
         } catch (Exception e) {
             log.error(e.getMessage());
             return buildApiResponse(HttpStatus.METHOD_FAILURE, "Đổi mật khẩu thất bại.");
+        }
+    }
+
+    @GetMapping("/verify-password")
+    public ResponseEntity<?> verifyEmail(@RequestParam("password") String pass) {
+        try {
+            this.userService.verifyPassword(pass);
+
+            return ResponseEntity.ok(
+                    ApiResponse.<Void>builder()
+                            .code(HttpStatus.OK.value())
+                            .message("Xác thực mật khẩu thành công.")
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return buildApiResponse(HttpStatus.UNAUTHORIZED, "Xác thực mật khẩu thất bại.");
         }
     }
 

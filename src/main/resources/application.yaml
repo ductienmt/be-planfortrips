@@ -5,9 +5,9 @@ spring:
     #    username: postgres
     #    password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
 
-#    url: jdbc:postgresql://localhost:5432/a
-#    username: postgres
-#    password: 123
+    #    url: jdbc:postgresql://localhost:5432/a
+    #    username: postgres
+    #    password: 123
     url: jdbc:postgresql://localhost:5432/Planfortrips
     username: admin
     password: admin
@@ -24,6 +24,17 @@ spring:
     user:
       name: admin
       password: admin
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: planfortrips.296@gmail.com
+    password: vnaqgabmviirtnos
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 api:
   prefix: api/v1
 

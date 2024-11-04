@@ -2,9 +2,7 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.dto.request.ChangePasswordDto;
-import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.entity.Image;
-import com.be_planfortrips.entity.Role;
 import com.be_planfortrips.entity.User;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
@@ -14,27 +12,20 @@ import com.be_planfortrips.repositories.ImageRepository;
 import com.be_planfortrips.repositories.RoleRepository;
 import com.be_planfortrips.repositories.UserRepository;
 import com.be_planfortrips.dto.response.AccountUserResponse;
-import com.be_planfortrips.security.jwt.JwtProvider;
-import com.be_planfortrips.security.jwt.JwtTokenFilter;
 import com.be_planfortrips.services.interfaces.IUserService;
 import com.be_planfortrips.utils.Utils;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.internal.engine.messageinterpolation.parser.MessageDescriptorFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,16 +95,41 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public AccountUserResponse updateUser(UserDto userDto) {
-        User user = this.userRepository.findById(((User) tokenMapperImpl.getUserByToken()).getId()).orElseThrow(() -> new RuntimeException("Không tìm thấy user với id: " + ((User) tokenMapperImpl.getUserByToken()).getId()));
-        if (this.userRepository.findByUsername(userDto.getUserName()) != null) {
+        User user = this.userRepository.findById(((User) tokenMapperImpl.getUserByToken()).getId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy user với id: " + ((User) tokenMapperImpl.getUserByToken()).getId()));
+
+        if (userDto.getUserName() != null && !userDto.getUserName().equals(user.getUserName()) &&
+                this.userRepository.findByUsername(userDto.getUserName()) != null) {
             throw new RuntimeException("Username đã tồn tại, vui lòng đổi username khác");
-        } else {
-            this.userMapper.updateEntityFromDto(userDto, user);
-            user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
-            this.userRepository.saveAndFlush(user);
-            return this.userMapper.toResponse(user);
         }
+
+        for (Field field : UserDto.class.getDeclaredFields()) {
+            try {
+                field.setAccessible(true);
+                Object newValue = field.get(userDto);
+
+                if (newValue != null) {
+                    Field serviceField = User.class.getDeclaredField(field.getName());
+                    serviceField.setAccessible(true);
+                    Object currentValue = serviceField.get(user);
+
+                    if (!newValue.equals(currentValue)) {
+                        serviceField.set(user, newValue);
+                    }
+                }
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                throw new RuntimeException("Error accessing field: " + field.getName(), e);
+            }
+        }
+
+        if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+            user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
+        }
+
+        this.userRepository.save(user);
+        return this.userMapper.toResponse(user);
     }
+
 
     @Override
     public void deleteUser(Long id) {
@@ -154,14 +170,14 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void changePassword(ChangePasswordDto changePasswordDto) {
-        User user = this.getUserById(changePasswordDto.getId());
+        User user = this.getUserById(((User) tokenMapperImpl.getUserByToken()).getId());
 
-        if (!user.getPassword().equals(changePasswordDto.getOldPassword())) {
-            throw new RuntimeException("Mật khẩu cũ không đúng");
+        if (!passwordEncoder.matches(changePasswordDto.getOldPassword(), user.getPassword())) {
+            throw new AppException(ErrorType.notMatchPassword);
         }
 
         user.setPassword(this.passwordEncoder.encode(changePasswordDto.getNewPassword()));
-        this.userRepository.saveAndFlush(user);
+        this.userRepository.save(user);
     }
 
     @Override
@@ -221,7 +237,7 @@ public class UserServiceImpl implements IUserService {
 
         String avatarUrl;
         try {
-            Map<String, Object> uploadResult = this.cloudinaryService.uploadFile(file, "");
+            Map<String, Object> uploadResult = this.cloudinaryService.uploadFile(file, "avatars_user");
             avatarUrl = uploadResult.get("url").toString();
         } catch (IOException e) {
             throw new AppException(ErrorType.internalServerError);
@@ -257,9 +273,16 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public AccountUserResponse getUserDetail() {
-        return this.userMapper.toResponse(this.userRepository.findByIdActive(((User) tokenMapperImpl.getUserByToken()).getId()));
+        User user = this.userRepository.findById(((User) tokenMapperImpl.getUserByToken()).getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return this.userMapper.toResponse(user);
     }
 
-
-
+    @Override
+    public void verifyPassword(String password) {
+        User user = this.getUserById(((User) tokenMapperImpl.getUserByToken()).getId());
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new AppException(ErrorType.notMatchPassword);
+        }
+    }
 }

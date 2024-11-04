@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ChangePasswordDto {
-    Long id;
     String oldPassword;
     String newPassword;
 }

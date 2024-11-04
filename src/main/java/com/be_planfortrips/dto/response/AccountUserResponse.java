@@ -23,7 +23,7 @@ public class AccountUserResponse {
     String address;
 //    boolean isActive;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    Date birthdate;
+    LocalDate birthdate;
     String fullName;
     String email;
     Image image;

@@ -24,4 +24,5 @@ public interface IUserService {
     String uploadAvatar(MultipartFile file);
     Map<String, Object> getAvatar();
     AccountUserResponse getUserDetail();
+    void verifyPassword(String password);
 }

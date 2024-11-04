@@ -10,8 +10,11 @@ public class API_Provider {
             "/api/v1/plans/save",
             "/api/v1/vehicles/getById/**",
             "/api/v1/hotels/getById/**",
+            "/api/v1/hotels/all",
             "/api/v1/check-in/all",
             "/api/v1/check-in/getImages",
+            "/api/v1/schedules/getById/**",
+
 
     };
 
@@ -60,9 +63,13 @@ public class API_Provider {
             "/api/v1/users/update",
             "/api/v1/users/changePassword",
             "/api/v1/users/upload",
+            "/api/v1/users/verify-password",
             "/api/v1/users/getImage",
+            "/api/v1/users/detail",
             "/api/v1/payments/vnpay/create-payment",
             "/api/v1/users/verify-email",
+            "/api/v1/email/send",
+            "/api/v1/email/validate",
     };
 
     public static final String[] USER_ADMIN_API = {
@@ -79,6 +86,7 @@ public class API_Provider {
             "/api/v1/rooms/getById/**",
             "/api/v1/tickets/update/**",
             "/api/v1/tickets/getById/**",
+            "/api/v1/schedules/getById/**",
     };
 
     public static final String[] ADMIN_USER_ENTERPRISE_API = {
@@ -121,7 +129,6 @@ public class API_Provider {
             "/api/v1/schedules/create",
             "/api/v1/schedules/update/**",
             "/api/v1/schedules/delete/**",
-            "/api/v1/schedules/getById/**",
             "/api/v1/seats/create",
             "/api/v1/seats/update/**",
             "/api/v1/seats/delete/**",
