@@ -14,6 +14,10 @@ public enum ErrorType {
     // Định nghĩa lỗi ngày giờ "yyyy-MM-dd HH:mm:ss"
     notValidDateFormat(101, "Định dạng ngày giờ không hợp lệ", HttpStatus.BAD_REQUEST),
 
+    notMatchPassword(800, "Mật khẩu không khớp", HttpStatus.BAD_REQUEST),
+
+    notVerified(400, "OTP không hợp lệ hoặc đã hết hạn", HttpStatus.BAD_REQUEST),
+
     // Định nghĩa lỗi chung
     notFound(404, "Đối tượng không tồn tại", HttpStatus.NOT_FOUND),
     // Riêng từng case quan trọng (Yêu cầu rõ case)

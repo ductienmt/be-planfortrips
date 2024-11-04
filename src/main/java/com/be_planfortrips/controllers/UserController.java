@@ -9,6 +9,7 @@ import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.repositories.UserRepository;
 import com.be_planfortrips.services.interfaces.IUserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,13 +55,13 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy danh sách người dùng thất bại.")
+            return buildApiResponse(HttpStatus.NO_CONTENT, "Lấy danh sách người dùng thất bại.")
                     ;
         }
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<?> createUser(@RequestBody UserDto userDto) {
         try {
             AccountUserResponse user = this.userService.createUser(userDto);
 
@@ -73,14 +74,14 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Tạo người dùng thất bại.");
+            return buildApiResponse(HttpStatus.METHOD_FAILURE, "Tạo người dùng thất bại.");
         }
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateUser(@RequestParam("id") Long id, @Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<?> updateUser(@RequestBody UserDto userDto) {
         try {
-            AccountUserResponse user = this.userService.updateUser(id, userDto);
+            AccountUserResponse user = this.userService.updateUser(userDto);
 
             return ResponseEntity.ok(
                     ApiResponse.<AccountUserResponse>builder()
@@ -90,8 +91,7 @@ public class UserController {
                             .build()
             );
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Cập nhật người dùng thất bại.");
+            return buildApiResponse(HttpStatus.METHOD_FAILURE, e.getMessage());
         }
     }
 
@@ -108,7 +108,7 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Xóa người dùng thất bại.");
+            return buildApiResponse(HttpStatus.METHOD_FAILURE, "Xóa người dùng thất bại.");
         }
     }
 
@@ -126,7 +126,7 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Cập nhật trạng thái người dùng thất bại.");
+            return buildApiResponse(HttpStatus.METHOD_FAILURE, "Cập nhật trạng thái người dùng thất bại.");
         }
     }
 
@@ -143,7 +143,24 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Đổi mật khẩu thất bại.");
+            return buildApiResponse(HttpStatus.METHOD_FAILURE, "Đổi mật khẩu thất bại.");
+        }
+    }
+
+    @GetMapping("/verify-password")
+    public ResponseEntity<?> verifyEmail(@RequestParam("password") String pass) {
+        try {
+            this.userService.verifyPassword(pass);
+
+            return ResponseEntity.ok(
+                    ApiResponse.<Void>builder()
+                            .code(HttpStatus.OK.value())
+                            .message("Xác thực mật khẩu thành công.")
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return buildApiResponse(HttpStatus.UNAUTHORIZED, "Xác thực mật khẩu thất bại.");
         }
     }
 
@@ -178,14 +195,14 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy thông tin người dùng thất bại.");
+            return buildApiResponse(HttpStatus.NO_CONTENT, "Lấy thông tin người dùng thất bại.");
         }
     }
 
     @PostMapping("upload")
-    public ResponseEntity<?> uploadImage(@RequestParam("id") Long id, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
-            String filename = this.userService.uploadAvatar(id, file);
+            String filename = this.userService.uploadAvatar(file);
 
             return ResponseEntity.ok(
                     ApiResponse.<String>builder()
@@ -196,7 +213,7 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Upload ảnh thất bại.");
+            return buildApiResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Upload ảnh thất bại.");
         }
     }
 
@@ -212,9 +229,28 @@ public class UserController {
             );
         } catch (Exception e) {
             log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy ảnh thất bại.");
+            return buildApiResponse(HttpStatus.NO_CONTENT, "Lấy ảnh thất bại.");
         }
     }
+
+    @GetMapping("/detail")
+    public ResponseEntity<?> getUserDetail() {
+        try {
+            AccountUserResponse user = this.userService.getUserDetail();
+
+            return ResponseEntity.ok(
+                    ApiResponse.<AccountUserResponse>builder()
+                            .code(HttpStatus.OK.value())
+                            .data(user)
+                            .message("Lấy thông tin người dùng thành công.")
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return buildApiResponse(HttpStatus.NOT_FOUND, "Lấy thông tin người dùng thất bại.");
+        }
+    }
+
 
 
 }

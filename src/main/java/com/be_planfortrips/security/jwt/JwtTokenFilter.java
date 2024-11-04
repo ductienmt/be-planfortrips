@@ -38,14 +38,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     userDetails, null, userDetails.getAuthorities()
             );
             SecurityContextHolder.getContext().setAuthentication(auth);
-            log.info("User authenticated: " + auth.getName());
+//            log.info("User authenticated: " + auth.getName());
         } else {
             log.warn("No JWT token found in request or token is invalid");
         }
         filterChain.doFilter(request, response);
     }
 
-    private String resolveToken(HttpServletRequest request) {
+    public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
