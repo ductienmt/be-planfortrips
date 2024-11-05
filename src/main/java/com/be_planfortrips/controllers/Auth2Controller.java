@@ -73,8 +73,7 @@ public class Auth2Controller {
                     .message("Đăng nhập thành công.")
                     .build());
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Tài khoản hoặc mật khẩu không chính xác");
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 

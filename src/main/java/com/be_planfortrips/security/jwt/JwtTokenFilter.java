@@ -39,9 +39,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             );
             SecurityContextHolder.getContext().setAuthentication(auth);
 //            log.info("User authenticated: " + auth.getName());
-        } else {
-            log.warn("No JWT token found in request or token is invalid");
         }
+//        else {
+//            log.warn("No JWT token found in request or token is invalid");
+//        }
         filterChain.doFilter(request, response);
     }
 

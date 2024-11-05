@@ -14,7 +14,7 @@ public class API_Provider {
             "/api/v1/check-in/all",
             "/api/v1/check-in/getImages",
             "/api/v1/schedules/getById/**",
-
+            "/api/v1/type-enterprise-details/all",
 
     };
 
@@ -42,7 +42,6 @@ public class API_Provider {
             "/api/v1/type-enterprises/delete/**",
             "/api/v1/type-enterprises/getById/**",
             "/api/v1/type-enterprise-details/getById/**",
-            "/api/v1/type-enterprise-details/all",
             "/api/v1/type-enterprise-details/create",
             "/api/v1/type-enterprise-details/update/**",
             "/api/v1/type-enterprise-details/delete/**",

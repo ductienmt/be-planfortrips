@@ -16,7 +16,6 @@ import com.be_planfortrips.services.interfaces.IAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -88,6 +87,7 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public AuthResponse login(LoginDto loginDto) {
+//        System.out.println(loginDto);
         if (loginDto == null) {
             throw new RuntimeException("Vui lòng nhập thông tin đăng nhập");
         }
@@ -97,22 +97,33 @@ public class AuthServiceImpl implements IAuthService {
         switch (loginDto.getRole()) {
             case "ROLE_ADMIN":
                 user = adminRepository.findByUsername(loginDto.getUserName());
+                if (user == null) {
+                    throw new RuntimeException("Tài khoản không tồn tại trong hệ thống");
+                }
                 log.info("admin: " + user);
                 break;
             case "ROLE_USER":
                 user = userRepository.findByUsername(loginDto.getUserName());
+                if (user == null) {
+                    throw new RuntimeException("Tài khoản không tồn tại trong hệ thống");
+                }
                 log.info("user: " + user);
                 break;
             case "ROLE_ENTERPRISE":
                 user = enterpriseRepository.findByUsername(loginDto.getUserName());
-                log.info("enterprise: " + user);
+                if (user == null) {
+                    throw new RuntimeException("Tài khoản không tồn tại trong hệ thống");
+                }
+                AccountEnterprise accountEnterprise = (AccountEnterprise) user;
+                Integer typeDe = loginDto.getTypeDe();
+                Integer typeDeEnterprise = Integer.valueOf(accountEnterprise.getTypeEnterpriseDetail().getId().toString());
+                if (!typeDe.equals(typeDeEnterprise)) {
+                    throw new RuntimeException("Tài khoản của bạn không kinh doanh dịch vụ này");
+                }
+//                log.info("enterprise: " + accountEnterprise);
                 break;
             default:
                 throw new RuntimeException("ROLE không hợp lệ");
-        }
-
-        if (user == null) {
-            throw new RuntimeException("Tài khoản không tồn tại trong hệ thống");
         }
 
         String storedPassword;
@@ -134,6 +145,4 @@ public class AuthServiceImpl implements IAuthService {
             throw new RuntimeException("Kiểm tra lại thông tin tài khoản và mật khẩu");
         }
     }
-
-
 }
