@@ -1,6 +1,8 @@
 package com.be_planfortrips.repositories;
 
+import com.be_planfortrips.entity.Route;
 import com.be_planfortrips.entity.Schedule;
+import com.be_planfortrips.entity.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -43,6 +45,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
                                 @Param("destination") String destination,
                                 @Param("departureDate") LocalDate departureDate,
                                 @Param("arrivalDate") LocalDate arrivalDate);
+
+    List<Schedule> getSchedulesByRouteAndVehicleCode(Route route, Vehicle vehicle);
 
 
 }
