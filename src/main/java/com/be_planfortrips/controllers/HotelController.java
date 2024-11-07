@@ -141,4 +141,14 @@ public class HotelController {
         }
         return ResponseEntity.ok("Fake hotel created successfully");
     }
+
+    @GetMapping("detail")
+    public ResponseEntity<?> getHotelDetail(){
+        try {
+            List<HotelResponse> hotelResponse = iHotelService.getHotelDetail();
+            return ResponseEntity.ok(hotelResponse);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

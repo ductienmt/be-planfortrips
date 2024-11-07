@@ -15,6 +15,7 @@ public enum ErrorType {
     notValidDateFormat(101, "Định dạng ngày giờ không hợp lệ", HttpStatus.BAD_REQUEST),
 
     notMatchPassword(800, "Mật khẩu không khớp", HttpStatus.BAD_REQUEST),
+    statusInvalid(801, "Trạng thái không hợp lệ", HttpStatus.BAD_REQUEST),
 
     notVerified(400, "OTP không hợp lệ hoặc đã hết hạn", HttpStatus.BAD_REQUEST),
 

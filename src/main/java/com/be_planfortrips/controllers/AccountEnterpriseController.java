@@ -39,17 +39,28 @@ public class AccountEnterpriseController {
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.CREATED);
     }
 
-    @PutMapping("update/{id}")
+    @PutMapping("update")
     public ResponseEntity<AccountEnterpriseResponse> updateAccountEnterprise(
-            @PathVariable Long id,
             @RequestBody AccountEnterpriseDto accountEnterpriseDto) {
-        AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.updateAccountEnterprise(id, accountEnterpriseDto);
+        AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.updateAccountEnterprise(accountEnterpriseDto);
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping("delete/{id}")
+    @PostMapping("delete/{id}")
     public ResponseEntity<Void> deleteAccountEnterpriseById(@PathVariable Long id) {
         accountEnterpriseService.deleteAccountEnterpriseById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<AccountEnterpriseResponse> getAccountEnterpriseDetail() {
+        AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.getAccountEnterpriseDetail();
+        return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/change-status")
+    public ResponseEntity<Void> changeStatus(@RequestParam Long id, @RequestParam Integer status) {
+        accountEnterpriseService.changeStatus(id, status);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

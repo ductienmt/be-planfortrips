@@ -48,11 +48,11 @@ public class Hotel extends BaseEntity{
     @JsonManagedReference
     List<Room> rooms;
     // Danh sách User đã từng đặt khách sạn này
-    @ManyToMany
-    @JoinTable(
-            name = "hotel_users",
-            joinColumns = @JoinColumn(name = "hotel_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    List<User> usersUsed;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "hotel_users",
+//            joinColumns = @JoinColumn(name = "hotel_id"),
+//            inverseJoinColumns = @JoinColumn(name = "user_id")
+//    )
+//    List<User> usersUsed;
 }
