@@ -40,7 +40,9 @@ public enum ErrorType {
     ratingInvalid(707,"Đánh giá phaải từ 0 - 5 sao",HttpStatus.BAD_REQUEST),
     AccountEnterpriseIdNotFound(708,"AccountEnterpriseId không tồn tại",HttpStatus.NOT_FOUND),
     VehicleCodeNotFound(709, "VehicleCode không tồn tại",HttpStatus.NOT_FOUND),
-    RouteIdNotFound(710, "RouteId không tồn tại",HttpStatus.NOT_FOUND)
+    RouteIdNotFound(710, "RouteId không tồn tại",HttpStatus.NOT_FOUND),
+    HotelIdNotFound(711,"HotelId không tồn tại",HttpStatus.NOT_FOUND),
+    CityIdNotFound(712, "HotelId không tồn tại", HttpStatus.NOT_FOUND)
     ;
 
     private static String getString() {

@@ -8,6 +8,7 @@ import com.be_planfortrips.entity.TypeEnterpriseDetail;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.MapperInterface;
+import com.be_planfortrips.repositories.CityRepository;
 import com.be_planfortrips.repositories.TypeEnterpriseDetailRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class AccountEnterpriseMapper implements
 
     ModelMapper modelMapper;
     TypeEnterpriseDetailRepository typeEnterpriseDetailRepository;
+    CityRepository cityRepository;
 
     @Override
     public AccountEnterprise toEntity(AccountEnterpriseDto accountEnterpriseDto) {
@@ -31,7 +33,9 @@ public class AccountEnterpriseMapper implements
         if (!typeEnterpriseDetailRepository.existsById(typeEtpDtlId)) {
             throw new AppException(ErrorType.typeEnterpriseIdNotFound, typeEtpDtlId);
         }
-        City city = City.builder().id(accountEnterpriseDto.getCityId()).build();
+        City city = cityRepository.findById(accountEnterpriseDto.getCityId()).orElseThrow(
+                () -> new AppException(ErrorType.CityIdNotFound)
+        );
         enterprise.setCity(city);
         enterprise.setTypeEnterpriseDetail(TypeEnterpriseDetail.builder().id(typeEtpDtlId).build());
         return enterprise;
@@ -49,6 +53,8 @@ public class AccountEnterpriseMapper implements
         } else {
             accountEnterpriseResponse.setCityName("No city assigned");
         }
+
+
 
         return accountEnterpriseResponse;
     }
