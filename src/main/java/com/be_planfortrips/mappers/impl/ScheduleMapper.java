@@ -51,6 +51,7 @@ public class ScheduleMapper implements MapperInterface<ScheduleResponse, Schedul
         scheduleResponse.setPriceForOneTicket(schedule.getPrice_for_one_seat());
         // Vehicle
         scheduleResponse.setCode(vehicle.getCode());
+//        System.out.println(vehicle.getCarCompany().getName());
         scheduleResponse.setCarCompanyName(vehicle.getCarCompany().getName());
         scheduleResponse.setCarCompanyRating(vehicle.getCarCompany().getRating());
 
