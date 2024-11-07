@@ -64,6 +64,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         for (Seat seat : seats) {
             ScheduleSeat scheduleSeat = new ScheduleSeat();
             scheduleSeat.setSeat(seat);
+            scheduleSeat.setSeatNumber(seat.getSeatNumber());
             scheduleSeat.setSchedule(savedSchedule);
             scheduleSeat.setStatus(StatusSeat.Empty);
             scheduleSeatRepository.save(scheduleSeat);
