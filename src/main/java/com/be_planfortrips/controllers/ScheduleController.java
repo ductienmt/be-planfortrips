@@ -28,6 +28,7 @@ import java.util.Map;
 @RequestMapping("${api.prefix}/schedules")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin("http://localhost:5050")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ScheduleController {
 

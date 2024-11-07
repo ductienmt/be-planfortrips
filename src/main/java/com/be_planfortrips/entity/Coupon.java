@@ -55,6 +55,6 @@ public class Coupon extends BaseEntity {
     @JsonIgnore
     List<CouponRoom> couponRooms;
 
-    @ManyToOne
-    AccountEnterprise accountEnterprise;
+//    @ManyToOne
+//    AccountEnterprise accountEnterprise;
 }

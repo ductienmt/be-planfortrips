@@ -33,10 +33,10 @@ public class VehicleController {
                                               BindingResult result){
         try {
             if(result.hasErrors()) {
-                List<String> errorMessages = result.getFieldErrors()
-                        .stream()
-                        .map(FieldError::getDefaultMessage)
-                        .toList();
+                    List<String> errorMessages = result.getFieldErrors()
+                            .stream()
+                            .map(FieldError::getDefaultMessage)
+                            .toList();
                 return ResponseEntity.badRequest().body(errorMessages);
             }
             VehicleResponse vehicleResponse = iVehicleService.createVehicle(vehicleDTO);

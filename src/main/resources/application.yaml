@@ -5,10 +5,10 @@ spring:
     #    username: postgres
     #    password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
 
-    url: jdbc:postgresql://localhost:5432/a
+#    url: jdbc:postgresql://localhost:5432/a
     username: postgres
     password: 123
-#    url: jdbc:postgresql://localhost:5432/Planfortrips
+    url: jdbc:postgresql://localhost:5432/Planfortrips
 #    username: admin
 #    password: admin
     driver-class-name: org.postgresql.Driver
