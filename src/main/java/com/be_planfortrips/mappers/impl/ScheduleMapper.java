@@ -31,6 +31,7 @@ public class ScheduleMapper implements MapperInterface<ScheduleResponse, Schedul
         Schedule schedule = modelMapper.map(scheduleDto, Schedule.class);
         String routeId = scheduleDto.getRouteId();
         String vehicleCode = scheduleDto.getVehicleCode();
+        schedule.setPrice_for_one_seat(scheduleDto.getPriceForOneSeat());
 
         if (!routeRepository.existsById(routeId)) {
                 throw new AppException(ErrorType.routeIdNotFound, routeId);
@@ -49,17 +50,31 @@ public class ScheduleMapper implements MapperInterface<ScheduleResponse, Schedul
         Vehicle vehicle = schedule.getVehicleCode();
         scheduleResponse.setRouteId(schedule.getRoute().getId());
         scheduleResponse.setPriceForOneTicket(schedule.getPrice_for_one_seat());
-        // Vehicle
-        scheduleResponse.setCode(vehicle.getCode());
-//        System.out.println(vehicle.getCarCompany().getName());
-        scheduleResponse.setCarCompanyName(vehicle.getCarCompany().getName());
-        scheduleResponse.setCarCompanyRating(vehicle.getCarCompany().getRating());
 
-        scheduleResponse.setDepartureName(schedule.getRoute().getOriginStation().getName());
-        scheduleResponse.setArrivalName(schedule.getRoute().getDestinationStation().getName());
+        if (vehicle != null && vehicle.getCarCompany() != null) {
+            scheduleResponse.setCode(vehicle.getCode());
+            scheduleResponse.setCarCompanyName(vehicle.getCarCompany().getName());
+            scheduleResponse.setCarCompanyRating(vehicle.getCarCompany().getRating());
+        }
+
+        if (schedule.getRoute() != null) {
+            if (schedule.getRoute().getOriginStation() != null) {
+                scheduleResponse.setDepartureName(schedule.getRoute().getOriginStation().getName());
+            } else {
+                scheduleResponse.setDepartureName("Unknown Origin Station");
+            }
+
+            if (schedule.getRoute().getDestinationStation() != null) {
+                scheduleResponse.setArrivalName(schedule.getRoute().getDestinationStation().getName());
+            } else {
+                scheduleResponse.setArrivalName("Unknown Destination Station");
+            }
+        }
+
         scheduleResponse.setScheduleSeat(schedule.getScheduleSeats());
         return scheduleResponse;
     }
+
 
     @Override
     public void updateEntityFromDto(ScheduleDto scheduleDto, Schedule schedule) {
