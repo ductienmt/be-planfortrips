@@ -25,6 +25,7 @@ public class BookingHotelDetailResponse {
     LocalDateTime checkOutTime;
     Status status;
     BigDecimal price;
+    Long userId;
     Long roomId;
 
 

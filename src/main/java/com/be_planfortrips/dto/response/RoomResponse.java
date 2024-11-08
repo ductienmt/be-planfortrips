@@ -2,6 +2,7 @@ package com.be_planfortrips.dto.response;
 
 import com.be_planfortrips.entity.Hotel;
 import com.be_planfortrips.entity.Image;
+import com.be_planfortrips.entity.RoomImage;
 import com.be_planfortrips.entity.TypeOfRoom;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,5 +24,5 @@ public class RoomResponse {
     Integer maxSize;
     boolean isAvailable;
     Hotel hotel;
-    List<Image> images;
+    List<RoomImage> images;
 }

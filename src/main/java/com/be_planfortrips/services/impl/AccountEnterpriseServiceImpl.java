@@ -52,8 +52,12 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
 
     @Override
     public AccountEnterpriseResponse createAccountEnterprise(AccountEnterpriseDto accountEnterpriseDto) {
+        if (accountEnterpriseRepository.findByUsername(accountEnterpriseDto.getUsername()) != null) {
+            throw new AppException(ErrorType.usernameExisted);
+        }
         // Chuyển đổi DTO thành entity và lưu vào repository
         AccountEnterprise accountEnterprise = accountEnterpriseMapper.toEntity(accountEnterpriseDto);
+
         accountEnterprise.setPassword(passwordEncoder.encode(accountEnterpriseDto.getPassword()));
         accountEnterprise.setRole(roleRepository.findById(3L).orElseThrow(() -> new RuntimeException("Không tìm thấy role với id: 2")));
         accountEnterprise = accountEnterpriseRepository.save(accountEnterprise);
@@ -66,15 +70,16 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         // Tìm tài khoản doanh nghiệp theo ID
         AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(enterprise.getAccountEnterpriseId())
                 .orElseThrow(() -> new AppException(ErrorType.notFound));
-
         // Cập nhật thông tin từ DTO
-        accountEnterpriseMapper.updateEntityFromDto(accountEnterpriseDto, accountEnterprise);
+        AccountEnterprise aEtpNew = accountEnterpriseMapper.toEntity(accountEnterpriseDto);
+        aEtpNew.setAccountEnterpriseId(accountEnterprise.getAccountEnterpriseId());
         accountEnterprise.setPassword(passwordEncoder.encode(accountEnterpriseDto.getPassword()));
+        System.out.println(accountEnterprise.getCity().getNameCity());
         // Lưu entity đã cập nhật
-        accountEnterprise = accountEnterpriseRepository.save(accountEnterprise);
+        accountEnterpriseRepository.save(aEtpNew);
 
         // Trả về DTO sau khi cập nhật
-        return accountEnterpriseMapper.toResponse(accountEnterprise);
+        return accountEnterpriseMapper.toResponse(aEtpNew);
     }
 
     @Override
