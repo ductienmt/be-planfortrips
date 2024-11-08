@@ -162,7 +162,7 @@ public class CheckinServiceImpl implements ICheckinService {
                 .orElseThrow(() -> new AppException(ErrorType.notFound));
 
         for (MultipartFile file : files) {
-            this.utils.isValidImage(file);
+//            this.utils.isValidImage(file);
             this.utils.checkSize(file);
         }
 

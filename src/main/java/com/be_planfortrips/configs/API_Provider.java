@@ -27,6 +27,7 @@ public class API_Provider {
             "/api/v1/areas/create",
             "/api/v1/areas/update",
             "/api/v1/areas/delete",
+            "/api/v1/areas/change-status",
             "/api/v1/banners/all",
             "/api/v1/banners/create",
             "/api/v1/banners/update",
@@ -113,7 +114,6 @@ public class API_Provider {
     };
 
     public static final String[] ENTERPRISE_API = {
-
             "/api/v1/booking-hotels/all",
             "/api/v1/booking-hotels/delete/**",
             "/api/v1/booking-hotel-details/all",
@@ -127,6 +127,7 @@ public class API_Provider {
             "/api/v1/hotels/deleteImages/**",
             "/api/v1/hotels/detail",
             "/api/v1/rooms/create",
+            "/api/v1/rooms/all",
             "/api/v1/rooms/update/**",
             "/api/v1/rooms/delete/**",
             "/api/v1/rooms/getRoomByHotelId",

@@ -48,11 +48,17 @@ public class RoomController {
 
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/create")
-    public ResponseEntity<RoomResponse> createRoom(
-           @RequestBody RoomDto roomDto
+    public ResponseEntity<?> createRoom(
+            @RequestBody RoomDto roomDto
     ) {
-        RoomResponse response = roomService.createRoom(roomDto);
-        return ResponseEntity.ok(response);
+        try {
+            RoomResponse response = roomService.createRoom(roomDto);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Đã xảy ra lỗi, vui lòng thử lại");
+        }
     }
 
     @PostMapping("/upload-image/{roomId}")

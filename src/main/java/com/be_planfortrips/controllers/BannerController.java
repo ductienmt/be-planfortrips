@@ -5,8 +5,10 @@ import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.dto.response.BannerResponseAdmin;
 import com.be_planfortrips.dto.response.BannerResponseUser;
 import com.be_planfortrips.services.interfaces.IBannerService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +70,7 @@ public class BannerController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createBanner(@RequestBody BannerDto bannerDto) {
+    public ResponseEntity<?> createBanner(@Valid @RequestBody BannerDto bannerDto) {
         try {
             BannerResponseAdmin bannerResponse = this.bannerService.createBanner(bannerDto);
             return ResponseEntity.ok(
@@ -85,7 +87,7 @@ public class BannerController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateBanner(@RequestParam("id") Long id, @RequestBody BannerDto bannerDto) {
+    public ResponseEntity<?> updateBanner(@RequestParam("id") Long id,@Valid @RequestBody BannerDto bannerDto) {
         try {
             BannerResponseAdmin bannerResponse = this.bannerService.updateBanner(id, bannerDto);
             return ResponseEntity.ok(
@@ -101,7 +103,7 @@ public class BannerController {
         }
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public ResponseEntity<?> deleteBanner(@RequestParam("id") Long id) {
         try {
             this.bannerService.deleteBanner(id);
