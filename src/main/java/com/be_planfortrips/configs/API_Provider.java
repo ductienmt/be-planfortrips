@@ -14,12 +14,16 @@ public class API_Provider {
             "/api/v1/check-in/all",
             "/api/v1/check-in/getImages",
             "/api/v1/schedules/getById/**",
-
-
+            "/api/v1/type-enterprise-details/all",
+            "/api/v1/payments/vnpay/return",
+            "/api/v1/account-enterprises/create",
     };
 
     public static final String[] ADMIN_API = {
-            "/api/v1/account-enterprises/**",
+            "/api/v1/account-enterprises/change-status",
+            "/api/v1/account-enterprises/all",
+            "/api/v1/account-enterprises/delete/**",
+            "/api/v1/account-enterprises/getById/**",
             "/api/v1/areas/create",
             "/api/v1/areas/update",
             "/api/v1/areas/delete",
@@ -41,15 +45,12 @@ public class API_Provider {
             "/api/v1/type-enterprises/update/**",
             "/api/v1/type-enterprises/delete/**",
             "/api/v1/type-enterprises/getById/**",
-            "/api/v1/type-enterprise-details/getById/**",
-            "/api/v1/type-enterprise-details/all",
             "/api/v1/type-enterprise-details/create",
             "/api/v1/type-enterprise-details/update/**",
             "/api/v1/type-enterprise-details/delete/**",
             "/api/v1/users/all",
             "/api/v1/users/delete",
             "/api/v1/users/create",
-            "/api/v1/payments/vnpay/return",
     };
 
     public static final String[] USER_API = {
@@ -106,9 +107,13 @@ public class API_Provider {
             "/api/v1/feedbacks/getById/**",
             "/api/v1/routes/all",
             "/api/v1/routes/getById/**",
+            "/api/v1/type-enterprise-details/getById/**",
+            "/api/v1/account-enterprises/detail",
+            "/api/v1/account-enterprises/update/**",
     };
 
     public static final String[] ENTERPRISE_API = {
+
             "/api/v1/booking-hotels/all",
             "/api/v1/booking-hotels/delete/**",
             "/api/v1/booking-hotel-details/all",
@@ -120,9 +125,11 @@ public class API_Provider {
             "/api/v1/hotels/update/**",
             "/api/v1/hotels/uploads/**",
             "/api/v1/hotels/deleteImages/**",
+            "/api/v1/hotels/detail",
             "/api/v1/rooms/create",
             "/api/v1/rooms/update/**",
             "/api/v1/rooms/delete/**",
+            "/api/v1/rooms/getRoomByHotelId",
             "/api/v1/routes/create",
             "/api/v1/routes/update/**",
             "/api/v1/routes/delete/**",

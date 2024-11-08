@@ -1,5 +1,7 @@
 package com.be_planfortrips.mappers;
 
 public interface TokenMapper {
-    Object getUserByToken();
+    Long getIdUserByToken();
+    Long getIdAdminByToken();
+    Long getIdEnterpriseByToken();
 }

@@ -1,6 +1,5 @@
 package com.be_planfortrips.dto;
 
-
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

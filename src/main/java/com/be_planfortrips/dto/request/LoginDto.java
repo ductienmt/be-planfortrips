@@ -14,5 +14,4 @@ public class LoginDto {
     String userName;
     @NotBlank(message = "Vui lòng nhập password")
     String password;
-    String role;
 }

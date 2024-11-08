@@ -2,6 +2,8 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.RoomDto;
 import com.be_planfortrips.dto.response.RoomResponse;
+import com.be_planfortrips.dto.response.RoomResponseEnterprise;
+import com.be_planfortrips.entity.AccountEnterprise;
 import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.entity.Room;
 import com.be_planfortrips.entity.RoomImage;
@@ -9,6 +11,8 @@ import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.MapperInterface;
 import com.be_planfortrips.mappers.impl.RoomMapper;
+import com.be_planfortrips.mappers.impl.RoomMapper_2;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.RoomRepository;
 import com.be_planfortrips.services.interfaces.ICloudinaryService;
 import com.be_planfortrips.services.interfaces.IRoomService;
@@ -34,6 +38,8 @@ public class RoomServiceImpl implements IRoomService {
     RoomRepository roomRepository;
     MapperInterface<RoomResponse, Room, RoomDto> roomMapper;
     ICloudinaryService cloudinaryService;
+    private final TokenMapperImpl tokenMapperImpl;
+    RoomMapper_2 roomMapper_2;
 
     @Override
     public Set<RoomResponse> getAllRoom() {
@@ -68,8 +74,8 @@ public class RoomServiceImpl implements IRoomService {
     }
 
     @Override
-    public List<RoomResponse> getRoomByHotelId(Long hotelId) {
-        return this.roomRepository.findByHotelId(hotelId).stream().map(roomMapper::toResponse).collect(Collectors.toList());
+    public List<RoomResponseEnterprise> getRoomByHotelId(Long id) {
+        return this.roomRepository.findByHotelId(id).stream().map(roomMapper_2::toResponse).collect(Collectors.toList());
     }
 
     @Override
