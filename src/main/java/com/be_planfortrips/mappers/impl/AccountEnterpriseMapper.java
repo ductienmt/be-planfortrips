@@ -31,9 +31,11 @@ public class AccountEnterpriseMapper implements
         if (!typeEnterpriseDetailRepository.existsById(typeEtpDtlId)) {
             throw new AppException(ErrorType.typeEnterpriseIdNotFound, typeEtpDtlId);
         }
-        City city = City.builder().id(accountEnterpriseDto.getCityId()).build();
-        enterprise.setCity(city);
-        enterprise.setTypeEnterpriseDetail(TypeEnterpriseDetail.builder().id(typeEtpDtlId).build());
+        if (accountEnterpriseDto.getCityId() != null) {
+            City city = City.builder().id(accountEnterpriseDto.getCityId()).build();
+            enterprise.setCity(city);
+            enterprise.setTypeEnterpriseDetail(TypeEnterpriseDetail.builder().id(typeEtpDtlId).build());
+        }
         return enterprise;
     }
 

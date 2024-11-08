@@ -95,8 +95,8 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public AccountUserResponse updateUser(UserDto userDto) {
-        User user = this.userRepository.findById(((User) tokenMapperImpl.getUserByToken()).getId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy user với id: " + ((User) tokenMapperImpl.getUserByToken()).getId()));
+        User user = this.userRepository.findById(tokenMapperImpl.getIdUserByToken())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy user với id: " + tokenMapperImpl.getIdUserByToken()));
 
         if (userDto.getUserName() != null && !userDto.getUserName().equals(user.getUserName()) &&
                 this.userRepository.findByUsername(userDto.getUserName()) != null) {
@@ -170,7 +170,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void changePassword(ChangePasswordDto changePasswordDto) {
-        User user = this.getUserById(((User) tokenMapperImpl.getUserByToken()).getId());
+        User user = this.getUserById(tokenMapperImpl.getIdUserByToken());
 
         if (!passwordEncoder.matches(changePasswordDto.getOldPassword(), user.getPassword())) {
             throw new AppException(ErrorType.notMatchPassword);
@@ -230,7 +230,7 @@ public class UserServiceImpl implements IUserService {
             throw new IllegalArgumentException("Vui lòng chọn ảnh hợp lệ");
         }
 
-        User user = this.getUserById(((User) tokenMapperImpl.getUserByToken()).getId());
+        User user = this.getUserById(tokenMapperImpl.getIdUserByToken());
 
         this.utils.isValidImage(file);
         this.utils.checkSize(file);
@@ -256,7 +256,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public Map<String, Object> getAvatar() {
         Map<String, Object> responseMap = new HashMap<>();
-        Long userId = ((User) tokenMapperImpl.getUserByToken()).getId();
+        Long userId = tokenMapperImpl.getIdUserByToken();
         String url = this.userRepository.getAvatarUser(userId);
         User user = this.getUserById(userId);
         if (url == null) {
@@ -273,14 +273,14 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public AccountUserResponse getUserDetail() {
-        User user = this.userRepository.findById(((User) tokenMapperImpl.getUserByToken()).getId())
+        User user = this.userRepository.findById(tokenMapperImpl.getIdUserByToken())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return this.userMapper.toResponse(user);
     }
 
     @Override
     public void verifyPassword(String password) {
-        User user = this.getUserById(((User) tokenMapperImpl.getUserByToken()).getId());
+        User user = this.getUserById(tokenMapperImpl.getIdUserByToken());
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new AppException(ErrorType.notMatchPassword);
         }

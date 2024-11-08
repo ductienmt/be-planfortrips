@@ -1,6 +1,7 @@
 package com.be_planfortrips.dto;
 
 import com.be_planfortrips.entity.TypeVehicle;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

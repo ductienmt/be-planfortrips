@@ -71,7 +71,8 @@ public class FeedbackServiceImpl implements IFeedbackService {
 
     @Override
     public List<FeedbackResponse> getFeedBackByEnterpriseId() {
-        AccountEnterprise accountEnterprise = (AccountEnterprise) tokenMapper.getUserByToken();
+        AccountEnterprise accountEnterprise = this.accountEnterpriseRepository.findById(tokenMapper.getIdEnterpriseByToken())
+                .orElseThrow(() -> new AppException(ErrorType.notFound, "Không tìm thấy tài khoản doanh nghiệp"));
         return feedbackRepository.getFeedbackByAccountEnterprise(accountEnterprise)
                 .stream().map(feedbackMapper::toResponse).toList();
     }
