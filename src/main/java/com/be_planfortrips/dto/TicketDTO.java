@@ -24,7 +24,6 @@ public class TicketDTO {
     @Min(value = 1,message = "Price must be greater than 1")
     BigDecimal totalPrice;
     @JsonProperty("payment_id")
-    @Min(value = 1,message = "payment_id must be greater than 1 star")
     Long paymentId;
     @JsonProperty("status")
     @NotBlank(message = "status is required")

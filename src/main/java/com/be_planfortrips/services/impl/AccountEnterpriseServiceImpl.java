@@ -66,9 +66,8 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
 
     @Override
     public AccountEnterpriseResponse updateAccountEnterprise(AccountEnterpriseDto accountEnterpriseDto) {
-        AccountEnterprise enterprise = (AccountEnterprise) tokenMapper.getUserByToken();
         // Tìm tài khoản doanh nghiệp theo ID
-        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(enterprise.getAccountEnterpriseId())
+        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(tokenMapper.getIdEnterpriseByToken())
                 .orElseThrow(() -> new AppException(ErrorType.notFound));
         // Cập nhật thông tin từ DTO
         AccountEnterprise aEtpNew = accountEnterpriseMapper.toEntity(accountEnterpriseDto);
@@ -94,8 +93,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
 
     @Override
     public AccountEnterpriseResponse getAccountEnterpriseDetail() {
-        AccountEnterprise enterprise = (AccountEnterprise) tokenMapper.getUserByToken();
-        return this.getAccountEnterpriseById(enterprise.getAccountEnterpriseId());
+        return this.getAccountEnterpriseById(tokenMapper.getIdEnterpriseByToken());
     }
 
     @Override

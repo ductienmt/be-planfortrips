@@ -46,6 +46,8 @@ public class PlanServiceImpl implements IPlanService {
     private PlanDetailRepository planDetailRepository;
     @Autowired
     private TokenMapperImpl tokenMapperImpl;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public Map<String, Object> prepareDataPlan(DataEssentialPlan dataEssentialPlan) {
@@ -70,8 +72,7 @@ public class PlanServiceImpl implements IPlanService {
 
     @Override
     public List<PlanResponse> getAllPlanByUserId() {
-        User user = (User) tokenMapperImpl.getUserByToken();
-        List<Plan> plans = planRepository.findAllByUserId(user.getId());
+        List<Plan> plans = planRepository.findAllByUserId(tokenMapperImpl.getIdUserByToken());
 
         return plans.stream().map(
                 plan -> {
@@ -145,7 +146,7 @@ public class PlanServiceImpl implements IPlanService {
         plan.setNumberPeople(planDto.getNumberPeople());
         plan.setTotalPrice(planDto.getTotalPrice());
         plan.setStatus(StatusPlan.NOT_STARTED);
-        plan.setUser((User) tokenMapperImpl.getUserByToken());
+        plan.setUser(userRepository.findById(tokenMapperImpl.getIdUserByToken()).orElseThrow(() -> new RuntimeException("Lỗi lấy thông tin user")));
 
         plan = planRepository.save(plan);
 

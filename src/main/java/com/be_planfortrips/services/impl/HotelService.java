@@ -216,8 +216,7 @@ return null;
 
     @Override
     public List<HotelResponse> getHotelDetail() {
-        Long enterpriseId = ((AccountEnterprise) tokenMapperImpl.getUserByToken()).getAccountEnterpriseId();
-        List<Hotel> hotels = this.hotelRepository.findByEnterpriseId(enterpriseId);
+        List<Hotel> hotels = this.hotelRepository.findByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken());
         return hotels.stream().map(hotelMapper::toResponse).collect(Collectors.toList());
     }
 }
