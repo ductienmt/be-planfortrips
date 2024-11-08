@@ -2,6 +2,7 @@ package com.be_planfortrips.mappers.impl;
 
 import com.be_planfortrips.dto.BookingHotelDetailDto;
 import com.be_planfortrips.dto.response.BookingHotelDetailResponse;
+import com.be_planfortrips.entity.BookingHotel;
 import com.be_planfortrips.entity.BookingHotelDetail;
 import com.be_planfortrips.entity.Room;
 import com.be_planfortrips.exceptions.AppException;
@@ -39,6 +40,7 @@ public class BookingHotelDetailMapper implements MapperInterface<BookingHotelDet
     public BookingHotelDetailResponse toResponse(BookingHotelDetail bookingHotelDetail) {
         BookingHotelDetailResponse bookingHotelDetailResponse = modelMapper.map(bookingHotelDetail, BookingHotelDetailResponse.class);
         bookingHotelDetailResponse.setRoomId(bookingHotelDetail.getRoom().getId());
+        bookingHotelDetailResponse.setUserId(bookingHotelDetail.getBookingHotel().getUser().getId());
         return bookingHotelDetailResponse;
     }
 

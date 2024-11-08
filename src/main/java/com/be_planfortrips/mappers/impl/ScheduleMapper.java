@@ -29,18 +29,16 @@ public class ScheduleMapper implements MapperInterface<ScheduleResponse, Schedul
     @Override
     public Schedule toEntity(ScheduleDto scheduleDto) {
         Schedule schedule = modelMapper.map(scheduleDto, Schedule.class);
-        String routeId = scheduleDto.getRouteId();
-        String vehicleCode = scheduleDto.getVehicleCode();
-        schedule.setPrice_for_one_seat(scheduleDto.getPriceForOneSeat());
+        Route route = routeRepository.findById(scheduleDto.getRouteId()).orElseThrow(
+                () -> new AppException(ErrorType.routeIdNotFound)
+        );
+        Vehicle vehicleCode = vehicleRepository.findById(scheduleDto.getVehicleCode()).orElseThrow(
+                () -> new AppException(ErrorType.vehicleCodeNotFound)
+        );
 
-        if (!routeRepository.existsById(routeId)) {
-                throw new AppException(ErrorType.routeIdNotFound, routeId);
-        }
-        if (!vehicleRepository.existsById(vehicleCode)) {
-            throw new AppException(ErrorType.vehicleCodeNotFound, vehicleCode);
-        }
-        schedule.setRoute(Route.builder().id(routeId).build());
-        schedule.setVehicleCode(Vehicle.builder().code(vehicleCode).build());
+        schedule.setPrice_for_one_seat(scheduleDto.getPriceForOneSeat());
+        schedule.setRoute(route);
+        schedule.setVehicleCode(vehicleCode);
         return schedule;
     }
 

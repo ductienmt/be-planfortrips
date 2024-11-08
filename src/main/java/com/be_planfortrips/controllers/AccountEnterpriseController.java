@@ -3,6 +3,7 @@ package com.be_planfortrips.controllers;
 import com.be_planfortrips.dto.AccountEnterpriseDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
 import com.be_planfortrips.services.interfaces.IAccountEnterpriseService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,7 +35,8 @@ public class AccountEnterpriseController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AccountEnterpriseResponse> createAccountEnterprise(@RequestBody AccountEnterpriseDto accountEnterpriseDto) {
+    public ResponseEntity<AccountEnterpriseResponse> createAccountEnterprise(
+            @RequestBody @Valid  AccountEnterpriseDto accountEnterpriseDto) {
         AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.createAccountEnterprise(accountEnterpriseDto);
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.CREATED);
     }
