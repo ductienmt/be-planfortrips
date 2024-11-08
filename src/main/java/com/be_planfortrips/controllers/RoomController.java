@@ -93,4 +93,9 @@ public class RoomController {
         return ResponseEntity.ok(hotelService.getRoomAvailable(checkIn, checkOut));
     }
 
+    @GetMapping("/getRoomByHotelId")
+    public ResponseEntity<?> getRoomByHotelId(@RequestParam Long id) {
+        return ResponseEntity.ok(roomService.getRoomByHotelId(id));
+    }
+
 }

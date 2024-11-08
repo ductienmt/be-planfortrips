@@ -2,6 +2,7 @@ package com.be_planfortrips.services.interfaces;
 
 import com.be_planfortrips.dto.RoomDto;
 import com.be_planfortrips.dto.response.RoomResponse;
+import com.be_planfortrips.dto.response.RoomResponseEnterprise;
 import com.be_planfortrips.entity.Image;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +24,7 @@ public interface IRoomService {
 
     RoomResponse updateRoomById(Long roomId, RoomDto roomDto);
 
-    List<RoomResponse> getRoomByHotelId(Long hotelId);
+    List<RoomResponseEnterprise> getRoomByHotelId(Long id);
 
     List<RoomResponse> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut);
 

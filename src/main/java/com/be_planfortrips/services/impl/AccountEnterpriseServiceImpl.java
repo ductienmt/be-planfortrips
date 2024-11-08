@@ -6,7 +6,9 @@ import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
 import com.be_planfortrips.entity.AccountEnterprise;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.mappers.TokenMapper;
 import com.be_planfortrips.mappers.impl.AccountEnterpriseMapper;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.RoleRepository;
 import com.be_planfortrips.services.interfaces.IAccountEnterpriseService;
@@ -29,6 +31,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
     TypeEnterpriseDetailServiceImpl typeEnterpriseDetailService;
+    TokenMapperImpl tokenMapper;
 
     @Override
     public List<AccountEnterpriseResponse> getAllAccountEnterprises() {
@@ -62,9 +65,10 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     }
 
     @Override
-    public AccountEnterpriseResponse updateAccountEnterprise(Long id, AccountEnterpriseDto accountEnterpriseDto) {
+    public AccountEnterpriseResponse updateAccountEnterprise(AccountEnterpriseDto accountEnterpriseDto) {
+        AccountEnterprise enterprise = (AccountEnterprise) tokenMapper.getUserByToken();
         // Tìm tài khoản doanh nghiệp theo ID
-        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(id)
+        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(enterprise.getAccountEnterpriseId())
                 .orElseThrow(() -> new AppException(ErrorType.notFound));
         // Cập nhật thông tin từ DTO
         AccountEnterprise aEtpNew = accountEnterpriseMapper.toEntity(accountEnterpriseDto);
@@ -83,8 +87,28 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         // Tìm tài khoản doanh nghiệp theo ID
         AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorType.notFound)); // Nếu không tìm thấy thì ném lỗi
-
+        accountEnterprise.setStatus(false);
         // Xóa tài khoản doanh nghiệp
-        accountEnterpriseRepository.delete(accountEnterprise);
+        accountEnterpriseRepository.save(accountEnterprise);
+    }
+
+    @Override
+    public AccountEnterpriseResponse getAccountEnterpriseDetail() {
+        AccountEnterprise enterprise = (AccountEnterprise) tokenMapper.getUserByToken();
+        return this.getAccountEnterpriseById(enterprise.getAccountEnterpriseId());
+    }
+
+    @Override
+    public void changeStatus(Long id, Integer status) {
+        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorType.notFound));
+        if (status == 1) {
+            accountEnterprise.setStatus(true);
+        } else if (status == 0) {
+            accountEnterprise.setStatus(false);
+        } else {
+            throw new AppException(ErrorType.statusInvalid);
+        }
+        accountEnterpriseRepository.save(accountEnterprise);
     }
 }

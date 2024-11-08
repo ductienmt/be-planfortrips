@@ -37,10 +37,10 @@ public class Schedule extends BaseEntity{
     @Column(name = "price_for_one_seat", precision = 10, scale = 2)
     BigDecimal price_for_one_seat;
 
-    @Column(name = "departure_time")
+    @Column(name = "departure_time", columnDefinition = "timestamp without time zone")
     LocalDateTime departureTime;
 
-    @Column(name = "arrival_time")
+    @Column(name = "arrival_time", columnDefinition = "timestamp without time zone")
     LocalDateTime arrivalTime;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)

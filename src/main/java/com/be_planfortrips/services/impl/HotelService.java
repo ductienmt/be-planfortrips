@@ -6,6 +6,7 @@ import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.HotelMapper;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.HotelRepository;
 import com.be_planfortrips.repositories.ImageRepository;
@@ -44,6 +45,7 @@ public class HotelService implements IHotelService {
     RoomServiceImpl roomServiceImpl;
 
     CloudinaryService cloudinaryService;
+    private final TokenMapperImpl tokenMapperImpl;
 
     @Override
     @Transactional
@@ -210,5 +212,12 @@ return null;
         }
 
         return hotelMap;
+    }
+
+    @Override
+    public List<HotelResponse> getHotelDetail() {
+        Long enterpriseId = ((AccountEnterprise) tokenMapperImpl.getUserByToken()).getAccountEnterpriseId();
+        List<Hotel> hotels = this.hotelRepository.findByEnterpriseId(enterpriseId);
+        return hotels.stream().map(hotelMapper::toResponse).collect(Collectors.toList());
     }
 }
