@@ -1,6 +1,5 @@
 package com.be_planfortrips.dto.response;
 
-import com.be_planfortrips.entity.AccountEnterprise;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -9,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor

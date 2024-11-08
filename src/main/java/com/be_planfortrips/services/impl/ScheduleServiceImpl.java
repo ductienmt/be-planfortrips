@@ -8,9 +8,7 @@ import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.ScheduleMapper;
-import com.be_planfortrips.repositories.ScheduleRepository;
-import com.be_planfortrips.repositories.ScheduleSeatRepository;
-import com.be_planfortrips.repositories.SeatRepository;
+import com.be_planfortrips.repositories.*;
 import com.be_planfortrips.services.interfaces.IScheduleService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -33,9 +31,11 @@ public class ScheduleServiceImpl implements IScheduleService {
     ScheduleRepository scheduleRepository;
     ScheduleMapper scheduleMapper;
     SeatService seatService;
-    private final SeatRepository seatRepository;
-    private final ScheduleSeatRepository scheduleSeatRepository;
 
+    SeatRepository seatRepository;
+    VehicleRepository vehicleRepository;
+    RouteRepository routeRepository;
+    ScheduleSeatRepository scheduleSeatRepository;
 
     @Override
     public List<ScheduleResponse> getAllSchedule() {
@@ -64,6 +64,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         for (Seat seat : seats) {
             ScheduleSeat scheduleSeat = new ScheduleSeat();
             scheduleSeat.setSeat(seat);
+            scheduleSeat.setSeatNumber(seat.getSeatNumber());
             scheduleSeat.setSchedule(savedSchedule);
             scheduleSeat.setStatus(StatusSeat.Empty);
             scheduleSeatRepository.save(scheduleSeat);
@@ -126,6 +127,21 @@ public class ScheduleServiceImpl implements IScheduleService {
         return schedules;
     }
 
+    @Override
+    public List<ScheduleResponse> getScheduleByVehicleCodeAndRouteId
+            (String vehicleCode, String routeId) {
+        // Check Vehicle
+        Vehicle vehicle = vehicleRepository.findById(vehicleCode).orElseThrow(
+                () -> new AppException(ErrorType.VehicleCodeNotFound)
+        );
+        Route route = routeRepository.findById(routeId).orElseThrow(
+                () -> new AppException(ErrorType.RouteIdNotFound)
+        );
+        List<Schedule> schedules =
+                scheduleRepository.getSchedulesByRouteAndVehicleCode(route, vehicle);
+        return schedules.stream().map(scheduleMapper::toResponse).toList();
+    }
+
     private Map<String, Object> fetchSchedules(LocalDateTime time, String type) {
         List<ScheduleResponse> schedules = this.scheduleRepository.findSchedulesAfterSpecificTime(
                 time.toLocalDate(),
@@ -145,6 +161,7 @@ public class ScheduleServiceImpl implements IScheduleService {
                 scheduleMap.put("departureTime", schedule.getDepartureTime());
                 scheduleMap.put("arrivalTime", schedule.getArrivalTime());
                 scheduleMap.put("routeId", schedule.getRouteId());
+                scheduleMap.put("priceForOneSeat", schedule.getPriceForOneTicket());
                 scheduleMap.put("seatAvailable", seatResponses);
 
                 scheduleResponseMap.put(schedule.getCarCompanyName(), scheduleMap);

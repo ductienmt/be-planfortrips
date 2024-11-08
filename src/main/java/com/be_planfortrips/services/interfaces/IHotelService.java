@@ -21,6 +21,7 @@ public interface IHotelService {
     void deleteHotelById(Long id);
     HotelResponse createHotelImage(Long hotelId,  List<MultipartFile>  file) throws Exception ;
     HotelResponse deleteImage(Long id, List<Integer> imageIds) throws Exception;
-    Map<String, Object> getRoomAvailable(Integer numberPeople, LocalDateTime checkIn, LocalDateTime checkOut);
+    Map<String, Object> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut);
+    List<HotelResponse> getHotelDetail();
 }
 

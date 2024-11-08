@@ -6,6 +6,7 @@ import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.HotelMapper;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.HotelRepository;
 import com.be_planfortrips.repositories.ImageRepository;
@@ -44,6 +45,7 @@ public class HotelService implements IHotelService {
     RoomServiceImpl roomServiceImpl;
 
     CloudinaryService cloudinaryService;
+    private final TokenMapperImpl tokenMapperImpl;
 
     @Override
     @Transactional
@@ -72,9 +74,11 @@ public class HotelService implements IHotelService {
 
     @Override
     public Page<HotelResponse> searchHotels(PageRequest request,String keyword,Integer rating) {
-        if(rating < 0 || rating > 5) throw new AppException(ErrorType.ratingInvalid);
-        return hotelRepository.searchHotels(request,keyword,rating).map(hotel -> hotelMapper.toResponse(hotel));
+//         if(rating < 0 || rating > 5) throw new AppException(ErrorType.ratingInvalid);
+//         return hotelRepository.searchHotels(request,keyword,rating).map(hotel -> hotelMapper.toResponse(hotel));
+return null;
     }
+
 
     @Override
     public HotelResponse getByHotelId(Long id) throws Exception {
@@ -161,39 +165,58 @@ public class HotelService implements IHotelService {
     }
 
     @Override
-    public Map<String, Object> getRoomAvailable(Integer numberPeople, LocalDateTime checkIn, LocalDateTime checkOut) {
-        List<RoomResponse> availableRooms = roomServiceImpl.getRoomAvailable(numberPeople, checkIn, checkOut);
-        Map<String, Object> hotelMap = new HashMap<>();
+    public Map<String, Object> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut) {
+        List<RoomResponse> availableRooms = roomServiceImpl.getRoomAvailable(checkIn, checkOut);
+
+        Map<Long, HotelResponse> hotelResponseMap = new HashMap<>();
+
         for (RoomResponse roomResponse : availableRooms) {
-            HotelResponse hotelResponse;
-            try {
-                hotelResponse = this.getByHotelId(roomResponse.getHotel().getId());
-            } catch (Exception e) {
-                throw new AppException(ErrorType.notFound);
+            Long hotelId = roomResponse.getHotel().getId();
+            if (!hotelResponseMap.containsKey(hotelId)) {
+                try {
+                    hotelResponseMap.put(hotelId, this.getByHotelId(hotelId));
+                } catch (Exception e) {
+                    throw new AppException(ErrorType.notFound);
+                }
             }
-            if (!hotelMap.containsKey(roomResponse.getHotel().getId())) {
+        }
+
+        Map<String, Object> hotelMap = new HashMap<>();
+
+        for (RoomResponse roomResponse : availableRooms) {
+            HotelResponse hotelResponse = hotelResponseMap.get(roomResponse.getHotel().getId());
+
+            if (!hotelMap.containsKey(hotelResponse.getId().toString())) {
                 Map<String, Object> hotelInfo = new HashMap<>();
-                hotelInfo.put("hotelId", roomResponse.getHotel().getId());
+                hotelInfo.put("hotelId", hotelResponse.getId());
                 hotelInfo.put("hotelName", hotelResponse.getName());
                 hotelInfo.put("hotelAddress", hotelResponse.getAddress());
                 hotelInfo.put("hotelPhonenumber", hotelResponse.getPhoneNumber());
                 hotelInfo.put("rating", hotelResponse.getRating());
                 hotelInfo.put("hotelImages", hotelResponse.getImages());
-                hotelInfo.put("roomAvailable", new HashSet<RoomResponse>());
-                hotelMap.put(hotelResponse.getName(), hotelInfo);
+                hotelInfo.put("roomAvailable", new ArrayList<Map<String, Object>>());
+                hotelMap.put(hotelResponse.getId().toString(), hotelInfo);
             }
+
             Map<String, Object> roomInfo = new HashMap<>();
             roomInfo.put("roomId", roomResponse.getId());
             roomInfo.put("roomName", roomResponse.getRoomName());
             roomInfo.put("roomType", roomResponse.getTypeOfRoom());
             roomInfo.put("price", roomResponse.getPrice());
+            roomInfo.put("maxPeople", roomResponse.getMaxSize());
             roomInfo.put("availability", roomResponse.isAvailable());
 
-            Set<Map<String, Object>> roomResponses = (Set<Map<String, Object>>) ((Map<String, Object>) hotelMap
-                    .get(hotelResponse.getName())).get("roomAvailable");
+            Map<String, Object> hotelInfo = (Map<String, Object>) hotelMap.get(hotelResponse.getId().toString());
+            List<Map<String, Object>> roomResponses = (List<Map<String, Object>>) hotelInfo.get("roomAvailable");
             roomResponses.add(roomInfo);
         }
+
         return hotelMap;
     }
 
+    @Override
+    public List<HotelResponse> getHotelDetail() {
+        List<Hotel> hotels = this.hotelRepository.findByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken());
+        return hotels.stream().map(hotelMapper::toResponse).collect(Collectors.toList());
+    }
 }

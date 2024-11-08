@@ -26,8 +26,8 @@ public class FeedbackMapper implements MapperInterface<FeedbackResponse, Feedbac
     @Override
     public FeedbackResponse toResponse(Feedback feedback) {
         FeedbackResponse feedbackResponse = modelMapper.map(feedback, FeedbackResponse.class);
-        feedbackResponse.setUserName(feedback.getUser().getUserName());
-        feedbackResponse.setTypeEnterpriseName(feedback.getTypeEnterprise().getEnterpriseName());
+        feedbackResponse.setUserName(feedback.getUser().getFullName());
+        feedbackResponse.setTypeEnterpriseName(feedback.getAccountEnterprise().getEnterpriseName());
         feedbackResponse.setCreatedAt(feedback.getCreateAt().toString());
         return feedbackResponse;
     }

@@ -49,9 +49,11 @@ public class Coupon extends BaseEntity {
 
     @Column(name = "is_active")
     boolean isActive = true;
-    @ManyToOne
-    AccountEnterprise accountEnterprise;
+
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JsonIgnore
     List<CouponRoom> couponRooms;
+
+    @ManyToOne
+    AccountEnterprise accountEnterprise;
 }

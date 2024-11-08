@@ -7,6 +7,8 @@ import com.be_planfortrips.security.userPrincipal.UserPrincipal;
 
 public interface IAuthService {
     void register(UserDto userDto);
-    AuthResponse login(LoginDto loginDto);
+    AuthResponse loginUser(LoginDto loginDto);
+    AuthResponse loginAdmin(LoginDto loginDto);
+    AuthResponse loginEnterprise(LoginDto loginDto, Integer type);
     UserPrincipal loadUserByUsernameAndRole(String role, String username);
 }

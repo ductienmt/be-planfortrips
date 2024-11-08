@@ -1,5 +1,6 @@
 package com.be_planfortrips.controllers;
 
+import com.be_planfortrips.dto.PlanDto;
 import com.be_planfortrips.dto.request.DataEssentialPlan;
 import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.exceptions.AppException;
@@ -22,14 +23,24 @@ public class PlanController {
     @Autowired
     private IPlanService planService;
 
-
+    @PostMapping("/save")
+    public ResponseEntity<?> savePlan(@RequestBody PlanDto planDto) {
+        try {
+            this.planService.save(planDto);
+            return ResponseEntity.ok().body("Lưu kế hoạch thành công");
+        } catch (Exception e) {
+            log.error("Error: ", e.getMessage());
+            return ResponseEntity.badRequest().body("Lưu kế hoạch thất bại");
+        }
+    }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllPlanByUserId(@RequestParam("userId") Integer userId) {
+    public ResponseEntity<?> getAllPlanByUserId() {
         try {
-            return ResponseEntity.ok().body(this.planService.getAllPlanByUserId(userId.longValue()));
+            return ResponseEntity.ok().body(this.planService.getAllPlanByUserId());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            log.error("Error: ", e.getMessage());
+            return ResponseEntity.badRequest().body("Lấy danh sách kế hoạch thất bại");
         }
     }
 
@@ -38,25 +49,21 @@ public class PlanController {
         try {
             return ResponseEntity.ok().body(this.planService.getPlanDetail(id.longValue()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            log.error("Error: ", e.getMessage());
+            return ResponseEntity.badRequest().body("Lấy thông tin kế hoạch thất bại");
         }
     }
 
     @PostMapping("/prepare")
     public ResponseEntity<?> prepareDataPlan(@RequestBody DataEssentialPlan dataEssentialPlan) {
-
-            // Gọi service xử lý dữ liệu kế hoạch
-            Map<String, Object> response = this.planService.prepareDataPlan(dataEssentialPlan);
-
-            // Trả về kết quả thành công
-            return ResponseEntity.ok(ApiResponse.<Map<String, Object>>builder()
-                    .code(HttpStatus.OK.value())
-                    .data(response)
-                    .message("")
-                    .build());
+        Map<String, Object> response = this.planService.prepareDataPlan(dataEssentialPlan);
+        return ResponseEntity.ok(ApiResponse.<Map<String, Object>>builder()
+                .code(HttpStatus.OK.value())
+                .data(response)
+                .message("")
+                .build());
 
     }
-
 
 
 }

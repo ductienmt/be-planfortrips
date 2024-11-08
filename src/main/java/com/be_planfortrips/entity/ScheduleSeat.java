@@ -27,6 +27,9 @@ public class ScheduleSeat {
     @JsonBackReference
     private Seat seat;
 
+    @Column(name = "seat_number")
+    private String seatNumber;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private StatusSeat status;

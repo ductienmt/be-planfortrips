@@ -3,10 +3,12 @@ package com.be_planfortrips.services.impl;
 import com.be_planfortrips.dto.CheckinDto;
 import com.be_planfortrips.dto.response.CheckinResponse;
 import com.be_planfortrips.entity.Checkin;
+import com.be_planfortrips.entity.CheckinImage;
 import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.CheckinMapper;
+import com.be_planfortrips.repositories.CheckinImageRepository;
 import com.be_planfortrips.repositories.CheckinRepository;
 import com.be_planfortrips.repositories.ImageRepository;
 import com.be_planfortrips.services.interfaces.ICheckinService;
@@ -18,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,9 @@ public class CheckinServiceImpl implements ICheckinService {
 
     @Autowired
     private ImageRepository imageRepository;
+
+    @Autowired
+    private CheckinImageRepository checkinImageRepository;
 
     @Autowired
     private Utils utils;
@@ -162,7 +166,7 @@ public class CheckinServiceImpl implements ICheckinService {
             this.utils.isValidImage(file);
             this.utils.checkSize(file);
         }
-        List<Image> images = new ArrayList<>();
+
         // Upload và lưu ảnh
         for (MultipartFile file : files) {
             String fileUrl;
@@ -175,11 +179,14 @@ public class CheckinServiceImpl implements ICheckinService {
             // Lưu ảnh vào cơ sở dữ liệu
             Image image = new Image();
             image.setUrl(fileUrl);
-            images.add(image);
+            this.imageRepository.save(image);
+
             // Liên kết với CheckinImage
+            CheckinImage checkinImage = new CheckinImage();
+            checkinImage.setCheckin(checkin);
+            checkinImage.setImage(image);
+            checkinImageRepository.save(checkinImage);
         }
-        checkin.setImages(images);
-        checkinRepository.save(checkin);
     }
 
     @Override
@@ -190,5 +197,8 @@ public class CheckinServiceImpl implements ICheckinService {
                 .collect(Collectors.toList());
     }
 
-
+    @Override
+    public List<Image> getImagesByCheckinId(Long checkinId) {
+        return null;
+    }
 }

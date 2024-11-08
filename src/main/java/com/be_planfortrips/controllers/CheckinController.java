@@ -4,10 +4,12 @@ package com.be_planfortrips.controllers;
 import com.be_planfortrips.dto.CheckinDto;
 import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.dto.response.CheckinResponse;
+import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.services.interfaces.ICheckinService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -155,8 +157,8 @@ public class CheckinController {
         }
     }
 
-    @PostMapping("/upload-image")
-    public ResponseEntity<?> uploadImage(@RequestParam("checkinId") Long checkinId, @RequestParam("files") List<MultipartFile> files) {
+    @PostMapping(value = "/upload-image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadImage(@RequestParam("checkinId") Long checkinId, @RequestPart(value = "files",required = false) List<MultipartFile> files) {
         try {
             this.checkinService.uploadImage(checkinId, files);
             return ResponseEntity.ok(
@@ -168,6 +170,22 @@ public class CheckinController {
         } catch (Exception e) {
             log.error(e.getMessage());
             return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Upload ảnh thất bại.");
+        }
+    }
+
+    @GetMapping("getImages")
+    public ResponseEntity<?> getImagesByCheckinId(@RequestParam("checkinId") Long checkinId) {
+        try {
+            return ResponseEntity.ok(
+                    ApiResponse.<List<Image>>builder()
+                            .code(HttpStatus.OK.value())
+                            .data(this.checkinService.getImagesByCheckinId(checkinId))
+                            .message("Lấy danh sách ảnh thành công.")
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy danh sách ảnh thất bại.");
         }
     }
 

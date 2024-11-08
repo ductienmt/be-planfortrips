@@ -17,5 +17,5 @@ public class CheckinResponse {
     BigDecimal latitude;
     BigDecimal longitude;
     BigDecimal payFee;
-    List<Image> imageList;
+    List<Image> images;
 }

@@ -26,5 +26,7 @@ public interface IScheduleService {
     Map<String, Object> getAllScheduleByTime(LocalDateTime departureTime, LocalDateTime returnTime);
 
     List<Schedule> getSchedules(DataSchedule dataSchedule);
+
+    List<ScheduleResponse> getScheduleByVehicleCodeAndRouteId(String vehicleCode, String routeId);
 }
 

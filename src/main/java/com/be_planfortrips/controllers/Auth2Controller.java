@@ -63,18 +63,45 @@ public class Auth2Controller {
         }
     }
 
-    @PostMapping("login")
+    @PostMapping("/user/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginDto) {
         try {
-            AuthResponse authResponse = this.authService.login(loginDto);
+            AuthResponse authResponse = this.authService.loginUser(loginDto);
             return ResponseEntity.ok(ApiResponse.<AuthResponse>builder()
                     .code(HttpStatus.OK.value())
                     .data(authResponse)
                     .message("Đăng nhập thành công.")
                     .build());
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Tài khoản hoặc mật khẩu không chính xác");
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @PostMapping("/admin/login")
+    public ResponseEntity<?> loginAdmin(@Valid @RequestBody LoginDto loginDto) {
+        try {
+            AuthResponse authResponse = this.authService.loginAdmin(loginDto);
+            return ResponseEntity.ok(ApiResponse.<AuthResponse>builder()
+                    .code(HttpStatus.OK.value())
+                    .data(authResponse)
+                    .message("Đăng nhập thành công.")
+                    .build());
+        } catch (Exception e) {
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @PostMapping("/enterprise/login")
+    public ResponseEntity<?> loginEnterprise(@Valid @RequestBody LoginDto loginDto, @RequestParam("type") Integer type) {
+        try {
+            AuthResponse authResponse = this.authService.loginEnterprise(loginDto, type);
+            return ResponseEntity.ok(ApiResponse.<AuthResponse>builder()
+                    .code(HttpStatus.OK.value())
+                    .data(authResponse)
+                    .message("Đăng nhập thành công.")
+                    .build());
+        } catch (Exception e) {
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 

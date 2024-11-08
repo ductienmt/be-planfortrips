@@ -1,11 +1,13 @@
 package com.be_planfortrips.dto.response;
 
 import com.be_planfortrips.entity.StatusPlan;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -15,8 +17,10 @@ import java.sql.Timestamp;
 public class PlanResponse {
     Long plan_id;
     String plan_name;
-    Timestamp start_date;
-    Timestamp end_date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    LocalDate start_date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    LocalDate end_date;
     BigDecimal budget;
     BigDecimal total_price;
     StatusPlan status;

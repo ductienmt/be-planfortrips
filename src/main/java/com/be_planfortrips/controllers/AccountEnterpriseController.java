@@ -3,11 +3,13 @@ package com.be_planfortrips.controllers;
 import com.be_planfortrips.dto.AccountEnterpriseDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
 import com.be_planfortrips.services.interfaces.IAccountEnterpriseService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,22 +35,34 @@ public class AccountEnterpriseController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AccountEnterpriseResponse> createAccountEnterprise(@RequestBody AccountEnterpriseDto accountEnterpriseDto) {
+    public ResponseEntity<AccountEnterpriseResponse> createAccountEnterprise(
+            @RequestBody @Valid  AccountEnterpriseDto accountEnterpriseDto) {
         AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.createAccountEnterprise(accountEnterpriseDto);
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.CREATED);
     }
 
-    @PutMapping("update/{id}")
+    @PutMapping("update")
     public ResponseEntity<AccountEnterpriseResponse> updateAccountEnterprise(
-            @PathVariable Long id,
             @RequestBody AccountEnterpriseDto accountEnterpriseDto) {
-        AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.updateAccountEnterprise(id, accountEnterpriseDto);
+        AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.updateAccountEnterprise(accountEnterpriseDto);
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping("delete/{id}")
+    @PostMapping("delete/{id}")
     public ResponseEntity<Void> deleteAccountEnterpriseById(@PathVariable Long id) {
         accountEnterpriseService.deleteAccountEnterpriseById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<AccountEnterpriseResponse> getAccountEnterpriseDetail() {
+        AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.getAccountEnterpriseDetail();
+        return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/change-status")
+    public ResponseEntity<Void> changeStatus(@RequestParam Long id, @RequestParam Integer status) {
+        accountEnterpriseService.changeStatus(id, status);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

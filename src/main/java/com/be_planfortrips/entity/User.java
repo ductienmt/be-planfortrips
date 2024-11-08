@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -39,8 +40,8 @@ public class User extends BaseEntity{
     @Column(name = "is_active")
     boolean isActive = true;
 
-    @Column(name = "birthdate", nullable = true)
-    Date birthdate;
+    @Column(name = "birthdate", nullable = true, columnDefinition = "date")
+    LocalDate birthdate;
 
     @Column(name = "facebook_account_id")
     String facebookId;
@@ -54,7 +55,7 @@ public class User extends BaseEntity{
     @Column(name = "email", length = 100, nullable = true, unique = true)
     String email;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "image_id")
     Image image;
 

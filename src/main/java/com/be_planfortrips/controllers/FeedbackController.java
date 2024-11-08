@@ -24,11 +24,19 @@ public class FeedbackController {
         return ResponseEntity.ok(feedbacks);
     }
 
+
     @GetMapping("getById/{id}")
     public ResponseEntity<FeedbackResponse> getFeedbackById(@PathVariable UUID id) {
         FeedbackResponse response = feedbackService.getFeedbackById(id);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/enterprise/{enterpriseId}")
+    public ResponseEntity<List<FeedbackResponse>> getFeedBackByEnterpriseId() {
+        List<FeedbackResponse> responses = feedbackService.getFeedBackByEnterpriseId();
+        return ResponseEntity.ok(responses);
+    }
+
 
     @PostMapping("/create")
     public ResponseEntity<FeedbackResponse> createFeedback(@RequestBody FeedbackDto dto) {
@@ -50,4 +58,5 @@ public class FeedbackController {
         feedbackService.deleteFeedbackById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
 }

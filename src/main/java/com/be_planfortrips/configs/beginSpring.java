@@ -1,5 +1,7 @@
 package com.be_planfortrips.configs;
 
+import com.be_planfortrips.entity.Admin;
+import com.be_planfortrips.services.interfaces.IAdminService;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import org.modelmapper.ModelMapper;
@@ -21,12 +23,14 @@ public class beginSpring {
 
     @Value("${cloudinary.api_secret}")
     private String apiSecret;
+
     @Bean
     public ModelMapper getModelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper;
     }
+
 
 //    @Bean
 //    public PasswordEncoder passwordEncoder() {

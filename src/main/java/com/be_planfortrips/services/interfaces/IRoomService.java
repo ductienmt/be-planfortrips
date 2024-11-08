@@ -2,7 +2,11 @@ package com.be_planfortrips.services.interfaces;
 
 import com.be_planfortrips.dto.RoomDto;
 import com.be_planfortrips.dto.response.RoomResponse;
+import com.be_planfortrips.dto.response.RoomResponseEnterprise;
+import com.be_planfortrips.entity.Image;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +24,10 @@ public interface IRoomService {
 
     RoomResponse updateRoomById(Long roomId, RoomDto roomDto);
 
-    List<RoomResponse> getRoomByHotelId(Long hotelId);
+    List<RoomResponseEnterprise> getRoomByHotelId(Long id);
 
-    List<RoomResponse> getRoomAvailable(Integer numberPeople, LocalDateTime checkIn, LocalDateTime checkOut);
+    List<RoomResponse> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut);
+
+    boolean uploadImageRoomById(List<MultipartFile> file, Long roomId) throws IOException;
 
 }

@@ -16,7 +16,6 @@ import com.be_planfortrips.services.interfaces.IAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -87,49 +86,61 @@ public class AuthServiceImpl implements IAuthService {
     }
 
     @Override
-    public AuthResponse login(LoginDto loginDto) {
+    public AuthResponse loginUser(LoginDto loginDto) {
+//        System.out.println(loginDto);
         if (loginDto == null) {
             throw new RuntimeException("Vui lòng nhập thông tin đăng nhập");
         }
 
-        Object user;
-
-        switch (loginDto.getRole()) {
-            case "ROLE_ADMIN":
-                user = adminRepository.findByUsername(loginDto.getUserName());
-                log.info("admin: " + user);
-                break;
-            case "ROLE_USER":
-                user = userRepository.findByUsername(loginDto.getUserName());
-                log.info("user: " + user);
-                break;
-            case "ROLE_ENTERPRISE":
-                user = enterpriseRepository.findByUsername(loginDto.getUserName());
-                log.info("enterprise: " + user);
-                break;
-            default:
-                throw new RuntimeException("ROLE không hợp lệ");
-        }
-
+        User user = userRepository.findByUsername(loginDto.getUserName());
         if (user == null) {
             throw new RuntimeException("Tài khoản không tồn tại trong hệ thống");
         }
 
-        String storedPassword;
-
-        if (user instanceof Admin) {
-            storedPassword = ((Admin) user).getPassword();
-        } else if (user instanceof User) {
-            storedPassword = ((User) user).getPassword();
-        } else if (user instanceof AccountEnterprise) {
-            storedPassword = ((AccountEnterprise) user).getPassword();
-        } else {
-            throw new RuntimeException("Loại người dùng không hợp lệ");
-        }
+        String storedPassword = user.getPassword();
 
         if (passwordEncoder.matches(loginDto.getPassword(), storedPassword)) {
-            String token = jwtProvider.createToken(loginDto.getUserName(), loginDto.getRole(), TypeLogin.LOGIN_NORMAL);
-            return new AuthResponse(loginDto.getUserName(), token, loginDto.getRole(), false);
+            String token = jwtProvider.createToken(loginDto.getUserName(), "ROLE_USER", TypeLogin.LOGIN_NORMAL);
+            return new AuthResponse(loginDto.getUserName(), token, "ROLE_USER", false);
+        } else {
+            throw new RuntimeException("Kiểm tra lại thông tin tài khoản và mật khẩu");
+        }
+    }
+
+    @Override
+    public AuthResponse loginAdmin(LoginDto loginDto) {
+        if (loginDto == null) {
+            throw new RuntimeException("Vui lòng nhập thông tin đăng nhập");
+        }
+        Admin admin = adminRepository.findByUsername(loginDto.getUserName());
+        if (admin == null) {
+            throw new RuntimeException("Tài khoản không tồn tại trong hệ thống");
+        }
+        String storedPassword = admin.getPassword();
+        if (passwordEncoder.matches(loginDto.getPassword(), storedPassword)) {
+            String token = jwtProvider.createToken(loginDto.getUserName(), "ROLE_ADMIN", TypeLogin.LOGIN_NORMAL);
+            return new AuthResponse(loginDto.getUserName(), token, "ROLE_ADMIN", false);
+        } else {
+            throw new RuntimeException("Kiểm tra lại thông tin tài khoản và mật khẩu");
+        }
+    }
+
+    @Override
+    public AuthResponse loginEnterprise(LoginDto loginDto, Integer type) {
+        if (loginDto == null) {
+            throw new RuntimeException("Vui lòng nhập thông tin đăng nhập");
+        }
+        AccountEnterprise enterprise = enterpriseRepository.findByUsername(loginDto.getUserName());
+        if (enterprise == null) {
+            throw new RuntimeException("Tài khoản không tồn tại trong hệ thống");
+        }
+        if (!type.equals((enterprise.getTypeEnterpriseDetail().getId()).intValue())) {
+            throw new RuntimeException("Tài khoản của bạn không kinh doanh dịch vụ này");
+        }
+        String storedPassword = enterprise.getPassword();
+        if (passwordEncoder.matches(loginDto.getPassword(), storedPassword)) {
+            String token = jwtProvider.createToken(loginDto.getUserName(), "ROLE_ENTERPRISE", TypeLogin.LOGIN_NORMAL);
+            return new AuthResponse(loginDto.getUserName(), token, "ROLE_ENTERPRISE", false);
         } else {
             throw new RuntimeException("Kiểm tra lại thông tin tài khoản và mật khẩu");
         }

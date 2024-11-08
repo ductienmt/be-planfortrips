@@ -29,17 +29,16 @@ public class ScheduleMapper implements MapperInterface<ScheduleResponse, Schedul
     @Override
     public Schedule toEntity(ScheduleDto scheduleDto) {
         Schedule schedule = modelMapper.map(scheduleDto, Schedule.class);
-        String routeId = scheduleDto.getRouteId();
-        String vehicleCode = scheduleDto.getVehicleCode();
+        Route route = routeRepository.findById(scheduleDto.getRouteId()).orElseThrow(
+                () -> new AppException(ErrorType.routeIdNotFound)
+        );
+        Vehicle vehicleCode = vehicleRepository.findById(scheduleDto.getVehicleCode()).orElseThrow(
+                () -> new AppException(ErrorType.vehicleCodeNotFound)
+        );
 
-        if (!routeRepository.existsById(routeId)) {
-                throw new AppException(ErrorType.routeIdNotFound, routeId);
-        }
-        if (!vehicleRepository.existsById(vehicleCode)) {
-            throw new AppException(ErrorType.vehicleCodeNotFound, vehicleCode);
-        }
-        schedule.setRoute(Route.builder().id(routeId).build());
-        schedule.setVehicleCode(Vehicle.builder().code(vehicleCode).build());
+        schedule.setPrice_for_one_seat(scheduleDto.getPriceForOneSeat());
+        schedule.setRoute(route);
+        schedule.setVehicleCode(vehicleCode);
         return schedule;
     }
 
@@ -48,16 +47,32 @@ public class ScheduleMapper implements MapperInterface<ScheduleResponse, Schedul
         ScheduleResponse scheduleResponse = modelMapper.map(schedule, ScheduleResponse.class);
         Vehicle vehicle = schedule.getVehicleCode();
         scheduleResponse.setRouteId(schedule.getRoute().getId());
-        // Vehicle
-        scheduleResponse.setCode(vehicle.getCode());
-        scheduleResponse.setCarCompanyName(vehicle.getCarCompany().getName());
-        scheduleResponse.setCarCompanyRating(vehicle.getCarCompany().getRating());
+        scheduleResponse.setPriceForOneTicket(schedule.getPrice_for_one_seat());
 
-        Long countSeatsEmpty = seatRepository.countEmptySeatsByVehicleCode(vehicle.getCode());
-        scheduleResponse.setCountSeatsEmpty(countSeatsEmpty);
+        if (vehicle != null && vehicle.getCarCompany() != null) {
+            scheduleResponse.setCode(vehicle.getCode());
+            scheduleResponse.setCarCompanyName(vehicle.getCarCompany().getName());
+            scheduleResponse.setCarCompanyRating(vehicle.getCarCompany().getRating());
+        }
 
+        if (schedule.getRoute() != null) {
+            if (schedule.getRoute().getOriginStation() != null) {
+                scheduleResponse.setDepartureName(schedule.getRoute().getOriginStation().getName());
+            } else {
+                scheduleResponse.setDepartureName("Unknown Origin Station");
+            }
+
+            if (schedule.getRoute().getDestinationStation() != null) {
+                scheduleResponse.setArrivalName(schedule.getRoute().getDestinationStation().getName());
+            } else {
+                scheduleResponse.setArrivalName("Unknown Destination Station");
+            }
+        }
+
+        scheduleResponse.setScheduleSeat(schedule.getScheduleSeats());
         return scheduleResponse;
     }
+
 
     @Override
     public void updateEntityFromDto(ScheduleDto scheduleDto, Schedule schedule) {
