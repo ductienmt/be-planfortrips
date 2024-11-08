@@ -7,6 +7,7 @@ import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.services.interfaces.IHotelService;
 import com.be_planfortrips.services.interfaces.IRoomService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -49,8 +50,9 @@ public class RoomController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/create")
     public ResponseEntity<RoomResponse> createRoom(
-           @RequestBody RoomDto roomDto
+           @RequestBody @Valid  RoomDto roomDto
     ) {
+        System.out.println("dddd");
         RoomResponse response = roomService.createRoom(roomDto);
         return ResponseEntity.ok(response);
     }
