@@ -1,5 +1,6 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,6 +23,7 @@ public class Checkin extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", columnDefinition = "varchar(20)")
+    @JsonBackReference
     City city;
 
     @Column(length = 200)
@@ -38,4 +40,9 @@ public class Checkin extends BaseEntity {
 
     @Column(name = "payFee", precision = 10, scale = 2)
     BigDecimal payFee;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinTable(name = "checkin_image",
+            joinColumns=@JoinColumn(name = "checkin_id"),
+        inverseJoinColumns = @JoinColumn(name = "image_id"))
+    List<Image> images;
 }

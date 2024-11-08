@@ -1,5 +1,6 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,5 +28,6 @@ public class Area {
     String description;
 
     @OneToMany(mappedBy = "area", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JsonManagedReference
     List<City> cities;
 }

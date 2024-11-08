@@ -8,10 +8,15 @@ public class API_Provider {
             "/api/v1/schedules/getStationByScheduleId",
             "/api/v1/schedules/getSchedules",
             "/api/v1/coupons/**",
-            "/api/v1/coupons/all",
             "/api/v1/tickets/**",
+            "/api/v1/booking-hotels/**",
             "/api/v1/tickets/getByUserId",
-            "/api/v1/routes/all"
+            "/api/v1/users/getDetail",
+            "/api/v1/feedbacks/all",
+            "/api/v1/cities/all",
+            "/api/v1/users/findByUsername",
+            "/api/v1/check-in/all",
+            "/api/v1/check-in/upload-image",
     };
 
     public static final String[] ADMIN_API = {

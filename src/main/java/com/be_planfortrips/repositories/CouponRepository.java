@@ -16,5 +16,9 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
     @Query("select c from Coupon c " +
             "where (:id is null or c.accountEnterprise.accountEnterpriseId = :id)")
     Page<Coupon> getCouponByEnterpriseId(Pageable pageable, @Param("id") Long id);
+
+    @Query("select c from Coupon c " +
+            "where c.accountEnterprise.accountEnterpriseId IS NULL")
+    Page<Coupon> getCouponForAdmin(Pageable pageable);
 }
 
