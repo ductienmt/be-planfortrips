@@ -26,7 +26,7 @@ public class RoomMapper implements MapperInterface<RoomResponse, Room, RoomDto> 
     @Override
     public Room toEntity(RoomDto roomDto) {
         Room room = modelMapper.map(roomDto, Room.class);
-        Hotel hotel = hotelRepository.findById(room.getId()).orElseThrow(
+        Hotel hotel = hotelRepository.findById(roomDto.getHotelId()).orElseThrow(
                 () -> new AppException(ErrorType.HotelIdNotFound)
         );
         room.setHotel(hotel);
@@ -38,6 +38,7 @@ public class RoomMapper implements MapperInterface<RoomResponse, Room, RoomDto> 
     public RoomResponse toResponse(Room room) {
         RoomResponse roomResponse = modelMapper.map(room, RoomResponse.class);
         roomResponse.setImages(room.getImages());
+        roomResponse.setHotelName(room.getHotel().getName());
         return roomResponse;
     }
 

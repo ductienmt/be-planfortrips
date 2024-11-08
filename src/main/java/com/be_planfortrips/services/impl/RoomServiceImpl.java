@@ -87,7 +87,7 @@ public class RoomServiceImpl implements IRoomService {
                 .collect(Collectors.toList());
 
         for (RoomResponse roomResponse : roomResponses) {
-            System.out.println(roomResponse.getRoomName() + " " + roomResponse.getHotel().getName());
+//            System.out.println(roomResponse.getRoomName() + " " + ro);
         }
         return roomResponses;
     }

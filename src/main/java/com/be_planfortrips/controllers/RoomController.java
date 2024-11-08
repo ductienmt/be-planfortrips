@@ -7,6 +7,7 @@ import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.services.interfaces.IHotelService;
 import com.be_planfortrips.services.interfaces.IRoomService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -48,17 +49,11 @@ public class RoomController {
 
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/create")
-    public ResponseEntity<?> createRoom(
-            @RequestBody RoomDto roomDto
+    public ResponseEntity<RoomResponse> createRoom(
+           @RequestBody @Valid  RoomDto roomDto
     ) {
-        try {
-            RoomResponse response = roomService.createRoom(roomDto);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Đã xảy ra lỗi, vui lòng thử lại");
-        }
+        RoomResponse response = roomService.createRoom(roomDto);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/upload-image/{roomId}")

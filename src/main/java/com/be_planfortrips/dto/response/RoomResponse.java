@@ -4,6 +4,7 @@ import com.be_planfortrips.entity.Hotel;
 import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.entity.RoomImage;
 import com.be_planfortrips.entity.TypeOfRoom;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -23,6 +24,9 @@ public class RoomResponse {
     Integer rating;
     Integer maxSize;
     boolean isAvailable;
+    @JsonIgnore
     Hotel hotel;
+
+    String hotelName;
     List<RoomImage> images;
 }

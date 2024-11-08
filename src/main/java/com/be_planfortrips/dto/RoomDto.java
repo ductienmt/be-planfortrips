@@ -25,8 +25,8 @@ public class RoomDto {
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
     BigDecimal price;
 
-    @Min(value = 0, message = "Rating must be between 0 and 5")
-    @Max(value = 5, message = "Rating must be between 0 and 5")
+    @Min(value = 0, message = "Rating must be between 0 and 10")
+    @Max(value = 10, message = "Rating must be between 0 and 10")
     Double rating;
 
     @NotNull(message = "Hotel ID is required")
