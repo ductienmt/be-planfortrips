@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${api.prefix}/account-enterprises")
+    @RequestMapping("${api.prefix}/account-enterprises")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AccountEnterpriseController {
 
@@ -24,7 +24,7 @@ public class AccountEnterpriseController {
 
     @GetMapping("all")
     public ResponseEntity<List<AccountEnterpriseResponse>> getAllAccountEnterprises() {
-        List<AccountEnterpriseResponse> accountEnterprises = accountEnterpriseService.getAllAccountEnterprises();
+        List<AccountEnterpriseResponse> accountEnterprises = accountEnterpriseService.getAllAccountEnterprises(1, 30);
         return new ResponseEntity<>(accountEnterprises, HttpStatus.OK);
     }
 
@@ -53,5 +53,12 @@ public class AccountEnterpriseController {
     public ResponseEntity<Void> deleteAccountEnterpriseById(@PathVariable Long id) {
         accountEnterpriseService.deleteAccountEnterpriseById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping("/stage/{id}")
+    public ResponseEntity<Boolean> toggleStage(
+            @PathVariable Long id
+    )  {
+        return ResponseEntity.ok(accountEnterpriseService.toggleStage(id));
     }
 }

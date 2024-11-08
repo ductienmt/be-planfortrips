@@ -8,7 +8,7 @@ import java.util.List;
 public interface IAccountEnterpriseService {
 
     // Lấy tất cả tài khoản doanh nghiệp
-    List<AccountEnterpriseResponse> getAllAccountEnterprises();
+    List<AccountEnterpriseResponse> getAllAccountEnterprises(int page, int size);
 
     // Lấy tài khoản doanh nghiệp theo ID
     AccountEnterpriseResponse getAccountEnterpriseById(Long id);
@@ -21,4 +21,6 @@ public interface IAccountEnterpriseService {
 
     // Xóa tài khoản doanh nghiệp theo ID
     void deleteAccountEnterpriseById(Long id);
+
+    Boolean toggleStage(Long userId);
 }

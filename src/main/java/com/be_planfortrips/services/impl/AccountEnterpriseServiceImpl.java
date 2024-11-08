@@ -13,10 +13,14 @@ import com.be_planfortrips.services.interfaces.IAccountEnterpriseService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -31,13 +35,20 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     TypeEnterpriseDetailServiceImpl typeEnterpriseDetailService;
 
     @Override
-    public List<AccountEnterpriseResponse> getAllAccountEnterprises() {
-        // Lấy tất cả tài khoản doanh nghiệp từ repository
-        List<AccountEnterprise> accountEnterprises = accountEnterpriseRepository.findAll();
-        return accountEnterprises.stream()
+    public List<AccountEnterpriseResponse> getAllAccountEnterprises(int page, int size) {
+        // Tạo một Pageable với tham số page và size truyền vào từ người dùng
+        PageRequest pageable = PageRequest.of(page, size); // page là trang, size là số lượng trên mỗi trang
+
+        // Lấy tất cả tài khoản doanh nghiệp (có phân trang)
+        Page<AccountEnterprise> accountEnterprisesPage = accountEnterpriseRepository.findAll(pageable);
+
+        // Chuyển đổi các tài khoản doanh nghiệp thành DTO (AccountEnterpriseResponse)
+        return accountEnterprisesPage.getContent().stream()
                 .map(accountEnterpriseMapper::toResponse) // Chuyển đổi sang DTO
-                .toList();
+                .collect(Collectors.toList());
     }
+
+
 
     @Override
     public AccountEnterpriseResponse getAccountEnterpriseById(Long id) {
@@ -87,4 +98,23 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         // Xóa tài khoản doanh nghiệp
         accountEnterpriseRepository.delete(accountEnterprise);
     }
+
+    @Override
+    public Boolean toggleStage(Long userId) {
+        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(userId).orElseThrow(
+                () -> new AppException(ErrorType.notFound) // Ném exception nếu không tìm thấy
+        );
+
+        if (accountEnterprise.isStatus()) {
+            accountEnterprise.setStatus(false);
+        }
+        else {
+            accountEnterprise.setStatus(true);
+        }
+
+        accountEnterpriseRepository.save(accountEnterprise);
+
+        return accountEnterprise.isStatus();
+    }
+
 }
