@@ -43,6 +43,21 @@ public class AreaServiceImpl implements IAreaService {
     @Override
     public void deleteArea(String id) {
         Area area = this.areaRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy khu vực với id: " + id));
-        this.areaRepository.deleteById(id);
+        area.setStatus(false);
+        this.areaRepository.save(area);
+    }
+
+    @Override
+    public void changeStatusArea(String id, Integer status) {
+        Area area = this.areaRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy khu vực với id: " + id));
+        if (status != 1 && status != 0) {
+            throw new RuntimeException("Trạng thái không hợp lệ.");
+        }
+        if (status == 1) {
+            area.setStatus(true);
+        } else {
+            area.setStatus(false);
+        }
+        this.areaRepository.save(area);
     }
 }

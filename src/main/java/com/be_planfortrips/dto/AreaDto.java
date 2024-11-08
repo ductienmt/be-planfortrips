@@ -13,5 +13,6 @@ public class AreaDto {
     String id;
     @NotBlank(message = "Vui lòng nhập tên.")
     String name;
+    Boolean status;
     String description;
 }

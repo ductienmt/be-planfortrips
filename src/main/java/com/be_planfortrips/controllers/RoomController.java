@@ -52,7 +52,6 @@ public class RoomController {
     public ResponseEntity<RoomResponse> createRoom(
            @RequestBody @Valid  RoomDto roomDto
     ) {
-        System.out.println("dddd");
         RoomResponse response = roomService.createRoom(roomDto);
         return ResponseEntity.ok(response);
     }
