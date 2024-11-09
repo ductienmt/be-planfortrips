@@ -14,6 +14,7 @@ public class API_Provider {
             "/api/v1/users/getDetail",
             "/api/v1/feedbacks/all",
             "/api/v1/cities/all",
+            "/api/v1/areas/all",
             "/api/v1/users/findByUsername",
             "/api/v1/check-in/all",
             "/api/v1/check-in/upload-image",
@@ -21,12 +22,13 @@ public class API_Provider {
             "/api/v1/vehicles/getById/**",
             "/api/v1/hotels/getById/**",
             "/api/v1/hotels/all",
+            "/api/v1/check-in/all",
             "/api/v1/check-in/getImages",
             "/api/v1/schedules/getById/**",
             "/api/v1/type-enterprise-details/all",
             "/api/v1/payments/vnpay/return",
             "/api/v1/account-enterprises/create",
-
+            "/api/v1/check-in/update",
     };
 
     public static final String[] ADMIN_API = {
