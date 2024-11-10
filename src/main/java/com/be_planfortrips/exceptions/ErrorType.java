@@ -16,6 +16,8 @@ public enum ErrorType {
 
     notMatchPassword(800, "Mật khẩu không khớp", HttpStatus.BAD_REQUEST),
     statusInvalid(801, "Trạng thái không hợp lệ", HttpStatus.BAD_REQUEST),
+    emailNotValid(802, "Email không hợp lệ", HttpStatus.BAD_REQUEST),
+    phoneNotValid(803, "Số điện thoại không hợp lệ", HttpStatus.BAD_REQUEST),
 
     notVerified(400, "OTP không hợp lệ hoặc đã hết hạn", HttpStatus.BAD_REQUEST),
 

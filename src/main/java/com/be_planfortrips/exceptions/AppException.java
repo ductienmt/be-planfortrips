@@ -24,6 +24,7 @@ public class AppException extends RuntimeException{
 
     public AppException(ErrorType errorType) {
         super(errorType.getMessage());
+        this.errorType = errorType;
     }
     public AppException(ErrorType errorType, Object dataError) {
             super(errorType.getMessage());

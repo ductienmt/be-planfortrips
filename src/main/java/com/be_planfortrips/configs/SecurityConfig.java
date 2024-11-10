@@ -1,5 +1,6 @@
 package com.be_planfortrips.configs;
 
+import com.be_planfortrips.security.jwt.JwtAccessDenied;
 import com.be_planfortrips.security.jwt.JwtEntryPoint;
 import com.be_planfortrips.security.jwt.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class SecurityConfig {
 
     @Autowired
     private JwtEntryPoint jwtEntryPoint;
+
+    @Autowired
+    private JwtAccessDenied jwtAccessDenied;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -74,8 +78,9 @@ public class SecurityConfig {
                         .requestMatchers(API_Provider.USER_ENTERPRISE_API).hasAnyAuthority("ROLE_USER", "ROLE_ENTERPRISE")
                         .requestMatchers(API_Provider.ADMIN_ENTERPRISE_API).hasAnyAuthority("ROLE_ADMIN", "ROLE_ENTERPRISE")
                         .anyRequest().authenticated())
-//                .exceptionHandling(exception -> exception
-//                        .authenticationEntryPoint(jwtEntryPoint))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(jwtEntryPoint)
+                        .accessDeniedHandler(jwtAccessDenied))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
