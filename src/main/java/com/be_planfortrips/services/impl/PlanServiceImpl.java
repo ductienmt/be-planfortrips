@@ -53,14 +53,14 @@ public class PlanServiceImpl implements IPlanService {
     public Map<String, Object> prepareDataPlan(DataEssentialPlan dataEssentialPlan) {
         Map<String, Object> dataEssential = new HashMap<>();
         dataEssential.put("userData", dataEssentialPlan);
-        List<CheckinResponse> checkinResponses = this.checkinService.getCheckinRandom(5);
+        List<CheckinResponse> checkinResponses = this.checkinService.getCheckinRandom(5, dataEssentialPlan.getDestination());
         for (CheckinResponse checkinResponse : checkinResponses) {
             checkinResponse.setImages(null);
         }
         dataEssential.put("checkins", checkinResponses);
-        Map<String, Object> schedulesResponse = this.scheduleService.getAllScheduleByTime(dataEssentialPlan.getStartDate(), dataEssentialPlan.getEndDate());
+        Map<String, Object> schedulesResponse = this.scheduleService.getAllScheduleByTime(dataEssentialPlan.getStartDate(), dataEssentialPlan.getEndDate(), dataEssentialPlan.getLocation(), dataEssentialPlan.getDestination());
         dataEssential.put("schedules", schedulesResponse);
-        Map<String, Object> hotels = this.hotelService.getRoomAvailable(dataEssentialPlan.getStartDate(), dataEssentialPlan.getEndDate());
+        Map<String, Object> hotels = this.hotelService.getRoomAvailable(dataEssentialPlan.getStartDate(), dataEssentialPlan.getEndDate(), dataEssentialPlan.getDestination());
         dataEssential.put("hotels", hotels);
         return dataEssential;
     }

@@ -17,6 +17,7 @@ public class API_Provider {
             "/api/v1/type-enterprise-details/all",
             "/api/v1/payments/vnpay/return",
             "/api/v1/account-enterprises/create",
+            "/api/v1/rooms/getRoomAvailable",
     };
 
     public static final String[] ADMIN_API = {

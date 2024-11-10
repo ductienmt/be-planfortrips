@@ -112,9 +112,11 @@ public class ScheduleController {
     @GetMapping("/getByTime") // need review and edit sql and data type LocalDateTime
     public ResponseEntity<?> getScheduleByTime(
             @RequestParam("departureTime") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime departureTime,
-            @RequestParam("returnTime") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime returnTime) {
+            @RequestParam("returnTime") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime returnTime,
+            @RequestParam("originalLocation") String originalLocation,
+            @RequestParam("destination") String destination) {
         try {
-            Map<String, Object> response = scheduleService.getAllScheduleByTime(departureTime, returnTime);
+            Map<String, Object> response = scheduleService.getAllScheduleByTime(departureTime, returnTime, originalLocation, destination);
 
             return ResponseEntity.ok(ApiResponse.<Map<String, Object>>builder()
                     .code(HttpStatus.OK.value())

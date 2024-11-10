@@ -16,4 +16,5 @@ public class SeatResponse {
 //    Vehicle vehicle;
     @JsonProperty("seat_number")
     String seatNumber;
+    String status;
 }

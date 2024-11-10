@@ -15,18 +15,12 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DataEssentialPlan {
-    @NotBlank(message = "Vui lòng nhập địa điểm")
     String location;
-    @NotBlank(message = "Vui lòng nhập địa điểm đến")
     String destination;
-    @NotBlank(message = "Vui lòng nhập ngày bắt đầu")
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime startDate;
-    @NotBlank(message = "Vui lòng nhập ngày kết thúc")
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime endDate;
-    @NotBlank(message = "Vui lòng nhập số người")
     Integer numberPeople;
-    @NotBlank(message = "Vui lòng nhập ngân sách")
     BigDecimal budget;
 }

@@ -46,6 +46,7 @@ public class CheckinController {
     @GetMapping("/detail")
     public ResponseEntity<?> getCheckin(@RequestParam(value = "id") Long id) {
         try {
+            System.out.println("checkinId: " + id);
             CheckinResponse checkin = this.checkinService.getCheckin(id);
             return ResponseEntity.ok(
                     ApiResponse.<CheckinResponse>builder()
@@ -55,8 +56,7 @@ public class CheckinController {
                             .build()
             );
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy thông tin điểm checkin thất bại.");
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 

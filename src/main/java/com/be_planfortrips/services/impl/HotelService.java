@@ -165,9 +165,9 @@ return null;
     }
 
     @Override
-    public Map<String, Object> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut) {
-        List<RoomResponse> availableRooms = roomServiceImpl.getRoomAvailable(checkIn, checkOut);
-
+    public Map<String, Object> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut, String destination) {
+        List<RoomResponse> availableRooms = roomServiceImpl.getRoomAvailable(checkIn, checkOut, destination);
+        System.out.println("Available rooms: " + availableRooms.size());
         Map<Long, HotelResponse> hotelResponseMap = new HashMap<>();
 
         for (RoomResponse roomResponse : availableRooms) {

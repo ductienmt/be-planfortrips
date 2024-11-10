@@ -15,13 +15,17 @@ import java.util.List;
 import java.util.Map;
 
 public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
-    @Query(value = "select * from schedules where CAST(departure_time AS DATE) = :departureDate" +
-            " AND CAST(departure_time AS TIME) >= :departureTime", nativeQuery = true)
+    @Query("select s from Schedule s " +
+            "where s.route.originStation.city.nameCity like %:originalLocation% " +
+            "and s.route.destinationStation.city.nameCity like %:destination% " +
+    "and cast(s.departureTime as localdate ) = :departureDate " +
+    "and cast(s.departureTime as localtime ) >= :departureTime")
     List<Schedule> findSchedulesAfterSpecificTime(
             @Param("departureDate") LocalDate departureDate,
-            @Param("departureTime") LocalTime departureTime
+            @Param("departureTime") LocalTime departureTime,
+            @Param("originalLocation") String originalLocation,
+            @Param("destination") String destination
     );
-//    need review and edit
 
     @Query("SELECT s.route.originStation.name AS departureStation, "
             + "s.route.destinationStation.name AS arrivalStation "
@@ -37,8 +41,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
             + "JOIN s.route r "
             + "JOIN r.originStation os "
             + "JOIN r.destinationStation ds "
-            + "WHERE os.city = :originalLocation "
-            + "AND ds.city = :destination "
+            + "WHERE os.city.nameCity like %:originalLocation% "
+            + "AND ds.city.nameCity like %:destination% "
             + "AND CAST(s.departureTime AS DATE) = :departureDate "
             + "AND CAST(s.arrivalTime AS DATE) >= :arrivalDate")
     List<Schedule> findSchedule(@Param("originalLocation") String originalLocation,
