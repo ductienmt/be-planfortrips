@@ -98,7 +98,7 @@ public class ScheduleController {
     public ResponseEntity<?> getSchedules(@RequestBody DataSchedule dataSchedule){
         try {
 //            this.scheduleService.getSchedules(dataSchedule);
-            return ResponseEntity.ok(ApiResponse.<List<Schedule>>builder()
+            return ResponseEntity.ok(ApiResponse.<List<ScheduleResponse>>builder()
                     .code(HttpStatus.OK.value())
                     .data(this.scheduleService.getSchedules(dataSchedule))
                     .message("")
