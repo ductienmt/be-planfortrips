@@ -79,8 +79,8 @@ public class RoomServiceImpl implements IRoomService {
     }
 
     @Override
-    public List<RoomResponse> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut) {
-        List<Room> availableRooms = roomRepository.findAvailableRooms(checkIn, checkOut);
+    public List<RoomResponse> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut, String destination) {
+        List<Room> availableRooms = roomRepository.findAvailableRooms(checkIn, checkOut, destination);
 
         List<RoomResponse> roomResponses = availableRooms.stream()
                 .map(roomMapper::toResponse)

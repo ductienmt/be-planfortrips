@@ -60,14 +60,4 @@ public class CatchMyException {
         // Trả về phản hồi với mã trạng thái 400 BAD_REQUEST và thông tin lỗi
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<?>> handleException(Exception ex) {
-        log.error("Lỗi không xác định: ", ex);
-        ApiResponse<?> response = ApiResponse.builder()
-                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("Đã có lỗi xảy ra")
-                .build();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-    }
 }

@@ -60,6 +60,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        System.out.println("SecurityFilterChain");
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
@@ -73,11 +74,10 @@ public class SecurityConfig {
                         .requestMatchers(API_Provider.USER_ENTERPRISE_API).hasAnyAuthority("ROLE_USER", "ROLE_ENTERPRISE")
                         .requestMatchers(API_Provider.ADMIN_ENTERPRISE_API).hasAnyAuthority("ROLE_ADMIN", "ROLE_ENTERPRISE")
                         .anyRequest().authenticated())
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(jwtEntryPoint))
+//                .exceptionHandling(exception -> exception
+//                        .authenticationEntryPoint(jwtEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }

@@ -26,7 +26,7 @@ public interface IRoomService {
 
     List<RoomResponseEnterprise> getRoomByHotelId(Long id);
 
-    List<RoomResponse> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut);
+    List<RoomResponse> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut, String destination);
 
     boolean uploadImageRoomById(List<MultipartFile> file, Long roomId) throws IOException;
 
