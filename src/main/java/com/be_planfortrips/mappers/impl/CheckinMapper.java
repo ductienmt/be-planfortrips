@@ -49,13 +49,15 @@ public class CheckinMapper implements MapperInterface<CheckinResponse, Checkin, 
         if (cityOpt.isPresent()) {
             response.setCityName(cityOpt.get().getNameCity());
         } else {
-            response.setCityName("Unknown City");  // Hoặc xử lý tùy ý
+            response.setCityName("Unknown City");
         }
 
-        List<Image> images = checkin.getCheckinImages().stream()
-                .map(CheckinImage::getImage)
-                .collect(Collectors.toList());
-        response.setImages(images);
+        if (checkin.getCheckinImages() != null) {
+            List<Image> images = checkin.getCheckinImages().stream()
+                    .map(CheckinImage::getImage)
+                    .collect(Collectors.toList());
+            response.setImages(images);
+        }
 
         return response;
     }
