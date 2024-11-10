@@ -111,7 +111,7 @@ public class ScheduleServiceImpl implements IScheduleService {
     }
 
     @Override
-    public List<Schedule> getSchedules(DataSchedule dataSchedule) {
+    public List<ScheduleResponse> getSchedules(DataSchedule dataSchedule) {
         if (dataSchedule.getEndDate() == null) {
             dataSchedule.setEndDate(dataSchedule.getStartDate());
         }
@@ -121,7 +121,7 @@ public class ScheduleServiceImpl implements IScheduleService {
                 dataSchedule.getStartDate(),
                 dataSchedule.getEndDate()
         );
-        return schedules;
+        return schedules.stream().map(scheduleMapper::toResponse).collect(Collectors.toList());
     }
 
     @Override
