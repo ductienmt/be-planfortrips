@@ -86,11 +86,15 @@ public class SeatService implements ISeatService {
 
     @Override
     public List<SeatResponse> getEmptySeatsByScheduleId(Integer scheduleId) {
-        List<Seat> emptySeats = scheduleSeatRepository.findEmptySeatsByScheduleId(scheduleId);
-        for(Seat seat: emptySeats){
-            System.out.println(seat.getSeatNumber());
-        }
-        return emptySeats.stream().map(seatMapper::toResponse).collect(Collectors.toList());
+        List<ScheduleSeat> emptySeats = scheduleSeatRepository.findEmptySeatsByScheduleId(scheduleId);
+        return emptySeats.stream().map(emptySeat -> {
+            SeatResponse seatResponse = new SeatResponse();
+            seatResponse.setId(emptySeat.getId());
+            seatResponse.setSeatNumber(emptySeat.getSeatNumber());
+            seatResponse.setStatus(emptySeat.getStatus().toString());
+            return seatResponse;
+        }).collect(Collectors.toList());
     }
+
 
 }

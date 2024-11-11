@@ -96,6 +96,7 @@ public class TicketService implements ITicketService {
         }
 
         ticket.setTotalPrice(ticket.getTotalPrice().subtract(BigDecimal.valueOf(payment.getFee())));
+//        ticket.setTotalPrice(ticket.getTotalPrice());
         ticket.setStatus(Status.Pending);
         ticketRepository.saveAndFlush(ticket);
 

@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -87,11 +88,11 @@ public class RoomController {
     // test this endpoint, don't care about the response
     @GetMapping("/getRoomAvailable")
     public ResponseEntity<?> getRoomAvailable(
-            @RequestParam Integer numberPeople,
-            @RequestParam LocalDateTime checkIn,
-            @RequestParam LocalDateTime checkOut
+            @RequestParam String destination,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime checkIn,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime checkOut
     ) {
-        return ResponseEntity.ok(hotelService.getRoomAvailable(checkIn, checkOut));
+        return ResponseEntity.ok(hotelService.getRoomAvailable(checkIn, checkOut, destination));
     }
 
     @GetMapping("/getRoomByHotelId")

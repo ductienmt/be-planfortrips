@@ -3,6 +3,8 @@ package com.be_planfortrips.exceptions;
 
 import com.be_planfortrips.dto.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -11,12 +13,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
 @Slf4j
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class CatchMyException {
 
     @ExceptionHandler(AppException.class)
@@ -30,6 +34,7 @@ public class CatchMyException {
 
         return ResponseEntity.status(errorType.getHttpStatus()).body(response);
     }
+
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiResponse<ErrorType>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
@@ -61,13 +66,13 @@ public class CatchMyException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<?>> handleException(Exception ex) {
-        log.error("Lỗi không xác định: ", ex);
-        ApiResponse<?> response = ApiResponse.builder()
-                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("Đã có lỗi xảy ra")
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ApiResponse<String>> handleNotFound(NoHandlerFoundException ex) {
+        ApiResponse<String> response = ApiResponse.<String>builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .message("The requested URL was not found on the server.")
+                .data(null)
                 .build();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
