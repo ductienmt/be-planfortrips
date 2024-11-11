@@ -96,8 +96,12 @@ public class TicketController {
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteCarCompanyById(@PathVariable Integer id) throws Exception {
-        iTicketService.deleteTicketById(id);
-        return ResponseEntity.noContent().build();
+        try {
+            iTicketService.deleteTicketById(id);
+            return ResponseEntity.noContent().build();
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("getById/{id}")

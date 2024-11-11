@@ -27,6 +27,9 @@ public class Area {
     @Column(name = "description", length = Integer.MAX_VALUE)
     String description;
 
+    @Column(name = "status")
+    Boolean status;
+
     @OneToMany(mappedBy = "area", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JsonManagedReference
     List<City> cities;

@@ -168,6 +168,9 @@ public class TicketService implements ITicketService {
     @Override
     public List<TicketResponse> findByUserId(Long id) {
         User existingUser = userRepository.findByIdActive(id);
+        if(existingUser == null){
+            throw new AppException(ErrorType.notFound);
+        }
         return ticketRepository.findByUser_Id(existingUser.getId()).stream()
                 .map(ticket -> ticketMapper.toResponse(ticket))
                 .collect(Collectors.toList());

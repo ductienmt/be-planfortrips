@@ -62,7 +62,8 @@ public class BannerServiceImpl implements IBannerService {
     @Override
     public void deleteBanner(Long id) {
         Banner banner = this.bannerRepository.findById(id).orElseThrow(() -> new AppException(ErrorType.notFound));
-        this.bannerRepository.delete(banner);
+        banner.setIsActive(false);
+        this.bannerRepository.save(banner);
     }
 
     @Override

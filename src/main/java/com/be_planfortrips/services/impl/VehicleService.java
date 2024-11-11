@@ -4,6 +4,8 @@ import com.be_planfortrips.dto.VehicleDTO;
 import com.be_planfortrips.dto.response.VehicleResponse;
 import com.be_planfortrips.entity.CarCompany;
 import com.be_planfortrips.entity.Vehicle;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.VehicleMapper;
 import com.be_planfortrips.repositories.CarCompanyRepository;
 import com.be_planfortrips.repositories.VehicleRepository;
@@ -77,6 +79,9 @@ public class VehicleService implements IVehicleService {
     @Transactional
     public void deleteVehicleById(String code) throws Exception {
         Vehicle optionalVehicle = vehicleRepository.findByCode(code);
+        if(optionalVehicle == null){
+            throw new AppException(ErrorType.notFound);
+        }
         vehicleRepository.delete(optionalVehicle);
     }
 }

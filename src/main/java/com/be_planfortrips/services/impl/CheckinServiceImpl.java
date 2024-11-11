@@ -163,7 +163,7 @@ public class CheckinServiceImpl implements ICheckinService {
 
         // Kiểm tra toàn bộ ảnh trước khi upload
         for (MultipartFile file : files) {
-            this.utils.isValidImage(file);
+//            this.utils.isValidImage(file);
             this.utils.checkSize(file);
         }
 

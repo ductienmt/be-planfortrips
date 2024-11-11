@@ -61,7 +61,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserDto userDto) {
         try {
             AccountUserResponse user = this.userService.createUser(userDto);
 
@@ -95,7 +95,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public ResponseEntity<?> deleteUser(@RequestParam("id") Long id) {
         try {
             this.userService.deleteUser(id);

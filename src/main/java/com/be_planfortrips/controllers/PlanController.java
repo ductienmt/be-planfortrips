@@ -6,6 +6,7 @@ import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.services.interfaces.IPlanService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParseException;
@@ -24,7 +25,7 @@ public class PlanController {
     private IPlanService planService;
 
     @PostMapping("/save")
-    public ResponseEntity<?> savePlan(@RequestBody PlanDto planDto) {
+    public ResponseEntity<?> savePlan(@Valid @RequestBody PlanDto planDto) {
         try {
             this.planService.save(planDto);
             return ResponseEntity.ok().body("Lưu kế hoạch thành công");
@@ -55,7 +56,7 @@ public class PlanController {
     }
 
     @PostMapping("/prepare")
-    public ResponseEntity<?> prepareDataPlan(@RequestBody DataEssentialPlan dataEssentialPlan) {
+    public ResponseEntity<?> prepareDataPlan(@Valid @RequestBody DataEssentialPlan dataEssentialPlan) {
         Map<String, Object> response = this.planService.prepareDataPlan(dataEssentialPlan);
         return ResponseEntity.ok(ApiResponse.<Map<String, Object>>builder()
                 .code(HttpStatus.OK.value())

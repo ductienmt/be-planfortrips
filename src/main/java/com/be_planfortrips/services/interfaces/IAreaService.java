@@ -10,5 +10,5 @@ public interface IAreaService {
     AreaResponse createArea(AreaDto areaDto);
     AreaResponse updateArea(String id, AreaDto areaDto);
     void deleteArea(String id);
-
+    void changeStatusArea(String id, Integer status);
 }
