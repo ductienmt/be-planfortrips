@@ -46,19 +46,21 @@ public class PlanServiceImpl implements IPlanService {
     private PlanDetailRepository planDetailRepository;
     @Autowired
     private TokenMapperImpl tokenMapperImpl;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public Map<String, Object> prepareDataPlan(DataEssentialPlan dataEssentialPlan) {
         Map<String, Object> dataEssential = new HashMap<>();
         dataEssential.put("userData", dataEssentialPlan);
-        List<CheckinResponse> checkinResponses = this.checkinService.getCheckinRandom(5);
+        List<CheckinResponse> checkinResponses = this.checkinService.getCheckinRandom(5, dataEssentialPlan.getDestination());
         for (CheckinResponse checkinResponse : checkinResponses) {
             checkinResponse.setImages(null);
         }
         dataEssential.put("checkins", checkinResponses);
-        Map<String, Object> schedulesResponse = this.scheduleService.getAllScheduleByTime(dataEssentialPlan.getStartDate(), dataEssentialPlan.getEndDate());
+        Map<String, Object> schedulesResponse = this.scheduleService.getAllScheduleByTime(dataEssentialPlan.getStartDate(), dataEssentialPlan.getEndDate(), dataEssentialPlan.getLocation(), dataEssentialPlan.getDestination());
         dataEssential.put("schedules", schedulesResponse);
-        Map<String, Object> hotels = this.hotelService.getRoomAvailable(dataEssentialPlan.getStartDate(), dataEssentialPlan.getEndDate());
+        Map<String, Object> hotels = this.hotelService.getRoomAvailable(dataEssentialPlan.getStartDate(), dataEssentialPlan.getEndDate(), dataEssentialPlan.getDestination());
         dataEssential.put("hotels", hotels);
         return dataEssential;
     }
@@ -70,8 +72,7 @@ public class PlanServiceImpl implements IPlanService {
 
     @Override
     public List<PlanResponse> getAllPlanByUserId() {
-        User user = (User) tokenMapperImpl.getUserByToken();
-        List<Plan> plans = planRepository.findAllByUserId(user.getId());
+        List<Plan> plans = planRepository.findAllByUserId(tokenMapperImpl.getIdUserByToken());
 
         return plans.stream().map(
                 plan -> {
@@ -145,7 +146,7 @@ public class PlanServiceImpl implements IPlanService {
         plan.setNumberPeople(planDto.getNumberPeople());
         plan.setTotalPrice(planDto.getTotalPrice());
         plan.setStatus(StatusPlan.NOT_STARTED);
-        plan.setUser((User) tokenMapperImpl.getUserByToken());
+        plan.setUser(userRepository.findById(tokenMapperImpl.getIdUserByToken()).orElseThrow(() -> new RuntimeException("Lỗi lấy thông tin user")));
 
         plan = planRepository.save(plan);
 

@@ -15,6 +15,9 @@ public enum ErrorType {
     notValidDateFormat(101, "Định dạng ngày giờ không hợp lệ", HttpStatus.BAD_REQUEST),
 
     notMatchPassword(800, "Mật khẩu không khớp", HttpStatus.BAD_REQUEST),
+    statusInvalid(801, "Trạng thái không hợp lệ", HttpStatus.BAD_REQUEST),
+    emailNotValid(802, "Email không hợp lệ", HttpStatus.BAD_REQUEST),
+    phoneNotValid(803, "Số điện thoại không hợp lệ", HttpStatus.BAD_REQUEST),
 
     notVerified(400, "OTP không hợp lệ hoặc đã hết hạn", HttpStatus.BAD_REQUEST),
 
@@ -42,7 +45,7 @@ public enum ErrorType {
     VehicleCodeNotFound(709, "VehicleCode không tồn tại",HttpStatus.NOT_FOUND),
     RouteIdNotFound(710, "RouteId không tồn tại",HttpStatus.NOT_FOUND),
     HotelIdNotFound(711,"HotelId không tồn tại",HttpStatus.NOT_FOUND),
-    CityIdNotFound(712, "HotelId không tồn tại", HttpStatus.NOT_FOUND)
+    CityIdNotFound(712, "CityId không tồn tại", HttpStatus.NOT_FOUND)
     ;
 
     private static String getString() {

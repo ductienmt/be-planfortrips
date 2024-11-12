@@ -2,14 +2,19 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.AccountEnterpriseDto;
 import com.be_planfortrips.dto.TypeEnterpriseDetailDto;
+import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
 import com.be_planfortrips.entity.AccountEnterprise;
+import com.be_planfortrips.entity.User;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.mappers.TokenMapper;
 import com.be_planfortrips.mappers.impl.AccountEnterpriseMapper;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.RoleRepository;
 import com.be_planfortrips.services.interfaces.IAccountEnterpriseService;
+import com.be_planfortrips.utils.Utils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,7 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +38,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
     TypeEnterpriseDetailServiceImpl typeEnterpriseDetailService;
+    TokenMapperImpl tokenMapper;
 
     @Override
     public List<AccountEnterpriseResponse> getAllAccountEnterprises(int page, int size) {
@@ -60,33 +66,55 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
 
     @Override
     public AccountEnterpriseResponse createAccountEnterprise(AccountEnterpriseDto accountEnterpriseDto) {
-        if (accountEnterpriseRepository.findByUsername(accountEnterpriseDto.getUsername()) != null) {
-            throw new AppException(ErrorType.usernameExisted);
-        }
+        validateForm(accountEnterpriseDto);
         // Chuyển đổi DTO thành entity và lưu vào repository
         AccountEnterprise accountEnterprise = accountEnterpriseMapper.toEntity(accountEnterpriseDto);
 
         accountEnterprise.setPassword(passwordEncoder.encode(accountEnterpriseDto.getPassword()));
-        accountEnterprise.setRole(roleRepository.findById(3L).orElseThrow(() -> new RuntimeException("Không tìm thấy role với id: 2")));
+        accountEnterprise.setStatus(false);
+        accountEnterprise.setRole(roleRepository.findById(3L).orElseThrow(() -> new RuntimeException("Không tìm thấy role")));
         accountEnterprise = accountEnterpriseRepository.save(accountEnterprise);
         return accountEnterpriseMapper.toResponse(accountEnterprise); // Trả về response DTO
     }
 
     @Override
-    public AccountEnterpriseResponse updateAccountEnterprise(Long id, AccountEnterpriseDto accountEnterpriseDto) {
+    public AccountEnterpriseResponse updateAccountEnterprise(AccountEnterpriseDto accountEnterpriseDto) {
         // Tìm tài khoản doanh nghiệp theo ID
-        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(id)
+        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(tokenMapper.getIdEnterpriseByToken())
                 .orElseThrow(() -> new AppException(ErrorType.notFound));
-        // Cập nhật thông tin từ DTO
-        AccountEnterprise aEtpNew = accountEnterpriseMapper.toEntity(accountEnterpriseDto);
-        aEtpNew.setAccountEnterpriseId(accountEnterprise.getAccountEnterpriseId());
-        accountEnterprise.setPassword(passwordEncoder.encode(accountEnterpriseDto.getPassword()));
-        System.out.println(accountEnterprise.getCity().getNameCity());
-        // Lưu entity đã cập nhật
-        accountEnterpriseRepository.save(aEtpNew);
+        if (accountEnterpriseDto.getPhoneNumber() != null && accountEnterpriseDto.getPhoneNumber().isEmpty()) {
+            if (!Utils.isValidPhoneNumber(accountEnterpriseDto.getPhoneNumber())) {
+                throw new AppException(ErrorType.phoneNotValid);
+            }
+        }
 
-        // Trả về DTO sau khi cập nhật
-        return accountEnterpriseMapper.toResponse(aEtpNew);
+        if(accountEnterpriseDto.getEmail() != null || accountEnterpriseDto.getEmail().isEmpty()){
+            if(!Utils.isValidEmail(accountEnterpriseDto.getEmail())){
+                throw new AppException(ErrorType.emailNotValid);
+            }
+        }
+
+        for (Field field : AccountEnterpriseDto.class.getDeclaredFields()) {
+            try {
+                field.setAccessible(true);
+                Object newValue = field.get(accountEnterpriseDto);
+
+                if (newValue != null) {
+                    Field serviceField = AccountEnterprise.class.getDeclaredField(field.getName());
+                    serviceField.setAccessible(true);
+                    serviceField.set(accountEnterprise, newValue);
+                }
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                throw new RuntimeException("Error accessing field: " + field.getName(), e);
+            }
+        }
+
+        if (accountEnterpriseDto.getPassword() != null && !accountEnterpriseDto.getPassword().isEmpty()) {
+            accountEnterprise.setPassword(this.passwordEncoder.encode(accountEnterpriseDto.getPassword()));
+        }
+
+        this.accountEnterpriseRepository.save(accountEnterprise);
+        return this.accountEnterpriseMapper.toResponse(accountEnterprise);
     }
 
     @Override
@@ -94,27 +122,52 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         // Tìm tài khoản doanh nghiệp theo ID
         AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorType.notFound)); // Nếu không tìm thấy thì ném lỗi
-
+        accountEnterprise.setStatus(false);
         // Xóa tài khoản doanh nghiệp
-        accountEnterpriseRepository.delete(accountEnterprise);
+        accountEnterpriseRepository.save(accountEnterprise);
     }
 
     @Override
-    public Boolean toggleStage(Long userId) {
-        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(userId).orElseThrow(
-                () -> new AppException(ErrorType.notFound) // Ném exception nếu không tìm thấy
-        );
-
-        if (accountEnterprise.isStatus()) {
-            accountEnterprise.setStatus(false);
-        }
-        else {
-            accountEnterprise.setStatus(true);
-        }
-
-        accountEnterpriseRepository.save(accountEnterprise);
-
-        return accountEnterprise.isStatus();
+    public AccountEnterpriseResponse getAccountEnterpriseDetail() {
+        return this.getAccountEnterpriseById(tokenMapper.getIdEnterpriseByToken());
     }
 
+    @Override
+    public void changeStatus(Long id, Integer status) {
+        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorType.notFound));
+        if (status == 1) {
+            accountEnterprise.setStatus(true);
+        } else if (status == 0) {
+            accountEnterprise.setStatus(false);
+        } else {
+            throw new AppException(ErrorType.statusInvalid);
+        }
+        accountEnterpriseRepository.save(accountEnterprise);
+    }
+
+    private void validateForm(AccountEnterpriseDto accountEnterpriseDto) {
+        if (accountEnterpriseDto.getUsername() == null || accountEnterpriseDto.getUsername().isEmpty()) {
+            throw new RuntimeException("Username không được để trống.");
+        } else if (accountEnterpriseDto.getPassword() == null || accountEnterpriseDto.getPassword().isEmpty()) {
+            throw new RuntimeException("Mật khẩu không được để trống.");
+        } else if (accountEnterpriseDto.getEnterpriseName() == null || accountEnterpriseDto.getEnterpriseName().isEmpty()) {
+            throw new RuntimeException("Tên doanh nghiệp không được để trống.");
+        } else if (accountEnterpriseDto.getEmail() == null || accountEnterpriseDto.getEmail().isEmpty()) {
+            throw new RuntimeException("Email không hợp lệ.");
+        } else if (accountEnterpriseDto.getPhoneNumber() == null || accountEnterpriseDto.getPhoneNumber().isEmpty()) {
+            throw new RuntimeException("Số điện thoại không được để trống.");
+        } else if (accountEnterpriseDto.getAddress() == null || accountEnterpriseDto.getAddress().isEmpty()) {
+            throw new RuntimeException("Địa chỉ không được để trống.");
+        } else if (accountEnterpriseDto.getTypeEnterpriseDetailId() == null) {
+            throw new RuntimeException("Loại hình doanh nghiệp không được để trống.");
+        } else if (accountEnterpriseDto.getRepresentative() == null || accountEnterpriseDto.getRepresentative().isEmpty()) {
+            throw new RuntimeException("Người đại diện doanh nghiệp không được để trống.");
+        } else if (Utils.isValidPhoneNumber(accountEnterpriseDto.getPhoneNumber())) {
+            throw new RuntimeException("Số điện thoại không hợp lệ.");
+        }
+        if (accountEnterpriseRepository.findByUsername(accountEnterpriseDto.getUsername()) != null) {
+            throw new AppException(ErrorType.usernameExisted);
+        }
+    }
 }

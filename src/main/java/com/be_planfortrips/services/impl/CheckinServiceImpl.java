@@ -162,7 +162,7 @@ public class CheckinServiceImpl implements ICheckinService {
                 .orElseThrow(() -> new AppException(ErrorType.notFound));
 
         for (MultipartFile file : files) {
-            this.utils.isValidImage(file);
+//            this.utils.isValidImage(file);
             this.utils.checkSize(file);
         }
 
@@ -186,8 +186,8 @@ public class CheckinServiceImpl implements ICheckinService {
     }
 
     @Override
-    public List<CheckinResponse> getCheckinRandom(Integer limit) {
-        return this.checkinRepository.findRandomCheckins(limit)
+    public List<CheckinResponse> getCheckinRandom(Integer limit,String cityName) {
+        return this.checkinRepository.findRandomCheckins(limit, cityName)
                 .stream()
                 .map(checkinMapper::toResponse)
                 .collect(Collectors.toList());

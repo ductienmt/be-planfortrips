@@ -1,5 +1,6 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,8 +22,10 @@ public class Station {
     @Column(name = "name", length = 100)
     String name;
 
-    @Column(name = "city", length = 50)
-    String city;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "city_id")
+    @JsonBackReference
+    City city;
 
     @Column(name = "country", length = 50)
     String country;

@@ -6,6 +6,7 @@ import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.HotelMapper;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.HotelRepository;
 import com.be_planfortrips.repositories.ImageRepository;
@@ -44,6 +45,7 @@ public class HotelService implements IHotelService {
     RoomServiceImpl roomServiceImpl;
 
     CloudinaryService cloudinaryService;
+    private final TokenMapperImpl tokenMapperImpl;
 
     @Override
     @Transactional
@@ -163,9 +165,9 @@ return null;
     }
 
     @Override
-    public Map<String, Object> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut) {
-        List<RoomResponse> availableRooms = roomServiceImpl.getRoomAvailable(checkIn, checkOut);
-
+    public Map<String, Object> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut, String destination) {
+        List<RoomResponse> availableRooms = roomServiceImpl.getRoomAvailable(checkIn, checkOut, destination);
+        System.out.println("Available rooms: " + availableRooms.size());
         Map<Long, HotelResponse> hotelResponseMap = new HashMap<>();
 
         for (RoomResponse roomResponse : availableRooms) {
@@ -210,5 +212,11 @@ return null;
         }
 
         return hotelMap;
+    }
+
+    @Override
+    public List<HotelResponse> getHotelDetail() {
+        List<Hotel> hotels = this.hotelRepository.findByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken());
+        return hotels.stream().map(hotelMapper::toResponse).collect(Collectors.toList());
     }
 }

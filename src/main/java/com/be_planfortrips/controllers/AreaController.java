@@ -85,12 +85,27 @@ public class AreaController {
                             .build()
             );
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Cập nhật khu vực thất bại.");
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
-    @DeleteMapping("/delete")
+    @PatchMapping("/change-status")
+    public ResponseEntity<?> changeStatus(@RequestParam("id") String id, @RequestParam("status") int status) {
+        try {
+            this.areaService.changeStatusArea(id, status);
+            return ResponseEntity.ok(
+                    ApiResponse.<Void>builder()
+                            .code(HttpStatus.OK.value())
+                            .message("Thay đổi trạng thái khu vực thành công.")
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Thay đổi trạng thái khu vực thất bại.");
+        }
+    }
+
+    @PostMapping("/delete")
     public ResponseEntity<?> deleteArea(@RequestParam("id") String id) {
         try {
             this.areaService.deleteArea(id);

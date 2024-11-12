@@ -16,10 +16,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -64,6 +61,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         for (Seat seat : seats) {
             ScheduleSeat scheduleSeat = new ScheduleSeat();
             scheduleSeat.setSeat(seat);
+            scheduleSeat.setSeatNumber(seat.getSeatNumber());
             scheduleSeat.setSchedule(savedSchedule);
             scheduleSeat.setStatus(StatusSeat.Empty);
             scheduleSeatRepository.save(scheduleSeat);
@@ -97,15 +95,15 @@ public class ScheduleServiceImpl implements IScheduleService {
     }
 
     @Override
-    public Map<String, Object> getAllScheduleByTime(LocalDateTime departureTime, LocalDateTime returnTime) {
-        Map<String, Object> departureResponse = fetchSchedules(departureTime, "departure");
-        Map<String, Object> returnResponse = fetchSchedules(returnTime, "return");
+    public Map<String, Object> getAllScheduleByTime(LocalDateTime departureTime, LocalDateTime returnTime, String originalLocation, String destination) {
+        Map<String, Object> departureResponse = fetchSchedules(departureTime, "departure", originalLocation, destination);
+        Map<String, Object> returnResponse = fetchSchedules(returnTime, "return", originalLocation, destination);
 
         Map<String, Object> response = new HashMap<>();
         response.put("departure", departureResponse);
         response.put("return", returnResponse);
 
-        if (response.isEmpty() || (departureResponse.isEmpty() && returnResponse.isEmpty())) {
+        if (response.isEmpty()) {
             throw new AppException(ErrorType.notFound);
         }
 
@@ -113,7 +111,7 @@ public class ScheduleServiceImpl implements IScheduleService {
     }
 
     @Override
-    public List<Schedule> getSchedules(DataSchedule dataSchedule) {
+    public List<ScheduleResponse> getSchedules(DataSchedule dataSchedule) {
         if (dataSchedule.getEndDate() == null) {
             dataSchedule.setEndDate(dataSchedule.getStartDate());
         }
@@ -123,7 +121,7 @@ public class ScheduleServiceImpl implements IScheduleService {
                 dataSchedule.getStartDate(),
                 dataSchedule.getEndDate()
         );
-        return schedules;
+        return schedules.stream().map(scheduleMapper::toResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -141,11 +139,23 @@ public class ScheduleServiceImpl implements IScheduleService {
         return schedules.stream().map(scheduleMapper::toResponse).toList();
     }
 
-    private Map<String, Object> fetchSchedules(LocalDateTime time, String type) {
-        List<ScheduleResponse> schedules = this.scheduleRepository.findSchedulesAfterSpecificTime(
-                time.toLocalDate(),
-                time.toLocalTime()
-        ).stream().map(scheduleMapper::toResponse).toList();
+    private Map<String, Object> fetchSchedules(LocalDateTime time, String type, String originalLocation, String destination) {
+        List<ScheduleResponse> schedules = new ArrayList<>();
+        if (type.equals("departure")) {
+            schedules = this.scheduleRepository.findSchedulesAfterSpecificTime(
+                    time.toLocalDate(),
+                    time.toLocalTime(),
+                    originalLocation,
+                    destination
+            ).stream().map(scheduleMapper::toResponse).toList();
+        } else {
+            schedules = this.scheduleRepository.findSchedulesAfterSpecificTime(
+                    time.toLocalDate(),
+                    time.toLocalTime(),
+                    destination,
+                    originalLocation
+            ).stream().map(scheduleMapper::toResponse).toList();
+        }
 
         Map<String, Object> scheduleResponseMap = new HashMap<>();
         for (ScheduleResponse scheduleResponse : schedules) {

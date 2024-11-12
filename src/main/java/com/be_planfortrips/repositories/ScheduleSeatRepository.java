@@ -13,8 +13,8 @@ public interface ScheduleSeatRepository extends JpaRepository<ScheduleSeat, Inte
     List<ScheduleSeat> findByScheduleId(Integer scheduleId);
     Optional<ScheduleSeat> findByScheduleIdAndSeatId(Integer scheduleId, Integer seatId);
 
-    @Query("SELECT ss.seat FROM ScheduleSeat ss WHERE ss.schedule.id = :scheduleId AND ss.status = 'Empty'")
-    List<Seat> findEmptySeatsByScheduleId(@Param("scheduleId") Integer scheduleId);
+    @Query("SELECT ss FROM ScheduleSeat ss WHERE ss.schedule.id = :scheduleId AND ss.status = 'Empty'")
+    List<ScheduleSeat> findEmptySeatsByScheduleId(@Param("scheduleId") Integer scheduleId);
 
 }
 

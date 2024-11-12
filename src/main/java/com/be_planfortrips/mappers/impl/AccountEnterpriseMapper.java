@@ -54,8 +54,6 @@ public class AccountEnterpriseMapper implements
             accountEnterpriseResponse.setCityName("No city assigned");
         }
 
-
-
         return accountEnterpriseResponse;
     }
 

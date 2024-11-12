@@ -17,7 +17,7 @@ public interface IAccountEnterpriseService {
     AccountEnterpriseResponse createAccountEnterprise(AccountEnterpriseDto accountEnterpriseDto);
 
     // Cập nhật thông tin tài khoản doanh nghiệp
-    AccountEnterpriseResponse updateAccountEnterprise(Long id, AccountEnterpriseDto accountEnterpriseDto);
+    AccountEnterpriseResponse updateAccountEnterprise(AccountEnterpriseDto accountEnterpriseDto);
 
     // Xóa tài khoản doanh nghiệp theo ID
     void deleteAccountEnterpriseById(Long id);

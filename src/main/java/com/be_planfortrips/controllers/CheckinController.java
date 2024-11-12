@@ -6,6 +6,7 @@ import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.dto.response.CheckinResponse;
 import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.services.interfaces.ICheckinService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,7 @@ public class CheckinController {
     @GetMapping("/detail")
     public ResponseEntity<?> getCheckin(@RequestParam(value = "id") Long id) {
         try {
+            System.out.println("checkinId: " + id);
             CheckinResponse checkin = this.checkinService.getCheckin(id);
             return ResponseEntity.ok(
                     ApiResponse.<CheckinResponse>builder()
@@ -54,8 +56,7 @@ public class CheckinController {
                             .build()
             );
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy thông tin điểm checkin thất bại.");
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -107,7 +108,7 @@ public class CheckinController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<?> createCheckin(@RequestBody CheckinDto checkinDto) {
+    public ResponseEntity<?> createCheckin(@Valid @RequestBody CheckinDto checkinDto) {
         try {
             CheckinResponse checkinResponse = this.checkinService.createCheckin(checkinDto);
             return ResponseEntity.ok(
@@ -124,7 +125,7 @@ public class CheckinController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateCheckin(@RequestParam("id") Long id, @RequestBody CheckinDto checkinDto) {
+    public ResponseEntity<?> updateCheckin(@RequestParam("id") Long id,@Valid @RequestBody CheckinDto checkinDto) {
         try {
             CheckinResponse checkinResponse = this.checkinService.updateCheckin(id, checkinDto);
             return ResponseEntity.ok(

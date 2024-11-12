@@ -1,18 +1,22 @@
 spring:
   datasource:
-    # dữ liệu demo thì dùng cái này nha, t insert kha khá dữ liệu
-         url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
-         username: postgres
-         password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
-         driver-class-name: org.postgresql.Driver
+    # dữ liệu demo thì dùng cái này nha, t insert kha khá dữ liệu - không dùng để test
+    #    url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
+    #    username: postgres
+    #    password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
 
     #    url: jdbc:postgresql://localhost:5432/a
     #    username: postgres
     #    password: 123
-  #    url: jdbc:postgresql://localhost:5432/Planfortrips
-#    username: admin
-#    password: admin
-#    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/Planfortrips
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
   jpa:
     show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
