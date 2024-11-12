@@ -163,7 +163,11 @@ public class TicketService implements ITicketService {
     @Transactional
     public void deleteTicketById(Integer id) {
         Optional<Ticket> ticket = ticketRepository.findById(id);
-        ticket.ifPresent(ticketRepository::delete);
+        ticket.ifPresent(ticket1 -> {
+            if (ticket1.getStatus() == Status.Cancelled) {
+                ticketRepository.delete(ticket1);
+            }
+        });
     }
 
     @Override
