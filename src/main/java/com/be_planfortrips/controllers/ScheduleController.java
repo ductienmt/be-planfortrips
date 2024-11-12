@@ -8,6 +8,7 @@ import com.be_planfortrips.entity.Schedule;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.services.interfaces.IScheduleService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -65,7 +66,7 @@ public class ScheduleController {
 
     @PutMapping("update/{scheduleId}")
     public ResponseEntity<ScheduleResponse> updateSchedule(
-            @PathVariable Integer scheduleId, @RequestBody ScheduleDto scheduleDto) {
+            @PathVariable Integer scheduleId, @RequestBody @Valid ScheduleDto scheduleDto) {
         ScheduleResponse response = scheduleService.updateSchedule(scheduleDto, scheduleId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
