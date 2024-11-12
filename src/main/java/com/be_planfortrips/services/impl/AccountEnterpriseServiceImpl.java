@@ -132,18 +132,22 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         return this.getAccountEnterpriseById(tokenMapper.getIdEnterpriseByToken());
     }
 
-    @Override
-    public void changeStatus(Long id, Integer status) {
-        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorType.notFound));
-        if (status == 1) {
-            accountEnterprise.setStatus(true);
-        } else if (status == 0) {
+ @Override
+    public Boolean toggleStage(Long userId) {
+        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(userId).orElseThrow(
+                () -> new AppException(ErrorType.notFound) // Ném exception nếu không tìm thấy
+        );
+
+        if (accountEnterprise.isStatus()) {
             accountEnterprise.setStatus(false);
-        } else {
-            throw new AppException(ErrorType.statusInvalid);
         }
+        else {
+            accountEnterprise.setStatus(true);
+        }
+
         accountEnterpriseRepository.save(accountEnterprise);
+
+        return accountEnterprise.isStatus();
     }
 
     private void validateForm(AccountEnterpriseDto accountEnterpriseDto) {

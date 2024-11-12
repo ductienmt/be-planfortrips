@@ -54,6 +54,12 @@ public class AccountEnterpriseController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+      @GetMapping("/detail")
+    public ResponseEntity<AccountEnterpriseResponse> getAccountEnterpriseDetail() {
+        AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.getAccountEnterpriseDetail();
+        return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.OK);
+    }
+
     @PatchMapping("/stage/{id}")
     public ResponseEntity<Boolean> toggleStage(
             @PathVariable Long id

@@ -22,5 +22,8 @@ public interface IAccountEnterpriseService {
     // Xóa tài khoản doanh nghiệp theo ID
     void deleteAccountEnterpriseById(Long id);
 
+    // Lấy thông tin chi tiết tài khoản doanh nghiệp
+    AccountEnterpriseResponse getAccountEnterpriseDetail();
+
     Boolean toggleStage(Long userId);
 }
