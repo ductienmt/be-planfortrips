@@ -4,6 +4,7 @@ import com.be_planfortrips.dto.ScheduleDto;
 import com.be_planfortrips.dto.response.ScheduleResponse;
 import com.be_planfortrips.entity.Route;
 import com.be_planfortrips.entity.Schedule;
+import com.be_planfortrips.entity.ScheduleSeat;
 import com.be_planfortrips.entity.Vehicle;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
@@ -16,6 +17,9 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -39,6 +43,7 @@ public class ScheduleMapper implements MapperInterface<ScheduleResponse, Schedul
         schedule.setPrice_for_one_seat(scheduleDto.getPriceForOneSeat());
         schedule.setRoute(route);
         schedule.setVehicleCode(vehicleCode);
+
         return schedule;
     }
 
@@ -70,6 +75,8 @@ public class ScheduleMapper implements MapperInterface<ScheduleResponse, Schedul
         }
 
         scheduleResponse.setScheduleSeat(schedule.getScheduleSeats());
+
+
         return scheduleResponse;
     }
 

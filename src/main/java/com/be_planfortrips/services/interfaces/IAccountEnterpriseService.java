@@ -8,7 +8,7 @@ import java.util.List;
 public interface IAccountEnterpriseService {
 
     // Lấy tất cả tài khoản doanh nghiệp
-    List<AccountEnterpriseResponse> getAllAccountEnterprises();
+    List<AccountEnterpriseResponse> getAllAccountEnterprises(int page, int size);
 
     // Lấy tài khoản doanh nghiệp theo ID
     AccountEnterpriseResponse getAccountEnterpriseById(Long id);
@@ -25,6 +25,5 @@ public interface IAccountEnterpriseService {
     // Lấy thông tin chi tiết tài khoản doanh nghiệp
     AccountEnterpriseResponse getAccountEnterpriseDetail();
 
-    // Thay đổi trạng thái tài khoản doanh nghiệp (1 la active, 0 la inactive)
-    void changeStatus(Long id, Integer status);
+    Boolean toggleStage(Long userId);
 }

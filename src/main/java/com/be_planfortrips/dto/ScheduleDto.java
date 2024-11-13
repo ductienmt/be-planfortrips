@@ -39,7 +39,4 @@ public class ScheduleDto {
 
     @NotNull(message = "Arrival time cannot be null")
     LocalDateTime arrivalTime;
-
-    @NotNull(message = "Seat list cannot be null")
-    List<SeatDTO> seat;
 }

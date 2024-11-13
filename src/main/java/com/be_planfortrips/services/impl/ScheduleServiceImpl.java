@@ -74,8 +74,21 @@ public class ScheduleServiceImpl implements IScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new AppException(ErrorType.notFound)
         );
+        schedule.setId(scheduleId);
+        List<Seat> seats = seatRepository.findByVehicleCode(scheduleDto.getVehicleCode());
+
+        for (Seat seat : seats) {
+            ScheduleSeat scheduleSeat = new ScheduleSeat();
+            scheduleSeat.setSeat(seat);
+            scheduleSeat.setSeatNumber(seat.getSeatNumber());
+            scheduleSeat.setSchedule(schedule);
+            scheduleSeat.setStatus(StatusSeat.Empty);
+            scheduleSeatRepository.save(scheduleSeat);
+        }
+
         Schedule scheduleNew = scheduleMapper.toEntity(scheduleDto);
         scheduleNew.setId(scheduleId);
+
         return scheduleMapper.toResponse(
                 scheduleRepository.saveAndFlush(scheduleNew));
     }
