@@ -29,6 +29,8 @@ public class API_Provider {
             "/api/v1/payments/vnpay/return",
             "/api/v1/account-enterprises/create",
             "/api/v1/rooms/getRoomAvailable",
+            "/api/v1/tags/all",
+            "/api/v1/tours/all",
     };
 
     public static final String[] ADMIN_API = {
@@ -66,7 +68,9 @@ public class API_Provider {
             "/api/v1/users/create",
             "/api/v1/admins/all",
             "/api/v1/routes/create",
+            "/api/v1/tags/create",
             "/api/v1/hotels/create",
+            "/api/v1/tours/create",
     };
 
     public static final String[] USER_API = {

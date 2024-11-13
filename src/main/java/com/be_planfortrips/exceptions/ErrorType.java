@@ -46,6 +46,7 @@ public enum ErrorType {
     RouteIdNotFound(710, "RouteId không tồn tại",HttpStatus.NOT_FOUND),
     HotelIdNotFound(711,"HotelId không tồn tại",HttpStatus.NOT_FOUND),
     CityIdNotFound(712, "CityId không tồn tại", HttpStatus.NOT_FOUND),
+    TagNameIsExist(713, "Tag đã tồn tại", HttpStatus.BAD_REQUEST),
     ;
 
     private static String getString() {
