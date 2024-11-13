@@ -19,9 +19,12 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TicketResponse {
+    @JsonProperty("ticket_id")
     Integer ticketId;
     Schedule schedule;
-    String userName;
+    @JsonProperty("user_id")
+    Long user_id;
+    @JsonProperty("total_price")
     BigDecimal totalPrice;
     Payment payment;
     @JsonProperty("status")

@@ -81,7 +81,7 @@ public class TicketController {
     public ResponseEntity<?> getCarCompanies(@RequestParam int page,
                                              @RequestParam int limit){
         try {
-            PageRequest request = PageRequest.of(page,limit, Sort.by("createAt").ascending());
+            PageRequest request = PageRequest.of(page,99999999, Sort.by("createAt").ascending());
             int totalPage = 0;
             Page<TicketResponse> TicketResponses = iTicketService.getTickets(request);
             totalPage = TicketResponses.getTotalPages();
@@ -96,8 +96,12 @@ public class TicketController {
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteCarCompanyById(@PathVariable Integer id) throws Exception {
-        iTicketService.deleteTicketById(id);
-        return ResponseEntity.noContent().build();
+        try {
+            iTicketService.deleteTicketById(id);
+            return ResponseEntity.noContent().build();
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("getById/{id}")
@@ -118,7 +122,6 @@ public class TicketController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
     @GetMapping("getByScheduleId/{id}")
     public ResponseEntity<?> getCarCompanyByScheduleId(@PathVariable Integer id){
         try {

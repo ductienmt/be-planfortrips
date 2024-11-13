@@ -161,23 +161,27 @@ public class CheckinServiceImpl implements ICheckinService {
         Checkin checkin = this.checkinRepository.findById(checkinId)
                 .orElseThrow(() -> new AppException(ErrorType.notFound));
 
+        // Kiểm tra toàn bộ ảnh trước khi upload
         for (MultipartFile file : files) {
 //            this.utils.isValidImage(file);
             this.utils.checkSize(file);
         }
 
+        // Upload và lưu ảnh
         for (MultipartFile file : files) {
             String fileUrl;
             try {
-                fileUrl = this.cloudinaryService.uploadFile(file, "checkins").get("url").toString();
+                fileUrl = this.cloudinaryService.uploadFile(file, "").get("url").toString();
             } catch (IOException e) {
                 throw new AppException(ErrorType.internalServerError);
             }
 
+            // Lưu ảnh vào cơ sở dữ liệu
             Image image = new Image();
             image.setUrl(fileUrl);
             this.imageRepository.save(image);
 
+            // Liên kết với CheckinImage
             CheckinImage checkinImage = new CheckinImage();
             checkinImage.setCheckin(checkin);
             checkinImage.setImage(image);
@@ -195,13 +199,6 @@ public class CheckinServiceImpl implements ICheckinService {
 
     @Override
     public List<Image> getImagesByCheckinId(Long checkinId) {
-        Checkin checkin = this.checkinRepository.findById(checkinId)
-                .orElseThrow(() -> new AppException(ErrorType.notFound));
-        List<Image> images = checkin.getCheckinImages().stream()
-                .map(CheckinImage::getImage)
-                .collect(Collectors.toList());
-        return images;
+        return null;
     }
-
-
 }

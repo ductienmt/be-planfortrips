@@ -19,7 +19,7 @@ public class FeedbackController {
 
     private final IFeedbackService feedbackService;
 
-    @GetMapping("/all")
+    @GetMapping("all")
     public ResponseEntity<List<FeedbackResponse>> getAllFeedbacks() {
         List<FeedbackResponse> feedbacks = feedbackService.getAllFeedbacks();
         return ResponseEntity.ok(feedbacks);
