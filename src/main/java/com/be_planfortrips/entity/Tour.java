@@ -34,7 +34,9 @@ public class Tour {
     @OneToOne
     @JoinColumn(name = "schedule_id")
     Schedule schedule;
-
+    @ManyToOne
+    @JoinColumn(name = "car_company_id")
+    CarCompany carCompany;
     String note;
 
     @ManyToOne

@@ -10,11 +10,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,12 +45,13 @@ public class TourController {
             listResponse.setListResponse(tourResponses.stream().toList());
             return ResponseEntity.ok(listResponse);
         }catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     @PostMapping("/create")
     public ResponseEntity<?> createTour(@RequestBody TourDTO tourDTO,
-                                        @RequestParam String tagNames,
+                                        @RequestParam(value = "tagNames",required = false) String tagNames,
                                         BindingResult result){
         try {
             if(result.hasErrors()) {
@@ -58,10 +61,48 @@ public class TourController {
                         .toList();
                 return ResponseEntity.badRequest().body(errorMessages);
             }
-            List<String> tags = Arrays.stream(tagNames.split(",")).toList();
-            tourDTO.setTagNames(tags);
+            List<String> tags = tagNames!=null?Arrays.stream(tagNames.split(",")).toList():new ArrayList<>();
+            if(tags.size() > 0)            tourDTO.setTagNames(tags);
             TourResponse tourResponse = iTourService.createTour(tourDTO);
             return ResponseEntity.ok(tourResponse);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PutMapping("update/{id}")
+    public ResponseEntity<?> updateTour(@PathVariable("id") Integer id,
+                                        @RequestBody TourDTO tourDTO,
+                                        @RequestParam(value = "tagNames",required = false) String tagNames,
+                                        BindingResult result){
+        try {
+            if(result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
+            List<String> tags = tagNames!=null?Arrays.stream(tagNames.split(",")).toList():new ArrayList<>();
+            if(tags.size() > 0)            tourDTO.setTagNames(tags);
+            TourResponse tourResponse = iTourService.updateTour(id,tourDTO);
+            return ResponseEntity.ok(tourResponse);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<?> deleteTour(@PathVariable("id") Integer id){
+        try {
+            iTourService.deleteTourById(id);
+            return ResponseEntity.noContent().build();
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("findById/{id}")
+    public ResponseEntity<?> getTourById(@PathVariable("id") Integer id){
+        try {
+            return ResponseEntity.ok(iTourService.getByTourId(id));
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

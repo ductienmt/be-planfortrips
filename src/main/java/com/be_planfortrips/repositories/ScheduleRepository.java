@@ -51,6 +51,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
                                 @Param("arrivalDate") LocalDate arrivalDate);
 
     List<Schedule> getSchedulesByRouteAndVehicleCode(Route route, Vehicle vehicle);
-
+    List<Schedule> findByVehicleCodeIn(List<String> code);
 
 }

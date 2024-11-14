@@ -45,6 +45,6 @@ public class Schedule extends BaseEntity{
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<ScheduleSeat> scheduleSeats;
+    List<ScheduleSeat> scheduleSeats;
 
 }

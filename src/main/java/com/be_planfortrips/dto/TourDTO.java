@@ -17,12 +17,20 @@ public class TourDTO {
     String destination;
     @JsonProperty("number_people")
     Integer numberPeople;
-    Double rating;
     @JsonProperty("total_price")
     Double totalPrice;
     Integer day;
     Integer night;
     @JsonProperty("is_active")
-    boolean isActive;
+    Boolean isActive;
     List<String> tagNames;
+    String note;
+    @JsonProperty("hotel_id")
+    Long hotelId;
+    @JsonProperty("car_company_id")
+    Integer carCompanyId;
+    @JsonProperty("schedule_id")
+    Integer scheduleId;
+    @JsonProperty("admin_username")
+    String adminUsername;
 }
