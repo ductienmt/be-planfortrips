@@ -47,8 +47,8 @@ public class HotelController {
         }
     }
     @GetMapping("all")
-    public ResponseEntity<HotelListResponse> getHotels(@RequestParam("page")     int page,
-                                                       @RequestParam("limit")    int limit,
+    public ResponseEntity<HotelListResponse> getHotels(@RequestParam("page") int page,
+                                                       @RequestParam("limit") int limit,
                                                        @RequestParam(defaultValue = "") String keyword,
                                                        @RequestParam(defaultValue = "") Integer rating
                                                        ){

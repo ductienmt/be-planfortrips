@@ -2,6 +2,7 @@ package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.entity.TypeEnterprise;
 import com.be_planfortrips.services.interfaces.ITypeEnterpriseService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,14 +33,15 @@ public class TypeEnterpriseController {
 
     // Tạo loại doanh nghiệp mới
     @PostMapping("/create")
-    public ResponseEntity<TypeEnterprise> createTypeEnterprise(@RequestBody TypeEnterprise typeEnterprise) {
+    public ResponseEntity<TypeEnterprise> createTypeEnterprise(@Valid @RequestBody TypeEnterprise typeEnterprise) {
         TypeEnterprise createdTypeEnterprise = typeEnterpriseService.createTypeEnterprise(typeEnterprise);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTypeEnterprise);
     }
 
     // Cập nhật loại doanh nghiệp
     @PutMapping("update/{id}")
-    public ResponseEntity<TypeEnterprise> updateTypeEnterprise(@PathVariable Long id, @RequestBody TypeEnterprise typeEnterprise) {
+    public ResponseEntity<TypeEnterprise> updateTypeEnterprise(@PathVariable Long id,
+                                                              @Valid @RequestBody TypeEnterprise typeEnterprise) {
         TypeEnterprise updatedTypeEnterprise = typeEnterpriseService.updateTypeEnterprise(id, typeEnterprise);
         return ResponseEntity.ok(updatedTypeEnterprise);
     }

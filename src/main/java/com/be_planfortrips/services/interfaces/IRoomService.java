@@ -24,7 +24,7 @@ public interface IRoomService {
 
     RoomResponse updateRoomById(Long roomId, RoomDto roomDto);
 
-    List<RoomResponseEnterprise> getRoomByHotelId(Long id);
+    List<RoomResponse> getRoomByHotelId(Long id);
 
     List<RoomResponse> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut, String destination);
 

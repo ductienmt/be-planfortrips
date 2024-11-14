@@ -18,11 +18,14 @@ import com.be_planfortrips.utils.Utils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -38,13 +41,20 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     TokenMapperImpl tokenMapper;
 
     @Override
-    public List<AccountEnterpriseResponse> getAllAccountEnterprises() {
-        // Lấy tất cả tài khoản doanh nghiệp từ repository
-        List<AccountEnterprise> accountEnterprises = accountEnterpriseRepository.findAll();
-        return accountEnterprises.stream()
+    public List<AccountEnterpriseResponse> getAllAccountEnterprises(int page, int size) {
+        // Tạo một Pageable với tham số page và size truyền vào từ người dùng
+        PageRequest pageable = PageRequest.of(page, size); // page là trang, size là số lượng trên mỗi trang
+
+        // Lấy tất cả tài khoản doanh nghiệp (có phân trang)
+        Page<AccountEnterprise> accountEnterprisesPage = accountEnterpriseRepository.findAll(pageable);
+
+        // Chuyển đổi các tài khoản doanh nghiệp thành DTO (AccountEnterpriseResponse)
+        return accountEnterprisesPage.getContent().stream()
                 .map(accountEnterpriseMapper::toResponse) // Chuyển đổi sang DTO
-                .toList();
+                .collect(Collectors.toList());
     }
+
+
 
     @Override
     public AccountEnterpriseResponse getAccountEnterpriseById(Long id) {
@@ -72,13 +82,13 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         // Tìm tài khoản doanh nghiệp theo ID
         AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(tokenMapper.getIdEnterpriseByToken())
                 .orElseThrow(() -> new AppException(ErrorType.notFound));
-        if (accountEnterpriseDto.getPhoneNumber() != null && accountEnterpriseDto.getPhoneNumber().isEmpty()) {
+        if (accountEnterpriseDto.getPhoneNumber() != null && !accountEnterpriseDto.getPhoneNumber().isEmpty()) {
             if (!Utils.isValidPhoneNumber(accountEnterpriseDto.getPhoneNumber())) {
                 throw new AppException(ErrorType.phoneNotValid);
             }
         }
 
-        if(accountEnterpriseDto.getEmail() != null || accountEnterpriseDto.getEmail().isEmpty()){
+        if(accountEnterpriseDto.getEmail() != null && !accountEnterpriseDto.getEmail().isEmpty()){
             if(!Utils.isValidEmail(accountEnterpriseDto.getEmail())){
                 throw new AppException(ErrorType.emailNotValid);
             }
@@ -122,18 +132,22 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         return this.getAccountEnterpriseById(tokenMapper.getIdEnterpriseByToken());
     }
 
-    @Override
-    public void changeStatus(Long id, Integer status) {
-        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorType.notFound));
-        if (status == 1) {
-            accountEnterprise.setStatus(true);
-        } else if (status == 0) {
+ @Override
+    public Boolean toggleStage(Long userId) {
+        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(userId).orElseThrow(
+                () -> new AppException(ErrorType.notFound) // Ném exception nếu không tìm thấy
+        );
+
+        if (accountEnterprise.isStatus()) {
             accountEnterprise.setStatus(false);
-        } else {
-            throw new AppException(ErrorType.statusInvalid);
         }
+        else {
+            accountEnterprise.setStatus(true);
+        }
+
         accountEnterpriseRepository.save(accountEnterprise);
+
+        return accountEnterprise.isStatus();
     }
 
     private void validateForm(AccountEnterpriseDto accountEnterpriseDto) {

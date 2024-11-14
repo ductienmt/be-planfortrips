@@ -16,14 +16,12 @@ import java.util.Map;
 public class PlanResponseDetail {
     Long hotel_id;
     String hotel_name;
-
     List<Map<String, Object>> rooms;
 
-    Long ticket_id;
     BigDecimal transport_price;
     Status status_transport;
     Map<String, Object> schedule_transport;
-    List<String> seats;
+//    List<String> seats;
 
     Map<String, Object> routes;
 

@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${api.prefix}/account-enterprises")
+    @RequestMapping("${api.prefix}/account-enterprises")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AccountEnterpriseController {
 
@@ -24,7 +24,7 @@ public class AccountEnterpriseController {
 
     @GetMapping("all")
     public ResponseEntity<List<AccountEnterpriseResponse>> getAllAccountEnterprises() {
-        List<AccountEnterpriseResponse> accountEnterprises = accountEnterpriseService.getAllAccountEnterprises();
+        List<AccountEnterpriseResponse> accountEnterprises = accountEnterpriseService.getAllAccountEnterprises(1, 30);
         return new ResponseEntity<>(accountEnterprises, HttpStatus.OK);
     }
 
@@ -54,15 +54,16 @@ public class AccountEnterpriseController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/detail")
+      @GetMapping("/detail")
     public ResponseEntity<AccountEnterpriseResponse> getAccountEnterpriseDetail() {
         AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.getAccountEnterpriseDetail();
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/change-status")
-    public ResponseEntity<Void> changeStatus(@RequestParam Long id, @RequestParam Integer status) {
-        accountEnterpriseService.changeStatus(id, status);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PatchMapping("/stage/{id}")
+    public ResponseEntity<Boolean> toggleStage(
+            @PathVariable Long id
+    )  {
+        return ResponseEntity.ok(accountEnterpriseService.toggleStage(id));
     }
 }

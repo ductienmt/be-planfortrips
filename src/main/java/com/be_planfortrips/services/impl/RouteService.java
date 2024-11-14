@@ -6,6 +6,7 @@ import com.be_planfortrips.entity.Route;
 import com.be_planfortrips.entity.Station;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.repositories.CityRepository;
 import com.be_planfortrips.repositories.RouteRepository;
 import com.be_planfortrips.repositories.StationRepository;
 import com.be_planfortrips.services.interfaces.IRouteService;
@@ -17,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 @RequiredArgsConstructor
 @Service
@@ -24,6 +27,8 @@ import java.util.Optional;
 public class RouteService implements IRouteService {
     RouteRepository routeRepository;
     StationRepository stationRepository;
+    private final CityRepository cityRepository;
+
     @Override
     @Transactional
     public RouteResponse createRoute(RouteDTO routeDTO) throws Exception {
@@ -113,6 +118,15 @@ public class RouteService implements IRouteService {
                 .originStation(existingRoute.getOriginStation())
                 .destinationStation(existingRoute.getDestinationStation())
                 .build();
+    }
+
+    @Override
+    public Map<String, Object> getCityByRouteId(String id) {
+        Route route = routeRepository.findById(id).orElseThrow(() -> new AppException(ErrorType.notFound, "Không tiìm thấy route"));
+        Map<String, Object> city = new HashMap<>();
+        city.put("originalCity", route.getOriginStation().getCity().getNameCity());
+        city.put("destination", route.getDestinationStation().getCity().getNameCity());
+        return city;
     }
 
     @Override

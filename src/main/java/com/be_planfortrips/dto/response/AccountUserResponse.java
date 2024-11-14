@@ -21,7 +21,7 @@ public class AccountUserResponse {
     String gender;
 //    String password;
     String address;
-//    boolean isActive;
+    boolean isActive;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     LocalDate birthdate;
     String fullName;

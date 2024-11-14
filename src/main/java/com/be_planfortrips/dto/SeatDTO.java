@@ -17,6 +17,4 @@ public class SeatDTO {
     @JsonProperty("seat_number")
     @NotBlank(message = "seat_number is required")
     String seatNumber;
-    @JsonProperty("status_seat")
-    String status;
 }

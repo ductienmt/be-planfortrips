@@ -1,10 +1,12 @@
 package com.be_planfortrips.repositories;
 
 import com.be_planfortrips.entity.AccountEnterprise;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.awt.print.Pageable;
 import java.util.Optional;
 
 public interface AccountEnterpriseRepository extends JpaRepository<AccountEnterprise, Long> {
@@ -13,4 +15,5 @@ public interface AccountEnterpriseRepository extends JpaRepository<AccountEnterp
 
     @Query("SELECT a FROM AccountEnterprise a WHERE a.username = :username AND a.status = true")
     AccountEnterprise findByUsername(String username);
+
 }
