@@ -48,9 +48,12 @@ public class Room {
     @Column(name = "is_available")
     boolean isAvailable;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     List<RoomImage> images;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<CouponRoom> couponRooms;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    List<RoomAmenities> roomAmenities;
 }

@@ -8,6 +8,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -71,8 +72,17 @@ public class CatchMyException {
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .code(HttpStatus.NOT_FOUND.value())
                 .message("The requested URL was not found on the server.")
-                .data(null)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<?> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
+        String errorMessage = "Phương thức HTTP không được hỗ trợ cho endpoint này. Vui lòng kiểm tra lại yêu cầu.";
+        ApiResponse<String> response = ApiResponse.<String>builder()
+                .code(HttpStatus.METHOD_NOT_ALLOWED.value())
+                .message(errorMessage)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
     }
 }

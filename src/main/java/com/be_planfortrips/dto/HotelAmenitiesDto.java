@@ -1,7 +1,19 @@
-package com.be_planfortrips.entity;
+package com.be_planfortrips.dto;
 
-/**
- * DTO for {@link com.be_planfortrips.entity.HotelAmenities}
- */
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
+import java.math.BigDecimal;
+
+@Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class HotelAmenitiesDto {
-  }
+    String name;
+    BigDecimal fee;
+    String description;
+    Boolean status;
+    Long hotelId;
+}

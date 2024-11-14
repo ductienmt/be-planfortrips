@@ -5,6 +5,8 @@ import com.be_planfortrips.dto.PlanDto;
 import com.be_planfortrips.dto.request.DataEssentialPlan;
 import com.be_planfortrips.dto.response.*;
 import com.be_planfortrips.entity.*;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.*;
 import com.be_planfortrips.services.interfaces.IPlanService;
@@ -48,6 +50,14 @@ public class PlanServiceImpl implements IPlanService {
     private TokenMapperImpl tokenMapperImpl;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private HotelRepository hotelRepository;
+    @Autowired
+    private VehicleRepository vehicleRepository;
+    @Autowired
+    private TicketRepository ticketRepository;
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
     @Override
     public Map<String, Object> prepareDataPlan(DataEssentialPlan dataEssentialPlan) {
@@ -102,7 +112,7 @@ public class PlanServiceImpl implements IPlanService {
                     if (nameType.equals("Khách sạn") || nameType.equals("Homestay") || nameType.equals("Resort")) {
                         BookingHotel bookingHotel = null;
                         try {
-                            bookingHotel = bookingHotelRepository.findById(Long.valueOf(planDetail.getTicketId())).orElseThrow(() -> new RuntimeException("Lỗi lấy thông tin plan"));
+                            bookingHotel = bookingHotelRepository.findById(Long.valueOf(planDetail.getTicketId())).orElseThrow(() -> new AppException(ErrorType.notFound, "Lỗi lấy thông tin booking hotel"));
                         } catch (Exception e) {
                             log.error("Lỗi lấy thông tin booking hotel: {}", e.getMessage());
                         }
@@ -119,18 +129,44 @@ public class PlanServiceImpl implements IPlanService {
                             room.put("room_id", bookingHotelDetail.getRoom().getId());
                             room.put("room_name", bookingHotelDetail.getRoom().getRoomName());
                             room.put("room_price", bookingHotelDetail.getRoom().getPrice());
-                            room.put("room_status", bookingHotelDetail.getStatus());
+                            room.put("status", bookingHotelDetail.getStatus());
                             rooms.add(room);
                         }
+                    }
+                    if (nameType.equals("Xe khách")) {
+                        Ticket ticket = null;
+                        try {
+                            ticket = ticketRepository.findById(planDetail.getTicketId()).orElseThrow(() -> new AppException(ErrorType.notFound, "Lỗi lấy thông tin ticket"));
+                        } catch (Exception e) {
+                            log.error("Lỗi lấy thông tin ticket: {}", e.getMessage());
+                        }
+
+                        planResponseDetail.setStatus_transport(ticket.getStatus());
+                        planResponseDetail.setTransport_price(ticket.getTotalPrice());
+
+                        Schedule schedule = scheduleRepository.findById(ticket.getSchedule().getId()).orElseThrow(() -> new AppException(ErrorType.notFound, "Lỗi lấy thông tin schedule"));
+
+                        Map<String, Object> schedule_transport = new HashMap<>();
+                        schedule_transport.put("schedule_id", schedule.getId());
+                        schedule_transport.put("schedule_departure_time", schedule.getDepartureTime());
+                        schedule_transport.put("schedule_arrival_time", schedule.getArrivalTime());
+                        schedule_transport.put("schedule_price_for_one_seat", schedule.getPrice_for_one_seat());
+                        schedule_transport.put("schedule_seat", ticket.getSeats());
+
+                        Map<String, Object> routes = new HashMap<>();
+                        routes.put("originalLocation", schedule.getRoute().getOriginStation());
+                        routes.put("destination", schedule.getRoute().getDestinationStation());
+
+                        Map<String, Object> vehicle = new HashMap<>();
+                        vehicle.put("vehicle_name", schedule.getVehicleCode().getCarCompany().getName());
+                        vehicle.put("vehicle_type", schedule.getVehicleCode().getTypeVehicle());
+                        vehicle.put("vehicle_license_plate", schedule.getVehicleCode().getPlateNumber());
+                        vehicle.put("vehicle_driver_name", schedule.getVehicleCode().getDriverName());
+                        vehicle.put("vehicle_driver_phone", schedule.getVehicleCode().getDriverPhone());
                     }
                     return planDetail;
                 }
         ).collect(Collectors.toList());
-
-        for (PlanDetail planDetail : planDetails) {
-            System.out.println(planDetail.getId() + " " + planDetail.getTypeEde().getName() + " " + planDetail.getPlan().getId() + " "
-                    + planDetail.getServiceId() + " " + planDetail.getTicketId());
-        }
         return planResponseDetail;
     }
 
@@ -153,13 +189,38 @@ public class PlanServiceImpl implements IPlanService {
         for (PlanDetailDto detailDto : planDto.getPlanDetails()) {
             PlanDetail detail = new PlanDetail();
             detail.setPlan(plan);
-            detail.setServiceId(detailDto.getServiceId());
-            detail.setTypeEde(typeEnterpriseDetailRepository.findById(Long.valueOf(detailDto.getTypeEdeId())).orElseThrow(() -> new RuntimeException("Lỗi lấy thông tin type enterprise")));
+
+            if (detailDto.getHotelId() != null) {
+                try {
+                    Hotel hotel = hotelRepository.findById(detailDto.getHotelId()).orElseThrow(() -> new AppException(ErrorType.notFound));
+                    detail.setTypeEde(hotel.getAccountEnterprise().getTypeEnterpriseDetail());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                detail.setServiceId(detailDto.getHotelId().toString());
+                if (detailDto.getTicketId() != null) {
+                    bookingHotelRepository.findById(detailDto.getTicketId().longValue()).orElseThrow(() -> new AppException(ErrorType.notFound));
+                    detail.setTicketId(detailDto.getTicketId());
+                }
+            }
+            if (detailDto.getCarId() != null) {
+                try {
+                    Vehicle vehicle = vehicleRepository.findByCode(detailDto.getCarId());
+                    if (vehicle == null) {
+                        throw new AppException(ErrorType.notFound);
+                    }
+                    detail.setTypeEde(vehicle.getCarCompany().getEnterprise().getTypeEnterpriseDetail());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                detail.setServiceId(detailDto.getCarId());
+                detail.setTicketId(detailDto.getTicketId());
+            }
             detail.setTotalPrice(detailDto.getTotalPrice());
             detail.setStartDate(detailDto.getStartDate());
             detail.setEndDate(detailDto.getEndDate());
-            detail.setTicketId(detailDto.getTicketId());
-            detail.setStatus(detailDto.getStatus());
+
+            detail.setStatus(StatusPlan.NOT_STARTED);
 
             planDetailRepository.save(detail);
         }

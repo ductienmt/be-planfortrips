@@ -18,6 +18,8 @@ public enum ErrorType {
     statusInvalid(801, "Trạng thái không hợp lệ", HttpStatus.BAD_REQUEST),
     emailNotValid(802, "Email không hợp lệ", HttpStatus.BAD_REQUEST),
     phoneNotValid(803, "Số điện thoại không hợp lệ", HttpStatus.BAD_REQUEST),
+    typeEnterpriseDetailNotFound(804, "TypeEnterpriseDetail không tồn tại", HttpStatus.NOT_FOUND),
+    inputFieldInvalid(805, "Trường nhập không hợp lệ", HttpStatus.BAD_REQUEST),
 
     notVerified(400, "OTP không hợp lệ hoặc đã hết hạn", HttpStatus.BAD_REQUEST),
 
@@ -30,6 +32,7 @@ public enum ErrorType {
     couponIsExpired(603, "Voucher đã hết hạn hoặc không còn khả dụng", HttpStatus.BAD_REQUEST),
     percentIsUnprocessed(604, "Phần trăm không hợp lệ", HttpStatus.UNPROCESSABLE_ENTITY),
     UploadFailed(605,"Upload ảnh thất bại",HttpStatus.INTERNAL_SERVER_ERROR),
+    DeleteImageFailed(606,"Xóa ảnh thất bại",HttpStatus.BAD_REQUEST),
     nameTypeExisted(607, "NameType Existed", HttpStatus.BAD_REQUEST),
     hasEtp(608,"TypeEnterprise Contain AccountEnterprise", HttpStatus.BAD_REQUEST),
     // Case Not Found

@@ -1,6 +1,5 @@
 spring:
   datasource:
-
     # dữ liệu demo thì dùng cái này nha, t insert kha khá dữ liệu
 #         url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
 #         username: postgres
@@ -14,7 +13,6 @@ spring:
 #    username: admin
 #    password: admin
       driver-class-name: org.postgresql.Driver
-
   mvc:
     throw-exception-if-no-handler-found: true
   web:

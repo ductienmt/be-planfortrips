@@ -82,13 +82,13 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         // Tìm tài khoản doanh nghiệp theo ID
         AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(tokenMapper.getIdEnterpriseByToken())
                 .orElseThrow(() -> new AppException(ErrorType.notFound));
-        if (accountEnterpriseDto.getPhoneNumber() != null && accountEnterpriseDto.getPhoneNumber().isEmpty()) {
+        if (accountEnterpriseDto.getPhoneNumber() != null && !accountEnterpriseDto.getPhoneNumber().isEmpty()) {
             if (!Utils.isValidPhoneNumber(accountEnterpriseDto.getPhoneNumber())) {
                 throw new AppException(ErrorType.phoneNotValid);
             }
         }
 
-        if(accountEnterpriseDto.getEmail() != null || accountEnterpriseDto.getEmail().isEmpty()){
+        if(accountEnterpriseDto.getEmail() != null && !accountEnterpriseDto.getEmail().isEmpty()){
             if(!Utils.isValidEmail(accountEnterpriseDto.getEmail())){
                 throw new AppException(ErrorType.emailNotValid);
             }
