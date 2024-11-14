@@ -7,6 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -34,10 +35,10 @@ public class PlanDetail {
     private BigDecimal totalPrice;
 
     @Column(name = "start_date")
-    private Timestamp startDate;
+    private LocalDateTime startDate;
 
     @Column(name = "end_date")
-    private Timestamp endDate;
+    private LocalDateTime endDate;
 
     @Column(name = "ticket_id")
     private Integer ticketId;

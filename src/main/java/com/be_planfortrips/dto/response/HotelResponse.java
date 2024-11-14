@@ -22,4 +22,5 @@ public class HotelResponse {
     int rating;
     List<Image> images ;
     List<Room> rooms;
+    List<HotelAmenitiesResponse> hotelAmenities;
 }

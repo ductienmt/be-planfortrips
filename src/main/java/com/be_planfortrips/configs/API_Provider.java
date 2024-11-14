@@ -18,6 +18,13 @@ public class API_Provider {
             "/api/v1/payments/vnpay/return",
             "/api/v1/account-enterprises/create",
             "/api/v1/rooms/getRoomAvailable",
+            "/api/v1/areas/all",
+            "/api/v1/banners/all",
+            "/api/v1/routes/getCityByRouteId",
+            "/api/v1/hotel-amenities/get-by-hotel-id",
+            "/api/v1/room-amenities/get-by-room-id",
+
+
     };
 
     public static final String[] ADMIN_API = {
@@ -29,13 +36,11 @@ public class API_Provider {
             "/api/v1/areas/update",
             "/api/v1/areas/delete",
             "/api/v1/areas/change-status",
-            "/api/v1/banners/all",
             "/api/v1/banners/create",
             "/api/v1/banners/update",
             "/api/v1/banners/delete",
             "/api/v1/banners/setStage",
             "/api/v1/banners/upload",
-            "/api/v1/car-companies/delete",
             "/api/v1/check-in/create",
             "/api/v1/check-in/update",
             "/api/v1/check-in/delete",
@@ -63,6 +68,7 @@ public class API_Provider {
             "/api/v1/feedbacks/update/**",
             "/api/v1/feedbacks/delete/**",
             "/api/v1/tickets/create",
+            "/api/v1/tickets/getByUserId/**",
             "/api/v1/users/update",
             "/api/v1/users/changePassword",
             "/api/v1/users/upload",
@@ -93,7 +99,6 @@ public class API_Provider {
     };
 
     public static final String[] ADMIN_USER_ENTERPRISE_API = {
-            "/api/v1/areas/all",
             "/api/v1/plan/check-in/detail",
             "/api/v1/plan/check-in/search",
             "/api/v1/car-companies/getById/**",
@@ -144,10 +149,23 @@ public class API_Provider {
             "/api/v1/seats/getById/**",
             "/api/v1/seats/all",
             "/api/v1/tickets/delete/**",
+            "/api/v1/tickets/all",
+            "/api/v1/tickets/getByScheduleId/**",
             "/api/v1/vehicles/all",
             "/api/v1/vehicles/create",
             "/api/v1/vehicles/update/**",
             "/api/v1/vehicles/delete/**",
-            "/api/v1/vehicles/getById/**",
+            "/api/v1/hotel-amenities/create",
+            "/api/v1/hotel-amenities/update",
+            "/api/v1/hotel-amenities/delete",
+            "/api/v1/hotel-amenities/change-status",
+            "/api/v1/hotel-amenities/upload-icon",
+            "/api/v1/hotel-amenities/delete-icon",
+            "/api/v1/room-amenities/create",
+            "/api/v1/room-amenities/update",
+            "/api/v1/room-amenities/delete",
+            "/api/v1/room-amenities/change-status",
+            "/api/v1/room-amenities/upload-icon",
+            "/api/v1/room-amenities/delete-icon",
     };
 }

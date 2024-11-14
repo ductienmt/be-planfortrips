@@ -47,6 +47,12 @@ public class Hotel extends BaseEntity{
     @OneToMany(mappedBy = "hotel",cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
     @JsonManagedReference
     List<Room> rooms;
+
+    @OneToMany(mappedBy = "hotel",cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
+    @JsonManagedReference
+    List<HotelAmenities> hotelAmenities;
+
+
     // Danh sách User đã từng đặt khách sạn này
 //    @ManyToMany
 //    @JoinTable(

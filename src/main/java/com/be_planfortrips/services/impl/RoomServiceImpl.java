@@ -74,8 +74,8 @@ public class RoomServiceImpl implements IRoomService {
     }
 
     @Override
-    public List<RoomResponseEnterprise> getRoomByHotelId(Long id) {
-        return this.roomRepository.findByHotelId(id).stream().map(roomMapper_2::toResponse).collect(Collectors.toList());
+    public List<RoomResponse> getRoomByHotelId(Long id) {
+        return this.roomRepository.findByHotelId(id).stream().map(roomMapper::toResponse).collect(Collectors.toList());
     }
 
     @Override
