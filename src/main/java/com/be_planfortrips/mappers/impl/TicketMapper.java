@@ -43,7 +43,7 @@ public class TicketMapper implements MapperInterface<TicketResponse, Ticket, Tic
         modelMapper.typeMap(Ticket.class, TicketResponse.class).addMappings(mapper -> {
             mapper.map(src -> src.getId(), TicketResponse::setTicketId);
 //            mapper.map(src -> src.getStatus().toString().toUpperCase(), TicketResponse::setStatus);
-            mapper.map(src -> src.getUser().getUserName(), TicketResponse::setUserName);
+            mapper.map(src -> src.getUser().getId(), TicketResponse::setUser_id);
         });
         return modelMapper.map(ticket,TicketResponse.class);
     }

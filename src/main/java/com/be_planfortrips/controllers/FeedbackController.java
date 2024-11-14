@@ -3,6 +3,7 @@ package com.be_planfortrips.controllers;
 import com.be_planfortrips.dto.FeedbackDto;
 import com.be_planfortrips.dto.response.FeedbackResponse;
 import com.be_planfortrips.services.interfaces.IFeedbackService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class FeedbackController {
 
     private final IFeedbackService feedbackService;
 
-    @GetMapping("/all")
+    @GetMapping("all")
     public ResponseEntity<List<FeedbackResponse>> getAllFeedbacks() {
         List<FeedbackResponse> feedbacks = feedbackService.getAllFeedbacks();
         return ResponseEntity.ok(feedbacks);
@@ -39,7 +40,7 @@ public class FeedbackController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<FeedbackResponse> createFeedback(@RequestBody FeedbackDto dto) {
+    public ResponseEntity<FeedbackResponse> createFeedback(@Valid @RequestBody FeedbackDto dto) {
         FeedbackResponse response = feedbackService.createFeedback(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

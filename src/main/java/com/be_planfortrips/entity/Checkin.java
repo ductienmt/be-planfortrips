@@ -1,5 +1,7 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,6 +24,7 @@ public class Checkin extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", columnDefinition = "varchar(20)")
+    @JsonBackReference
     City city;
 
     @Column(length = 200)
@@ -38,7 +41,7 @@ public class Checkin extends BaseEntity {
 
     @Column(name = "payFee", precision = 10, scale = 2)
     BigDecimal payFee;
-
     @OneToMany(mappedBy = "checkin", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @JsonManagedReference
     List<CheckinImage> checkinImages;
 }

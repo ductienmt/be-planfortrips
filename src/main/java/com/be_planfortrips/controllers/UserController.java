@@ -250,7 +250,13 @@ public class UserController {
             return buildApiResponse(HttpStatus.NOT_FOUND, "Lấy thông tin người dùng thất bại.");
         }
     }
-
-
-
+    @GetMapping("/findByUsername")
+        public ResponseEntity<?> findByUserName(@RequestParam("username") String username){
+        try {
+            AccountUserResponse user = userService.getUserByUsername(username);
+            return ResponseEntity.ok(user);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

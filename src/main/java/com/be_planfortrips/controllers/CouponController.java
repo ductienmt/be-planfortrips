@@ -64,7 +64,7 @@ public class CouponController {
                                              @RequestParam int limit,
                                         @RequestParam(defaultValue = "") Long id){
         try {
-            PageRequest request = PageRequest.of(page,limit, Sort.by("endDate").ascending());
+            PageRequest request = PageRequest.of(page,1000000000, Sort.by("endDate").ascending());
             int totalPage = 0;
             Page<CouponResponse> CouponResponses = iCouponService.getCoupons(request, id);
             totalPage = CouponResponses.getTotalPages();

@@ -33,6 +33,8 @@ public enum ErrorType {
     percentIsUnprocessed(604, "Phần trăm không hợp lệ", HttpStatus.UNPROCESSABLE_ENTITY),
     UploadFailed(605,"Upload ảnh thất bại",HttpStatus.INTERNAL_SERVER_ERROR),
     DeleteImageFailed(606,"Xóa ảnh thất bại",HttpStatus.BAD_REQUEST),
+    nameTypeExisted(607, "NameType Existed", HttpStatus.BAD_REQUEST),
+    hasEtp(608,"TypeEnterprise Contain AccountEnterprise", HttpStatus.BAD_REQUEST),
     // Case Not Found
     // (Trong trường hợp tạo đối tượng từ đối tượng khác, cần biết rõ đối tượng nào
     // không tồn tại)
@@ -48,7 +50,8 @@ public enum ErrorType {
     VehicleCodeNotFound(709, "VehicleCode không tồn tại",HttpStatus.NOT_FOUND),
     RouteIdNotFound(710, "RouteId không tồn tại",HttpStatus.NOT_FOUND),
     HotelIdNotFound(711,"HotelId không tồn tại",HttpStatus.NOT_FOUND),
-    CityIdNotFound(712, "CityId không tồn tại", HttpStatus.NOT_FOUND)
+    CityIdNotFound(712, "CityId không tồn tại", HttpStatus.NOT_FOUND),
+    TagNameIsExist(713, "Tag đã tồn tại", HttpStatus.BAD_REQUEST),
     ;
 
     private static String getString() {

@@ -163,12 +163,19 @@ public class TicketService implements ITicketService {
     @Transactional
     public void deleteTicketById(Integer id) {
         Optional<Ticket> ticket = ticketRepository.findById(id);
-        ticket.ifPresent(ticketRepository::delete);
+        ticket.ifPresent(ticket1 -> {
+            if (ticket1.getStatus() == Status.Cancelled) {
+                ticketRepository.delete(ticket1);
+            }
+        });
     }
 
     @Override
     public List<TicketResponse> findByUserId(Long id) {
         User existingUser = userRepository.findByIdActive(id);
+        if(existingUser == null){
+            throw new AppException(ErrorType.notFound);
+        }
         return ticketRepository.findByUser_Id(existingUser.getId()).stream()
                 .map(ticket -> ticketMapper.toResponse(ticket))
                 .collect(Collectors.toList());

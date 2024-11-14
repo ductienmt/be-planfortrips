@@ -43,7 +43,7 @@ public class Schedule extends BaseEntity{
     @Column(name = "arrival_time", columnDefinition = "timestamp without time zone")
     LocalDateTime arrivalTime;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<ScheduleSeat> scheduleSeats;
 
