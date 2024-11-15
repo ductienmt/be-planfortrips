@@ -1,4 +1,5 @@
 package com.be_planfortrips.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,6 +21,7 @@ public class Hotel extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enterprise_id")
+    @JsonBackReference
     AccountEnterprise accountEnterprise;
 
     @Column(name = "name")

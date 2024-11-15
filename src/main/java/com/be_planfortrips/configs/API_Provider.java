@@ -74,6 +74,9 @@ public class API_Provider {
             "/api/v1/tags/create",
             "/api/v1/hotels/create",
             "/api/v1/tours/create",
+            "/api/v1/tours/update/**",
+            "/api/v1/tours/delete/**",
+            "/api/v1/tours/findById/**",
     };
 
     public static final String[] USER_API = {
