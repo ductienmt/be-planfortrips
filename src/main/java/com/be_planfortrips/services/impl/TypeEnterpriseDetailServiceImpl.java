@@ -80,4 +80,9 @@ public class TypeEnterpriseDetailServiceImpl implements ITypeEnterpriseDetailSer
 
         typeEnterpriseDetailRepository.delete(detail);
     }
+
+    @Override
+    public TypeEnterpriseDetailResponse getTypeEnterpriseDetailByTypeEtp(Long idTypeEtp) {
+        return null;
+    }
 }

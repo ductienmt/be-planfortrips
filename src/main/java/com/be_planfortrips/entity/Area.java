@@ -1,5 +1,6 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;

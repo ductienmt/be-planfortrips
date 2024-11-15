@@ -16,4 +16,6 @@ public interface ITypeEnterpriseDetailService {
     TypeEnterpriseDetailResponse updateTypeEnterpriseDetail(Long id, TypeEnterpriseDetailDto dto);
 
     void deleteTypeEnterpriseDetail(Long id);
+
+    TypeEnterpriseDetailResponse getTypeEnterpriseDetailByTypeEtp(Long idTypeEtp);
 }

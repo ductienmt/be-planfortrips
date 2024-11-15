@@ -1,6 +1,7 @@
 package com.be_planfortrips.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -30,5 +31,9 @@ public class TypeEnterprise {
     @Size(max = 500, message = "Description must be at most 500 characters")
     @Column(name = "description", length = 500)
     String description;
+
+    @OneToMany
+            @JsonManagedReference
+    List<TypeEnterpriseDetail> typeEnterpriseDetails;
 
 }

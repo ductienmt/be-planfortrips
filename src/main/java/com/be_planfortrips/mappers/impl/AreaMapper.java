@@ -2,6 +2,7 @@ package com.be_planfortrips.mappers.impl;
 
 import com.be_planfortrips.dto.AreaDto;
 import com.be_planfortrips.dto.response.AreaResponse;
+import com.be_planfortrips.dto.response.CityResponse;
 import com.be_planfortrips.entity.Area;
 import com.be_planfortrips.mappers.MapperInterface;
 import lombok.AccessLevel;
@@ -10,6 +11,8 @@ import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +30,15 @@ public class AreaMapper implements MapperInterface<AreaResponse, Area, AreaDto> 
 
     @Override
     public AreaResponse toResponse(Area area) {
-        return this.modelMapper.map(area, AreaResponse.class);
+        AreaResponse areaResponse = this.modelMapper.map(area, AreaResponse.class);
+        areaResponse.setCities(area.getCities().stream()
+                .map(city -> CityResponse.builder()
+                        .cityName(city.getNameCity())
+                        .cityId(city.getId())
+                        .build())
+                .collect(Collectors.toList()));
+
+        return areaResponse;
     }
 
     @Override
