@@ -14,15 +14,20 @@ import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.RoleRepository;
 import com.be_planfortrips.services.interfaces.IAccountEnterpriseService;
+import com.be_planfortrips.services.interfaces.IEmailService;
 import com.be_planfortrips.utils.Utils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -32,19 +37,27 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     // Inject repository and mapper
     AccountEnterpriseRepository accountEnterpriseRepository;
     AccountEnterpriseMapper accountEnterpriseMapper;
+    IEmailService iEmailService;
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
     TypeEnterpriseDetailServiceImpl typeEnterpriseDetailService;
     TokenMapperImpl tokenMapper;
 
     @Override
-    public List<AccountEnterpriseResponse> getAllAccountEnterprises() {
-        // Lấy tất cả tài khoản doanh nghiệp từ repository
-        List<AccountEnterprise> accountEnterprises = accountEnterpriseRepository.findAll();
-        return accountEnterprises.stream()
+    public List<AccountEnterpriseResponse> getAllAccountEnterprises(int page, int size) {
+        // Tạo một Pageable với tham số page và size truyền vào từ người dùng
+        PageRequest pageable = PageRequest.of(page, size); // page là trang, size là số lượng trên mỗi trang
+
+        // Lấy tất cả tài khoản doanh nghiệp (có phân trang)
+        Page<AccountEnterprise> accountEnterprisesPage = accountEnterpriseRepository.findAll(pageable);
+
+        // Chuyển đổi các tài khoản doanh nghiệp thành DTO (AccountEnterpriseResponse)
+        return accountEnterprisesPage.getContent().stream()
                 .map(accountEnterpriseMapper::toResponse) // Chuyển đổi sang DTO
-                .toList();
+                .collect(Collectors.toList());
     }
+
+
 
     @Override
     public AccountEnterpriseResponse getAccountEnterpriseById(Long id) {
@@ -59,12 +72,29 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         validateForm(accountEnterpriseDto);
         // Chuyển đổi DTO thành entity và lưu vào repository
         AccountEnterprise accountEnterprise = accountEnterpriseMapper.toEntity(accountEnterpriseDto);
-
-        accountEnterprise.setPassword(passwordEncoder.encode(accountEnterpriseDto.getPassword()));
+        String passwordDefault = accountEnterpriseDto.getUsername()+"@"+generateRandomString(5);;
+        accountEnterprise.setPassword(passwordEncoder.encode(passwordDefault));
+        iEmailService.sendEmail(accountEnterpriseDto.getEmail(),
+                passwordDefault,"Vui lòng đăng nhập và thay đổi mật khẩu mặc định"
+                );
         accountEnterprise.setStatus(false);
         accountEnterprise.setRole(roleRepository.findById(3L).orElseThrow(() -> new RuntimeException("Không tìm thấy role")));
         accountEnterprise = accountEnterpriseRepository.save(accountEnterprise);
-        return accountEnterpriseMapper.toResponse(accountEnterprise); // Trả về response DTO
+        return accountEnterpriseMapper.toResponse(accountEnterprise);
+    }
+
+    public static String generateRandomString(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuilder result = new StringBuilder();
+
+        // Lặp để tạo chuỗi
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(characters.length());
+            result.append(characters.charAt(index));
+        }
+
+        return result.toString();
     }
 
     @Override
@@ -99,9 +129,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
             }
         }
 
-        if (accountEnterpriseDto.getPassword() != null && !accountEnterpriseDto.getPassword().isEmpty()) {
-            accountEnterprise.setPassword(this.passwordEncoder.encode(accountEnterpriseDto.getPassword()));
-        }
+
 
         this.accountEnterpriseRepository.save(accountEnterprise);
         return this.accountEnterpriseMapper.toResponse(accountEnterprise);
@@ -122,25 +150,27 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         return this.getAccountEnterpriseById(tokenMapper.getIdEnterpriseByToken());
     }
 
-    @Override
-    public void changeStatus(Long id, Integer status) {
-        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorType.notFound));
-        if (status == 1) {
-            accountEnterprise.setStatus(true);
-        } else if (status == 0) {
+ @Override
+    public Boolean toggleStage(Long userId) {
+        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(userId).orElseThrow(
+                () -> new AppException(ErrorType.notFound) // Ném exception nếu không tìm thấy
+        );
+
+        if (accountEnterprise.isStatus()) {
             accountEnterprise.setStatus(false);
-        } else {
-            throw new AppException(ErrorType.statusInvalid);
         }
+        else {
+            accountEnterprise.setStatus(true);
+        }
+
         accountEnterpriseRepository.save(accountEnterprise);
+
+        return accountEnterprise.isStatus();
     }
 
     private void validateForm(AccountEnterpriseDto accountEnterpriseDto) {
         if (accountEnterpriseDto.getUsername() == null || accountEnterpriseDto.getUsername().isEmpty()) {
             throw new RuntimeException("Username không được để trống.");
-        } else if (accountEnterpriseDto.getPassword() == null || accountEnterpriseDto.getPassword().isEmpty()) {
-            throw new RuntimeException("Mật khẩu không được để trống.");
         } else if (accountEnterpriseDto.getEnterpriseName() == null || accountEnterpriseDto.getEnterpriseName().isEmpty()) {
             throw new RuntimeException("Tên doanh nghiệp không được để trống.");
         } else if (accountEnterpriseDto.getEmail() == null || accountEnterpriseDto.getEmail().isEmpty()) {

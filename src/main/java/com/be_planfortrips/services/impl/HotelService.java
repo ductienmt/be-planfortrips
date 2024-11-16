@@ -12,6 +12,7 @@ import com.be_planfortrips.repositories.HotelRepository;
 import com.be_planfortrips.repositories.ImageRepository;
 import com.be_planfortrips.dto.response.HotelResponse;
 import com.be_planfortrips.services.interfaces.IHotelService;
+import com.be_planfortrips.utils.Utils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -53,6 +54,7 @@ public class HotelService implements IHotelService {
         AccountEnterprise accountEnterprise = enterpriseRepository.findById(tokenMapperImpl.getIdEnterpriseByToken())
                 .orElseThrow(() -> new Exception("Not found"));
         Hotel hotel = hotelMapper.toEntity(hotelDto);
+        if(!Utils.isValidPhoneNumber(hotel.getPhoneNumber()))throw new AppException(ErrorType.phoneNotValid);
         hotel.setAccountEnterprise(accountEnterprise);
         hotelRepository.save(hotel);
         return hotelMapper.toResponse(hotel);
@@ -66,6 +68,7 @@ public class HotelService implements IHotelService {
         AccountEnterprise accountEnterprise = enterpriseRepository.findById(tokenMapperImpl.getIdEnterpriseByToken())
                 .orElseThrow(() -> new Exception("Not found"));
         hotelMapper.updateEntityFromDto(hotelDto, existHotel);
+        if(!Utils.isValidPhoneNumber(existHotel.getPhoneNumber()))throw new AppException(ErrorType.notFound);
         existHotel.setId(id);
         existHotel.setAccountEnterprise(accountEnterprise);
         hotelRepository.saveAndFlush(existHotel);
@@ -73,11 +76,18 @@ public class HotelService implements IHotelService {
     }
 
     @Override
-    public Page<HotelResponse> searchHotels(PageRequest request, String keyword, Integer rating) {
+// <<<<<<< ductien
+//     public Page<HotelResponse> searchHotels(PageRequest request, String keyword, Integer rating) {
+//         if (rating != null) {
+//             if (rating < 0 || rating > 5) throw new AppException(ErrorType.ratingInvalid);
+//         }
+//         return hotelRepository.searchHotels(request, keyword, rating).map(hotel -> hotelMapper.toResponse(hotel));
+// =======
+    public Page<HotelResponse> searchHotels(PageRequest request,String keyword,Integer rating) {
         if (rating != null) {
             if (rating < 0 || rating > 5) throw new AppException(ErrorType.ratingInvalid);
         }
-        return hotelRepository.searchHotels(request, keyword, rating).map(hotel -> hotelMapper.toResponse(hotel));
+         return hotelRepository.searchHotels(request,keyword,rating).map(hotel -> hotelMapper.toResponse(hotel));
     }
 
 

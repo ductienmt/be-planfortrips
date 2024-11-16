@@ -62,12 +62,15 @@ public class RoomServiceImpl implements IRoomService {
     @Override
     public void deleteRoomById(Long roomId) {
         Room roomCreate = roomRepository.findById(roomId).orElseThrow();
-        roomRepository.deleteById(roomId);
+        roomCreate.setAvailable(false);
+        roomRepository.save(roomCreate);
     }
 
     @Override
     public RoomResponse updateRoomById(Long roomId, RoomDto roomDto) {
-        roomRepository.findById(roomId).orElseThrow();
+        roomRepository.findById(roomId).orElseThrow(
+                () -> new AppException(ErrorType.notFound)
+        );
         Room room = roomMapper.toEntity(roomDto);
         room.setId(roomId);
         return roomMapper.toResponse(roomRepository.save(room));

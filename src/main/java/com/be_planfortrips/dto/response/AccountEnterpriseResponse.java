@@ -19,5 +19,6 @@ public class AccountEnterpriseResponse {
     String taxCode;
     Long typeEnterpriseDetailId;
     String cityName;
+    boolean status;
 
 }

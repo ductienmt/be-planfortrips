@@ -7,6 +7,17 @@ public class API_Provider {
             "/api/v1/banners/allUser",
             "/api/v1/schedules/getStationByScheduleId",
             "/api/v1/schedules/getSchedules",
+            "/api/v1/coupons/**",
+            "/api/v1/tickets/**",
+            "/api/v1/booking-hotels/**",
+            "/api/v1/tickets/getByUserId",
+            "/api/v1/users/getDetail",
+            "/api/v1/feedbacks/all",
+            "/api/v1/cities/all",
+            "/api/v1/areas/all",
+            "/api/v1/users/findByUsername",
+            "/api/v1/check-in/all",
+            "/api/v1/check-in/upload-image",
             "/api/v1/plans/save",
             "/api/v1/vehicles/getById/**",
             "/api/v1/hotels/getById/**",
@@ -23,9 +34,14 @@ public class API_Provider {
             "/api/v1/routes/getCityByRouteId",
             "/api/v1/hotel-amenities/get-by-hotel-id",
             "/api/v1/room-amenities/get-by-room-id",
+
             "/api/v1/coupons/all",
 
-
+            "/api/v1/tags/all",
+            "/api/v1/tours/all",
+            "/api/v1/tours/**",
+            "/api/v1/hotels/**",
+            "/api/v1/areas/**"
     };
 
     public static final String[] ADMIN_API = {
@@ -58,6 +74,14 @@ public class API_Provider {
             "/api/v1/users/all",
             "/api/v1/users/delete",
             "/api/v1/users/create",
+            "/api/v1/admins/all",
+            "/api/v1/routes/create",
+            "/api/v1/tags/create",
+            "/api/v1/hotels/create",
+            "/api/v1/tours/create",
+            "/api/v1/tours/update/**",
+            "/api/v1/tours/delete/**",
+            "/api/v1/tours/findById/**",
     };
 
     public static final String[] USER_API = {
@@ -98,7 +122,8 @@ public class API_Provider {
             "/api/v1/schedules/getById/**",
     };
 
-    public static final String[] ADMIN_USER_ENTERPRISE_API = {
+        public static final String[] ADMIN_USER_ENTERPRISE_API = {
+            "/api/v1/areas/all",
             "/api/v1/plan/check-in/detail",
             "/api/v1/plan/check-in/search",
             "/api/v1/car-companies/getById/**",

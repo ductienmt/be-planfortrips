@@ -14,7 +14,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     @Query("SELECT r FROM Room r " +
             "WHERE r.isAvailable = true " +
-            "AND r.hotel.accountEnterprise.city.nameCity LIKE %:destination% " +
+            "AND (:destination IS NULL OR r.hotel.accountEnterprise.city.nameCity LIKE %:destination%) " +
             "AND r.id NOT IN (" +
             "  SELECT b.room.id FROM BookingHotelDetail b " +
             "  WHERE b.checkInTime < :checkOutDate AND b.checkOutTime > :checkInDate" +

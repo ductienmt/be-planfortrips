@@ -1,5 +1,7 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,6 +24,7 @@ public class City {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "area_id", columnDefinition = "varchar(20)")
+    @JsonBackReference
     Area area;
 
     @Column(length = 50)
@@ -31,5 +34,6 @@ public class City {
     String description;
 
     @OneToMany(mappedBy = "city", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JsonManagedReference
     List<Checkin> checkins;
 }

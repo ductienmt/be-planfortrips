@@ -15,23 +15,23 @@ import lombok.experimental.FieldDefaults;
 public class ScheduleSeat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+     Integer id;
 
     @ManyToOne
     @JoinColumn(name = "schedule_id")
     @JsonBackReference
-    private Schedule schedule;
+     Schedule schedule;
 
     @ManyToOne
     @JoinColumn(name = "seat_id")
     @JsonBackReference
-    private Seat seat;
+     Seat seat;
 
     @Column(name = "seat_number")
-    private String seatNumber;
+     String seatNumber;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private StatusSeat status;
+     StatusSeat status;
 }
 

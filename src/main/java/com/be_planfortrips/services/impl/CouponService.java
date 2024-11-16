@@ -83,17 +83,24 @@ public class CouponService implements ICouponService {
         Coupon existingCoupon = couponRepository.findById(id)
                 .orElseThrow(() -> new Exception("Coupon is not found"));
         existingCoupon = couponMapper.toEntity(couponDto);
-        if (existingCoupon.getStartDate().isBefore(LocalDate.now())) {
-            throw new Exception("Coupon start date must be at least today!");
-        }
-        existingCoupon.setId(id);
         List<String> allowedDiscountTypes = Arrays.asList("PERCENT", "FIXED_AMOUNT");
         if (!allowedDiscountTypes.contains(couponDto.getDiscountType())) {
             throw new Exception("The loai giam gia khong hop le");
         }
+
         if (existingCoupon.getDiscountType().equals(DiscountType.PERCENT)) {
             int percent = Integer.parseInt(String.valueOf(existingCoupon.getDiscountValue()));
             if (percent < 0 || percent > 100) {
+// =======
+//         existingCoupon = couponMapper.toEntity(couponDto);
+//         if (existingCoupon.getStartDate().isBefore(LocalDate.now())) {
+//             throw new Exception("Shopping date must be at least today!");
+//         }
+//         if(existingCoupon.getDiscountType().equals(DiscountType.PERCENT)){
+//             BigDecimal discountValue = existingCoupon.getDiscountValue();
+//             int percent = discountValue.intValue();
+//             if(percent<0 || percent>100){
+// >>>>>>> master
                 throw new AppException(ErrorType.percentIsUnprocessed);
             }
         }
@@ -103,13 +110,20 @@ public class CouponService implements ICouponService {
                 existingCoupon.setAccountEnterprise(accountEnterprise);
             }
         }
+        existingCoupon.setId(id);
         couponRepository.saveAndFlush(existingCoupon);
         return couponMapper.toResponse(existingCoupon);
     }
 
     @Override
     public Page<CouponResponse> getCoupons(PageRequest request, Long id) {
-        return couponRepository.getCouponByEnterpriseId(request, id).map(couponMapper::toResponse);
+// <<<<<<< ductien
+//         return couponRepository.getCouponByEnterpriseId(request, id).map(couponMapper::toResponse);
+// =======
+        if(id == null){
+           return couponRepository.getCouponForAdmin(request).map(couponMapper::toResponse);
+        }
+        return couponRepository.getCouponByEnterpriseId(request,id).map(couponMapper::toResponse);
     }
 
     @Override
