@@ -14,6 +14,7 @@ import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.RoleRepository;
 import com.be_planfortrips.services.interfaces.IAccountEnterpriseService;
+import com.be_planfortrips.services.interfaces.IEmailService;
 import com.be_planfortrips.utils.Utils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -35,6 +37,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     // Inject repository and mapper
     AccountEnterpriseRepository accountEnterpriseRepository;
     AccountEnterpriseMapper accountEnterpriseMapper;
+    IEmailService iEmailService;
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
     TypeEnterpriseDetailServiceImpl typeEnterpriseDetailService;
@@ -69,12 +72,29 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         validateForm(accountEnterpriseDto);
         // Chuyển đổi DTO thành entity và lưu vào repository
         AccountEnterprise accountEnterprise = accountEnterpriseMapper.toEntity(accountEnterpriseDto);
-
-        accountEnterprise.setPassword(passwordEncoder.encode(accountEnterpriseDto.getPassword()));
+        String passwordDefault = accountEnterpriseDto.getUsername()+"@"+generateRandomString(5);;
+        accountEnterprise.setPassword(passwordEncoder.encode(passwordDefault));
+        iEmailService.sendEmail(accountEnterpriseDto.getEmail(),
+                passwordDefault,"Vui lòng đăng nhập và thay đổi mật khẩu mặc định"
+                );
         accountEnterprise.setStatus(false);
         accountEnterprise.setRole(roleRepository.findById(3L).orElseThrow(() -> new RuntimeException("Không tìm thấy role")));
         accountEnterprise = accountEnterpriseRepository.save(accountEnterprise);
-        return accountEnterpriseMapper.toResponse(accountEnterprise); // Trả về response DTO
+        return accountEnterpriseMapper.toResponse(accountEnterprise);
+    }
+
+    public static String generateRandomString(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuilder result = new StringBuilder();
+
+        // Lặp để tạo chuỗi
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(characters.length());
+            result.append(characters.charAt(index));
+        }
+
+        return result.toString();
     }
 
     @Override
@@ -109,9 +129,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
             }
         }
 
-        if (accountEnterpriseDto.getPassword() != null && !accountEnterpriseDto.getPassword().isEmpty()) {
-            accountEnterprise.setPassword(this.passwordEncoder.encode(accountEnterpriseDto.getPassword()));
-        }
+
 
         this.accountEnterpriseRepository.save(accountEnterprise);
         return this.accountEnterpriseMapper.toResponse(accountEnterprise);
@@ -153,8 +171,6 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     private void validateForm(AccountEnterpriseDto accountEnterpriseDto) {
         if (accountEnterpriseDto.getUsername() == null || accountEnterpriseDto.getUsername().isEmpty()) {
             throw new RuntimeException("Username không được để trống.");
-        } else if (accountEnterpriseDto.getPassword() == null || accountEnterpriseDto.getPassword().isEmpty()) {
-            throw new RuntimeException("Mật khẩu không được để trống.");
         } else if (accountEnterpriseDto.getEnterpriseName() == null || accountEnterpriseDto.getEnterpriseName().isEmpty()) {
             throw new RuntimeException("Tên doanh nghiệp không được để trống.");
         } else if (accountEnterpriseDto.getEmail() == null || accountEnterpriseDto.getEmail().isEmpty()) {
