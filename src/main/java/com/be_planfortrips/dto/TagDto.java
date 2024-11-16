@@ -1,2 +1,17 @@
-package com.be_planfortrips.dto;public class TagDto {
+package com.be_planfortrips.dto;
+
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class TagDto {
+
+    String tagName;
+
+    String description;
 }

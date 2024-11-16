@@ -18,4 +18,10 @@ public interface HotelRepository extends JpaRepository<Hotel,Long> {
 
     @Query("select h from Hotel h where h.accountEnterprise.accountEnterpriseId = :enterpriseId")
     List<Hotel> findByEnterpriseId(@Param("enterpriseId") Long enterpriseId);
+
+    @Query(value = "select * from hotels\n" +
+            "join account_enterprises on hotels.enterprise_id = account_enterprises.id\n" +
+            "join cities on cities.id = account_enterprises.id\n" +
+            "where id = :cityId", nativeQuery = true)
+    List<Hotel> getHotelByCityId(@Param("cityId") String cityId);
 }

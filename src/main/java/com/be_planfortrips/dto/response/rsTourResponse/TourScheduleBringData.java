@@ -1,4 +1,13 @@
 package com.be_planfortrips.dto.response.rsTourResponse;
 
-public class ScheduleResponse {
+
+public interface TourScheduleBringData {
+    Long getCarCompanyId();
+    String getVehicleCode();
+    String getRouteId();
+    Long getScheduleId();
+    Long getStationId();
+
+    Integer countSeat();
 }
+

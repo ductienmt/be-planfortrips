@@ -47,7 +47,15 @@ public enum ErrorType {
     VehicleCodeNotFound(709, "VehicleCode không tồn tại",HttpStatus.NOT_FOUND),
     RouteIdNotFound(710, "RouteId không tồn tại",HttpStatus.NOT_FOUND),
     HotelIdNotFound(711,"HotelId không tồn tại",HttpStatus.NOT_FOUND),
-    CityIdNotFound(712, "CityId không tồn tại", HttpStatus.NOT_FOUND)
+    CityIdNotFound(712, "CityId không tồn tại", HttpStatus.NOT_FOUND),
+    tagIdNotFound(713, "TagId không tồn tai", HttpStatus.NOT_FOUND),
+    tagNameExisted(714, "TagName không tồn tai", HttpStatus.BAD_REQUEST),
+    DepartureNotFound(715, "DepartureNotFound không tồn tai",HttpStatus.NOT_FOUND),
+    DestinationNotFound(716, "DestinationId không tồn tại",HttpStatus.NOT_FOUND),
+    CarCompanyNotFound(717, "CarCompany không tồn tại",HttpStatus.NOT_FOUND),
+    CheckInIdNotFound(718, "CheckInId không tồn tại",HttpStatus.NOT_FOUND),
+    TagIdNotFound(719, "TagId không tồn tại", HttpStatus.NOT_FOUND),
+    TourIdNotFound(720, "TourId không tồn tại", HttpStatus.NOT_FOUND)
     ;
 
     private static String getString() {
