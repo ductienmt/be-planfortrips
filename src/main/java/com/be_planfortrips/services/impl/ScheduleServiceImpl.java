@@ -109,8 +109,24 @@ public class ScheduleServiceImpl implements IScheduleService {
 
     @Override
     public Map<String, Object> getAllScheduleByTime(LocalDateTime departureTime, LocalDateTime returnTime, String originalLocation, String destination) {
+        System.out.println("Departure Time: " + departureTime);
         Map<String, Object> departureResponse = fetchSchedules(departureTime, "departure", originalLocation, destination);
         Map<String, Object> returnResponse = fetchSchedules(returnTime, "return", originalLocation, destination);
+        System.out.println("Departure Response: " + departureResponse);
+        System.out.println("Return Response: " + returnResponse);
+        if(departureResponse.isEmpty()) {
+            departureTime = departureTime.plusDays(1).withHour(0).withMinute(0).withSecond(0);
+            System.out.println("Departure Time: " + departureTime);
+            departureResponse = fetchSchedules(departureTime, "departure", originalLocation, destination);
+            System.out.println("Departure Response 2: " + departureResponse);
+        }
+
+        if(returnResponse.isEmpty()) {
+            returnTime = returnTime.plusDays(1).withHour(0).withMinute(0).withSecond(0);
+            System.out.println("Return Time: " + returnTime);
+            returnResponse = fetchSchedules(returnTime, "return", originalLocation, destination);
+            System.out.println("Return Response 2: " + returnResponse);
+        }
 
         Map<String, Object> response = new HashMap<>();
         response.put("departure", departureResponse);

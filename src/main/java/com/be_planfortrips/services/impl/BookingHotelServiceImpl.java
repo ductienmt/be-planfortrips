@@ -7,6 +7,7 @@ import com.be_planfortrips.entity.User;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.BookingHotelMapper;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.BookingHotelRepository;
 import com.be_planfortrips.repositories.UserRepository;
 import com.be_planfortrips.services.interfaces.IBookingHotelService;
@@ -28,6 +29,7 @@ public class BookingHotelServiceImpl implements IBookingHotelService {
     BookingHotelRepository bookingHotelRepository;
     UserRepository userRepository;
     BookingHotelMapper bookingHotelMapper;
+    private final TokenMapperImpl tokenMapperImpl;
 
 
     @Override
@@ -56,6 +58,9 @@ public class BookingHotelServiceImpl implements IBookingHotelService {
     @Override
     public BookingHotelResponse createBookingHotel(BookingHotelDto bookingHotelDto) {
         BookingHotel bookingHotel = bookingHotelMapper.toEntity(bookingHotelDto);
+        bookingHotel.setUser(userRepository.findById(tokenMapperImpl.getIdUserByToken()).orElseThrow(
+                () -> new AppException(ErrorType.notFound)
+        ));
         return bookingHotelMapper.toResponse(bookingHotelRepository.save(bookingHotel));
     }
 

@@ -33,12 +33,8 @@ public class BookingHotelMapper implements MapperInterface<BookingHotelResponse,
     @Override
     public BookingHotel toEntity(BookingHotelDto bookingHotelDto) {
         BookingHotel hotel = modelMapper.map(bookingHotelDto, BookingHotel.class);
-        Long userId = bookingHotelDto.getUserId();
         Long paymentId = bookingHotelDto.getPaymentId();
 
-        if (!userRepository.existsById(userId)) {
-            throw new AppException(ErrorType.userIdNotFound, userId);
-        }
         if (!paymentRepository.existsById(paymentId)) {
             throw new AppException(ErrorType.paymentIdNotFound, paymentId);
         }
@@ -58,7 +54,6 @@ public class BookingHotelMapper implements MapperInterface<BookingHotelResponse,
                 bookingHotelDetails.add(detail);
         });
 
-        hotel.setUser(User.builder().id(userId).build());
         hotel.setPayment(Payment.builder().id(paymentId).build());
         hotel.setBookingHotelDetails(new HashSet<>(bookingHotelDetails));
         return hotel;
