@@ -36,6 +36,7 @@ public class API_Provider {
             "/api/v1/room-amenities/get-by-room-id",
             "/api/v1/tags/all",
             "/api/v1/tours/all",
+            "/api/v1/tours/**"
     };
 
     public static final String[] ADMIN_API = {

@@ -2,6 +2,8 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.TourDTO;
 import com.be_planfortrips.dto.response.TourResponse;
+import com.be_planfortrips.dto.response.rsTourResponse.TourScheduleBringData;
+import com.be_planfortrips.dto.response.rsTourResponse.TourScheduleResponse;
 import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
@@ -16,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,5 +155,31 @@ public class TourService implements ITourService {
         tourResponse.setScheduleSeatListAvailable(scheduleSeats);
         tourResponse.setAdminUsername(adminUsername);
         return tourResponse;
+    }
+
+    @Override
+    public List<TourScheduleResponse> getScheduleAvailable(LocalDateTime day, String cityId) {
+        // Xác định min (bắt đầu ngày) và max (kết thúc ngày)
+        System.out.println(day);
+        LocalDateTime min = day.toLocalDate().atStartOfDay();  // Bắt đầu ngày (00:00:00)
+        LocalDateTime max = day.toLocalDate().atTime(23, 59, 59);  // Kết thúc ngày (23:59:59)
+        System.out.println(min);
+        System.out.println(max);
+        List<TourScheduleBringData> scheduleBringData = tourRepository.getSchedulesByDate(min, max, cityId);
+
+        List<TourScheduleResponse> responses = new ArrayList<>();
+        scheduleBringData.stream().forEach((data) -> {
+            TourScheduleResponse scheduleResponse = new TourScheduleResponse();
+            Integer countSeat = scheduleRepository.getNumberSeatsEmpty(data.getScheduleId());
+            scheduleResponse.setCountSeat(countSeat);
+            scheduleResponse.setScheduleId(data.getScheduleId());
+            scheduleResponse.setRouteId(data.getRouteId());
+            scheduleResponse.setStationId(data.getStationId());
+            scheduleResponse.setVehicleCode(data.getVehicleCode());
+
+            responses.add(scheduleResponse);
+        });
+
+        return responses;
     }
 }
