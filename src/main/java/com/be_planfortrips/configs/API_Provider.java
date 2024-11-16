@@ -23,6 +23,7 @@ public class API_Provider {
             "/api/v1/routes/getCityByRouteId",
             "/api/v1/hotel-amenities/get-by-hotel-id",
             "/api/v1/room-amenities/get-by-room-id",
+            "/api/v1/coupons/all",
 
 
     };
@@ -45,7 +46,6 @@ public class API_Provider {
             "/api/v1/check-in/update",
             "/api/v1/check-in/delete",
             "/api/v1/check-in/upload-image",
-            "/api/v1/coupons/all",
             "/api/v1/feedbacks/all",
             "/api/v1/type-enterprises/all",
             "/api/v1/type-enterprises/create",

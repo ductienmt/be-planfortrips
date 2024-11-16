@@ -28,11 +28,12 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CouponService implements ICouponService {
     CouponRepository couponRepository;
     CouponMapper couponMapper;
     AccountEnterpriseRepository enterpriseRepository;
+
     @Scheduled(cron = "0 0 0 * * ?")
     public void deactivateExpiredCoupons() {
         List<Coupon> coupons = couponRepository.findAll();
@@ -43,30 +44,34 @@ public class CouponService implements ICouponService {
             }
         });
     }
+
     @Override
     @Transactional
     public CouponResponse createCoupon(CouponDto couponDto) throws Exception {
-        if(couponRepository.existsByCode(couponDto.getCode())){
+        if (couponRepository.existsByCode(couponDto.getCode())) {
             throw new Exception("Coupon is exist");
         }
         List<String> allowedDiscountTypes = Arrays.asList("PERCENT", "FIXED_AMOUNT");
-        if(!allowedDiscountTypes.contains(couponDto.getDiscountType())){
+        if (!allowedDiscountTypes.contains(couponDto.getDiscountType())) {
             throw new Exception("The loai giam gia khong hop le");
         }
         Coupon coupon = couponMapper.toEntity(couponDto);
         if (coupon.getStartDate().isBefore(LocalDate.now())) {
             throw new Exception("Shopping date must be at least today!");
         }
-        if(coupon.getDiscountType().equals(DiscountType.PERCENT)){
+        if (coupon.getDiscountType().equals(DiscountType.PERCENT)) {
             BigDecimal discountValue = coupon.getDiscountValue();
             int percent = discountValue.intValue();
-            if(percent<0 || percent>100){
+            if (percent < 0 || percent > 100) {
                 throw new AppException(ErrorType.percentIsUnprocessed);
             }
         }
-        if(couponDto.getEnterpriseId() != null){
-            Optional<AccountEnterprise> accountEnterprise = enterpriseRepository.findById(couponDto.getEnterpriseId());
-            accountEnterprise.ifPresent(coupon::setAccountEnterprise);
+        coupon.setActive(couponDto.getIsActive());
+        if (couponDto.getEnterpriseUsername() != null) {
+            AccountEnterprise accountEnterprise = enterpriseRepository.findByUsername(couponDto.getEnterpriseUsername());
+            if (accountEnterprise != null) {
+                coupon.setAccountEnterprise(accountEnterprise);
+            }
         }
         couponRepository.saveAndFlush(coupon);
         return couponMapper.toResponse(coupon);
@@ -76,25 +81,27 @@ public class CouponService implements ICouponService {
     @Transactional
     public CouponResponse updateCoupon(Integer id, CouponDto couponDto) throws Exception {
         Coupon existingCoupon = couponRepository.findById(id)
-                .orElseThrow(()->new Exception("Coupon is not found"));
+                .orElseThrow(() -> new Exception("Coupon is not found"));
         existingCoupon = couponMapper.toEntity(couponDto);
         if (existingCoupon.getStartDate().isBefore(LocalDate.now())) {
             throw new Exception("Coupon start date must be at least today!");
         }
         existingCoupon.setId(id);
         List<String> allowedDiscountTypes = Arrays.asList("PERCENT", "FIXED_AMOUNT");
-        if(!allowedDiscountTypes.contains(couponDto.getDiscountType())){
+        if (!allowedDiscountTypes.contains(couponDto.getDiscountType())) {
             throw new Exception("The loai giam gia khong hop le");
         }
-        if(existingCoupon.getDiscountType().equals(DiscountType.PERCENT)){
+        if (existingCoupon.getDiscountType().equals(DiscountType.PERCENT)) {
             int percent = Integer.parseInt(String.valueOf(existingCoupon.getDiscountValue()));
-            if(percent<0 || percent>100){
+            if (percent < 0 || percent > 100) {
                 throw new AppException(ErrorType.percentIsUnprocessed);
             }
         }
-        if(couponDto.getEnterpriseId() != null){
-            Optional<AccountEnterprise> accountEnterprise = enterpriseRepository.findById(couponDto.getEnterpriseId());
-            accountEnterprise.ifPresent(existingCoupon::setAccountEnterprise);
+        if (couponDto.getEnterpriseUsername() != null) {
+            AccountEnterprise accountEnterprise = enterpriseRepository.findByUsername(couponDto.getEnterpriseUsername());
+            if (accountEnterprise != null) {
+                existingCoupon.setAccountEnterprise(accountEnterprise);
+            }
         }
         couponRepository.saveAndFlush(existingCoupon);
         return couponMapper.toResponse(existingCoupon);
@@ -102,13 +109,13 @@ public class CouponService implements ICouponService {
 
     @Override
     public Page<CouponResponse> getCoupons(PageRequest request, Long id) {
-        return couponRepository.getCouponByEnterpriseId(request,id).map(couponMapper::toResponse);
+        return couponRepository.getCouponByEnterpriseId(request, id).map(couponMapper::toResponse);
     }
 
     @Override
     public CouponResponse getByCouponId(Integer id) throws Exception {
         Optional<Coupon> coupon = couponRepository.findById(id);
-        if(!coupon.isPresent()){
+        if (!coupon.isPresent()) {
             throw new Exception("Coupon is not exist");
         }
         return couponMapper.toResponse(coupon.get());
@@ -120,5 +127,6 @@ public class CouponService implements ICouponService {
         Optional<Coupon> coupon = couponRepository.findById(id);
         coupon.ifPresent(couponRepository::delete);
     }
+
 
 }
