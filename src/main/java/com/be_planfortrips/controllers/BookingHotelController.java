@@ -42,7 +42,7 @@ public class BookingHotelController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<BookingHotelResponse> createBookingHotel(
+    public ResponseEntity<?> createBookingHotel(
             @RequestBody BookingHotelDto bookingHotelDto) {
         BookingHotelResponse response = bookingHotelService.createBookingHotel(bookingHotelDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);

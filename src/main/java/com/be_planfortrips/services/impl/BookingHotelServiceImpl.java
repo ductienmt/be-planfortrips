@@ -3,6 +3,7 @@ package com.be_planfortrips.services.impl;
 import com.be_planfortrips.dto.BookingHotelDto;
 import com.be_planfortrips.dto.response.BookingHotelResponse;
 import com.be_planfortrips.entity.BookingHotel;
+import com.be_planfortrips.entity.Status;
 import com.be_planfortrips.entity.User;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
@@ -61,6 +62,7 @@ public class BookingHotelServiceImpl implements IBookingHotelService {
         bookingHotel.setUser(userRepository.findById(tokenMapperImpl.getIdUserByToken()).orElseThrow(
                 () -> new AppException(ErrorType.notFound)
         ));
+        bookingHotel.setStatus(Status.Pending);
         return bookingHotelMapper.toResponse(bookingHotelRepository.save(bookingHotel));
     }
 

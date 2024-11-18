@@ -10,13 +10,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${api.prefix}/vietQr")
+@RequestMapping("${api.prefix}/vietqr")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class VietQrController {
@@ -26,7 +23,7 @@ public class VietQrController {
 
     @PostMapping("/{bookingHotelId}")
     public ResponseEntity<?> paymentVietQr(
-          @RequestParam("bookingHotelId") Long bookingHotelId
+          @PathVariable("bookingHotelId") Long bookingHotelId
     ) {
         BookingHotel bookingHotel =
                 bookingHotelRepository.findById(bookingHotelId).orElseThrow(

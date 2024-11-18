@@ -41,7 +41,8 @@ public class API_Provider {
             "/api/v1/tours/all",
             "/api/v1/tours/**",
             "/api/v1/hotels/**",
-            "/api/v1/areas/**"
+            "/api/v1/areas/**",
+            "/api/v1/vietqr/**"
     };
 
     public static final String[] ADMIN_API = {
