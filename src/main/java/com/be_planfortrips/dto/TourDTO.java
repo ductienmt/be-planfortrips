@@ -13,8 +13,10 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TourDTO {
     String title;
-    String description;
-    String destination;
+    @JsonProperty("city_depart_id")
+    String cityDepartId;
+    @JsonProperty("city_arrive_id")
+    String cityArriveId;
     @JsonProperty("number_people")
     Integer numberPeople;
     @JsonProperty("total_price")
@@ -29,8 +31,8 @@ public class TourDTO {
     Long hotelId;
     @JsonProperty("car_company_id")
     Integer carCompanyId;
-    @JsonProperty("schedule_id")
-    Integer scheduleId;
+    @JsonProperty("checkin_id")
+    Long checkinId;
     @JsonProperty("admin_username")
     String adminUsername;
 }

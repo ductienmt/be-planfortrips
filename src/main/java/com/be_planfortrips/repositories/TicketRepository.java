@@ -18,5 +18,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     List<Ticket> findByStatusCancelled();
     List<Ticket> findByUser_Id(Long id);
     List<Ticket> findBySchedule_Id(Integer id);
+    List<Ticket> findByUser_Id(Integer id);
 }
 

@@ -19,8 +19,12 @@ public class Tour {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String title;
-    String description;
-    String destination;
+    @ManyToOne
+    @JoinColumn(name = "city_depart_id")
+    City cityDepart;
+    @ManyToOne
+    @JoinColumn(name = "city_arrive_id")
+    City cityArrive;
     Integer numberPeople;
     Double rating;
     Double totalPrice;
@@ -31,18 +35,16 @@ public class Tour {
     @JoinColumn(name = "hotel_id")
     Hotel hotel;
 
-    @OneToOne
-    @JoinColumn(name = "schedule_id")
-    Schedule schedule;
     @ManyToOne
     @JoinColumn(name = "car_company_id")
     CarCompany carCompany;
     String note;
-
     @ManyToOne
     @JoinColumn(name = "admin_id")
     Admin admin;
-
+    @ManyToOne
+    @JoinColumn(name = "checkin_id")
+    Checkin checkin;
     @ManyToMany
     @JoinTable(name = "tour_tag",
             joinColumns = @JoinColumn(name = "tour_id"),

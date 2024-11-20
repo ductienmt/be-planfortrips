@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Check;
 
 import java.util.List;
 
@@ -17,8 +18,10 @@ public class TourResponse {
     @JsonProperty("tour_id")
     Integer id;
     String title;
-    String description;
-    String destination;
+    @JsonProperty("city_depart_id")
+    String cityDepartId;
+    @JsonProperty("city_arrive_id")
+    String cityArriveId;
     @JsonProperty("number_people")
     Integer numberPeople;
     Double rating;
@@ -26,20 +29,16 @@ public class TourResponse {
     Double totalPrice;
     Integer day;
     Integer night;
+    @JsonProperty("is_active")
     boolean isActive;
     List<TagResponse> tags;
     @JsonProperty("hotel")
     Hotel hotel;
-    @JsonProperty("room_list_available")
-    List<Room> roomListAvailable;
     @JsonProperty("car_company")
     CarCompany carCompany;
-    @JsonProperty("schedule")
-    Schedule schedule;
-    @JsonProperty("schedule_seat_list_available")
-    List<ScheduleSeat> scheduleSeatListAvailable;
     @JsonProperty
     String note;
+    Checkin checkin;
     @JsonProperty("admin_username")
     String adminUsername;
     List<Image> images;
