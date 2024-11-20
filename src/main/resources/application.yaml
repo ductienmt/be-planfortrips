@@ -1,5 +1,6 @@
 spring:
   datasource:
+<<<<<<< Updated upstream
     # dữ liệu demo thì dùng cái này nha, t insert kha khá dữ liệu - không dùng để test
             url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
             username: postgres
@@ -11,6 +12,21 @@ spring:
     #    url: jdbc:postgresql://localhost:5432/Planfortrips
 #    username: admin
 #    password: admin
+=======
+    # dữ liệu demo thì dùng cái này nha, t insert kha khá dữ liệu
+#         url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
+#         username: postgres
+#         password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
+#         driver-class-name: org.postgresql.Drivermc
+
+#       url: jdbc:postgresql://localhost:5432/a
+#         username: postgres
+#       password: 123
+       url: jdbc:postgresql://localhost:5432/Planfortrips
+       username: admin
+       password: admin
+       driver-class-name: org.postgresql.Driver
+>>>>>>> Stashed changes
   mvc:
     throw-exception-if-no-handler-found: true
   web:

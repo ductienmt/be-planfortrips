@@ -40,7 +40,6 @@ public class BookingHotelDetailMapper implements MapperInterface<BookingHotelDet
     public BookingHotelDetailResponse toResponse(BookingHotelDetail bookingHotelDetail) {
         BookingHotelDetailResponse bookingHotelDetailResponse = modelMapper.map(bookingHotelDetail, BookingHotelDetailResponse.class);
         bookingHotelDetailResponse.setRoomId(bookingHotelDetail.getRoom().getId());
-        bookingHotelDetailResponse.setUserId(bookingHotelDetail.getBookingHotel().getUser().getId());
         return bookingHotelDetailResponse;
     }
 

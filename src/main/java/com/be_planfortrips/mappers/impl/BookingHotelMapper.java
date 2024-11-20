@@ -67,6 +67,7 @@ public class BookingHotelMapper implements MapperInterface<BookingHotelResponse,
     @Override
     public BookingHotelResponse toResponse(BookingHotel bookingHotel) {
         BookingHotelResponse bookingHotelResponse = modelMapper.map(bookingHotel, BookingHotelResponse.class);
+        bookingHotelResponse.setUserId(bookingHotelResponse.getUserId());
         return bookingHotelResponse;
     }
 

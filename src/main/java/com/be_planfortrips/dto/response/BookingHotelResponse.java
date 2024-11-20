@@ -23,6 +23,7 @@ public class BookingHotelResponse {
 
     Long bookingHotelId;
     List<BookingHotelDetail> bookingHotelDetails;
+    Long userId;
 
 
 
