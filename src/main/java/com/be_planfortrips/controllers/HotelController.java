@@ -1,8 +1,11 @@
 package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.HotelDto;
+import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.dto.response.HotelListResponse;
 import com.be_planfortrips.dto.response.HotelResponse;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.services.interfaces.IHotelService;
 import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
@@ -12,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -49,8 +53,8 @@ public class HotelController {
     @GetMapping("all")
     public ResponseEntity<HotelListResponse> getHotels(@RequestParam("page") int page,
                                                        @RequestParam("limit") int limit,
-                                                       @RequestParam(defaultValue = "") String keyword,
-                                                       @RequestParam(defaultValue = "") Integer rating
+                                                       @RequestParam(value = "keyword", required = false) String keyword,
+                                                       @RequestParam(value = "rating", required = false) Integer rating
                                                        ){
         PageRequest request = PageRequest.of(page, limit,
                 Sort.by("rating").ascending());
@@ -120,27 +124,27 @@ public class HotelController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PostMapping("/generate")
-    public ResponseEntity<String> stringResponseEntity(){
-        Faker faker = new Faker();
-        for(int i =0;i<100;i++){
-            HotelDto hotelDto =HotelDto.builder()
-                    .name(faker.name().name())
-                    .address(faker.address().fullAddress())
-                    .description(faker.lorem().sentence())
-                    .rating((int) faker.number().numberBetween(1,5))
-                    .phoneNumber(faker.phoneNumber().phoneNumber())
-                    .enterpriseId((long) faker.number().numberBetween(1,2))
-                    .build();
-
-            try {
-                iHotelService.createHotel(hotelDto);
-            } catch (Exception e) {
-                ResponseEntity.badRequest().body(e.getMessage());
-            }
-        }
-        return ResponseEntity.ok("Fake hotel created successfully");
-    }
+//    @PostMapping("/generate")
+//    public ResponseEntity<String> stringResponseEntity(){
+//        Faker faker = new Faker();
+//        for(int i =0;i<100;i++){
+//            HotelDto hotelDto =HotelDto.builder()
+//                    .name(faker.name().name())
+//                    .address(faker.address().fullAddress())
+//                    .description(faker.lorem().sentence())
+//                    .rating((int) faker.number().numberBetween(1,5))
+//                    .phoneNumber(faker.phoneNumber().phoneNumber())
+//                    .enterpriseId((long) faker.number().numberBetween(1,2))
+//                    .build();
+//
+//            try {
+//                iHotelService.createHotel(hotelDto);
+//            } catch (Exception e) {
+//                ResponseEntity.badRequest().body(e.getMessage());
+//            }
+//        }
+//        return ResponseEntity.ok("Fake hotel created successfully");
+//    }
 
     @GetMapping("detail")
     public ResponseEntity<?> getHotelDetail(){
@@ -151,4 +155,6 @@ public class HotelController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+
 }

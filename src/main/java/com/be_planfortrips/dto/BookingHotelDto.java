@@ -12,6 +12,6 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingHotelDto {
     Set<BookingHotelDetailDto> bookingHotelDetailDto;
-    Long userId;
+//    Long userId;
     Long paymentId;
 }

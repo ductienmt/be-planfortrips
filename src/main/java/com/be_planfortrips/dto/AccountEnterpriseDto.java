@@ -14,9 +14,6 @@ public class AccountEnterpriseDto {
     @Size(min = 5, max = 50, message = "Username must be between 5 and 50 characters")
     String username;
 
-//    @NotEmpty(message = "Password cannot be empty")
-    @Size(min = 8, message = "Password must be at least 8 characters")
-    String password;
 
 //    @NotEmpty(message = "Email cannot be empty")
     @Email(message = "Email should be valid")

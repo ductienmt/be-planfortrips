@@ -53,4 +53,11 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
     List<Schedule> getSchedulesByRouteAndVehicleCode(Route route, Vehicle vehicle);
     List<Schedule> findByVehicleCodeIn(List<String> code);
 
+    @Query(value = "SELECT COUNT(*) " +
+            "FROM schedules " +
+            "JOIN schedule_seats ON schedules.id = schedule_seats.schedule_id " +
+            "WHERE schedule_seats.status = 'Empty' " +
+            "AND schedules.id = :scheduleId", nativeQuery = true)
+    Integer getNumberSeatsEmpty(@Param("scheduleId") Long scheduleId);
+
 }
