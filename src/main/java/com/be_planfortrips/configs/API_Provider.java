@@ -74,7 +74,7 @@ public class API_Provider {
             "/api/v1/users/all",
             "/api/v1/users/delete",
             "/api/v1/users/create",
-            "/api/v1/admins/all",
+            "/api/v1/admins/findByUserName",
             "/api/v1/routes/create",
             "/api/v1/tags/create",
             "/api/v1/hotels/create",

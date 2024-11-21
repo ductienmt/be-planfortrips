@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class AdminController {
     IAdminService adminService;
-    @GetMapping("all") //
-    public ResponseEntity<?> findAdminByUsername(@RequestParam("userName") String username){
+    @GetMapping("findByUserName") //
+        public ResponseEntity<?> findAdminByUsername(@RequestParam("userName") String username){
         try {
             Admin admin = adminService.findAdminByUsername(username);
             return ResponseEntity.ok(admin);

@@ -76,13 +76,6 @@ public class HotelService implements IHotelService {
     }
 
     @Override
-// <<<<<<< ductien
-//     public Page<HotelResponse> searchHotels(PageRequest request, String keyword, Integer rating) {
-//         if (rating != null) {
-//             if (rating < 0 || rating > 5) throw new AppException(ErrorType.ratingInvalid);
-//         }
-//         return hotelRepository.searchHotels(request, keyword, rating).map(hotel -> hotelMapper.toResponse(hotel));
-// =======
     public Page<HotelResponse> searchHotels(PageRequest request,String keyword,Integer rating) {
         if (rating != null) {
             if (rating < 0 || rating > 5) throw new AppException(ErrorType.ratingInvalid);
