@@ -1,5 +1,6 @@
 package com.be_planfortrips.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -48,6 +49,7 @@ public class Hotel extends BaseEntity{
     List<Image> images;
     @OneToMany(mappedBy = "hotel",cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
     @JsonManagedReference
+    @JsonIgnore
     List<Room> rooms;
 
     @OneToMany(mappedBy = "hotel",cascade = {CascadeType.PERSIST,CascadeType.REMOVE})

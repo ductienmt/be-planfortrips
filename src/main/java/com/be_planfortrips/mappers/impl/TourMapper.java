@@ -29,6 +29,7 @@ public class TourMapper implements MapperInterface<TourResponse, Tour, TourDTO> 
             typeMap = modelMapper.createTypeMap(TourDTO.class, Tour.class);
         }
         Tour Tour = modelMapper.map(TourDTO, Tour.class);
+        Tour.setActive(TourDTO.getIsActive());
         return Tour;
     }
 
