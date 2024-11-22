@@ -51,7 +51,7 @@ public class HotelService implements IHotelService {
     @Override
     @Transactional
     public HotelResponse createHotel(HotelDto hotelDto) throws Exception {
-        AccountEnterprise accountEnterprise = enterpriseRepository.findById(hotelDto.getEnterpriseId())
+        AccountEnterprise accountEnterprise = enterpriseRepository.findById(tokenMapperImpl.getIdEnterpriseByToken())
                 .orElseThrow(() -> new Exception("Not found"));
         Hotel hotel = hotelMapper.toEntity(hotelDto);
         if(!Utils.isValidPhoneNumber(hotel.getPhoneNumber()))throw new AppException(ErrorType.phoneNotValid);
@@ -65,7 +65,7 @@ public class HotelService implements IHotelService {
     public HotelResponse updateHotel(Long id, HotelDto hotelDto) throws Exception {
         Hotel existHotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new Exception("Not found"));
-        AccountEnterprise accountEnterprise = enterpriseRepository.findById(hotelDto.getEnterpriseId())
+        AccountEnterprise accountEnterprise = enterpriseRepository.findById(tokenMapperImpl.getIdEnterpriseByToken())
                 .orElseThrow(() -> new Exception("Not found"));
         hotelMapper.updateEntityFromDto(hotelDto, existHotel);
         if(!Utils.isValidPhoneNumber(existHotel.getPhoneNumber()))throw new AppException(ErrorType.notFound);
@@ -77,9 +77,9 @@ public class HotelService implements IHotelService {
 
     @Override
     public Page<HotelResponse> searchHotels(PageRequest request,String keyword,Integer rating) {
-         if(rating!=null){
-             if(rating < 0 || rating > 5) throw new AppException(ErrorType.ratingInvalid);
-         }
+        if (rating != null) {
+            if (rating < 0 || rating > 5) throw new AppException(ErrorType.ratingInvalid);
+        }
          return hotelRepository.searchHotels(request,keyword,rating).map(hotel -> hotelMapper.toResponse(hotel));
     }
 
@@ -222,5 +222,11 @@ public class HotelService implements IHotelService {
     public List<HotelResponse> getHotelDetail() {
         List<Hotel> hotels = this.hotelRepository.findByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken());
         return hotels.stream().map(hotelMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<HotelResponse> getByEnterpriseId(Long enterpriseId) {
+        List<Hotel> hotels = this.hotelRepository.findByEnterpriseId(enterpriseId);
+        return List.of();
     }
 }

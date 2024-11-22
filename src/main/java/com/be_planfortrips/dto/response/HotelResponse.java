@@ -20,6 +20,7 @@ public class HotelResponse {
     String phoneNumber;
     String description;
     int rating;
+    Boolean status;
     List<Image> images ;
     List<Room> rooms;
     List<HotelAmenitiesResponse> hotelAmenities;

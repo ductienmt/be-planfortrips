@@ -23,5 +23,6 @@ public interface IHotelService {
     HotelResponse deleteImage(Long id, List<Integer> imageIds) throws Exception;
     Map<String, Object> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut, String destination);
     List<HotelResponse> getHotelDetail();
+    List<HotelResponse> getByEnterpriseId(Long enterpriseId);
 }
 

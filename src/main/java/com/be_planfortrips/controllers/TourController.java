@@ -4,6 +4,7 @@ import com.be_planfortrips.dto.TourDTO;
 import com.be_planfortrips.dto.response.CarResponse;
 import com.be_planfortrips.dto.response.TListResponse;
 import com.be_planfortrips.dto.response.TourResponse;
+import com.be_planfortrips.dto.response.rsTourResponse.TourScheduleResponse;
 import com.be_planfortrips.services.interfaces.ITourService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +12,15 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.data.repository.query.Param;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -134,4 +138,15 @@ public class TourController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/schedule/")
+    public ResponseEntity<List<TourScheduleResponse>> getScheduleEnable(
+            @RequestParam("day") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime day,
+            @RequestParam("cityId") String cityId
+    ) {
+        List<TourScheduleResponse> scheduleBringData = iTourService.getScheduleAvailable(day, cityId);
+        return ResponseEntity.ok(scheduleBringData);
+    }
+
+
+
 }
