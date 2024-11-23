@@ -30,8 +30,14 @@ public class HotelAmenitiesMapper implements MapperInterface<HotelAmenitiesRespo
     @Override
     public HotelAmenities toEntity(HotelAmenitiesDto hotelAmenitiesDto) {
         TypeMap<HotelAmenitiesDto, HotelAmenities> typeMap = modelMapper.createTypeMap(HotelAmenitiesDto.class, HotelAmenities.class);
-        typeMap.addMappings(mapper -> mapper.skip(HotelAmenities::setId));
-        typeMap.addMappings(mapper -> mapper.skip(HotelAmenities::setIcon));
+        if (typeMap == null) {
+            typeMap = modelMapper.createTypeMap(HotelAmenitiesDto.class, HotelAmenities.class);
+            typeMap.addMappings(mapper -> mapper.skip(HotelAmenities::setId));
+            typeMap.addMappings(mapper -> mapper.skip(HotelAmenities::setIcon));
+        } else {
+            typeMap.addMappings(mapper -> mapper.skip(HotelAmenities::setId));
+            typeMap.addMappings(mapper -> mapper.skip(HotelAmenities::setIcon));
+        }
         HotelAmenities hotelAmenities = typeMap.map(hotelAmenitiesDto);
         if (hotelAmenitiesDto.getHotelId() != null) {
             hotelRepository.findById(hotelAmenitiesDto.getHotelId()).ifPresent(hotelAmenities::setHotel);
