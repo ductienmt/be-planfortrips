@@ -2,6 +2,7 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.TourDTO;
 import com.be_planfortrips.dto.response.TourResponse;
+import com.be_planfortrips.dto.response.rsTourResponse.TourScheduleResponse;
 import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
@@ -39,6 +40,7 @@ public class TourService implements ITourService {
     AdminRepository adminRepository;
     CheckinRepository checkinRepository;
     CityRepository cityRepository;
+    RouteRepository routeRepository;
     ImageRepository imageRepository;
     TourMapper tourMapper;
     CloudinaryService cloudinaryService;
@@ -55,10 +57,8 @@ public class TourService implements ITourService {
                 .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
         Checkin checkinExisting = checkinRepository.findById(TourDTO.getCheckinId())
                 .orElseThrow(()-> {throw new AppException(ErrorType.notFound);});
-        City cityDepart = cityRepository.findById(TourDTO.getCityDepartId())
-                .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
-        City cityArrive = cityRepository.findById(TourDTO.getCityArriveId())
-                .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
+        Route route =  routeRepository.findById(TourDTO.getRouteId())
+                .orElseThrow(()-> {throw new AppException(ErrorType.notFound);});
         List<Tag> tags = TourDTO.getTagNames()!= null
                 ? tagRepository.findAllByNameIn(TourDTO.getTagNames())
                 :new ArrayList<>();
@@ -67,13 +67,13 @@ public class TourService implements ITourService {
         tour.setHotel(hotelExisting);
         tour.setCarCompany(carExisting);
         tour.setCheckin(checkinExisting);
-        tour.setCityArrive(cityArrive);
-        tour.setCityDepart(cityDepart);
+        tour.setRoute(route);
         tourRepository.save(tour);
 
         TourResponse tourResponse = tourMapper.toResponse(tour);
         tourResponse.setHotel(hotelExisting);
         tourResponse.setCarCompany(carExisting);
+        tourResponse.setRoute(route);
         tourResponse.setAdminUsername(admin.getUserName());
         return tourResponse;
     }
@@ -92,10 +92,8 @@ public class TourService implements ITourService {
                 .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
         Checkin checkinExisting = checkinRepository.findById(TourDTO.getCheckinId())
                 .orElseThrow(()-> {throw new AppException(ErrorType.notFound);});
-        City cityDepart = cityRepository.findById(TourDTO.getCityDepartId())
-                .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
-        City cityArrive = cityRepository.findById(TourDTO.getCityArriveId())
-                .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
+        Route route =  routeRepository.findById(TourDTO.getRouteId())
+                .orElseThrow(()-> {throw new AppException(ErrorType.notFound);});
         List<Tag> tags = TourDTO.getTagNames()!= null
                 ? tagRepository.findAllByNameIn(TourDTO.getTagNames())
                 :new ArrayList<>();
@@ -105,8 +103,7 @@ public class TourService implements ITourService {
         tour.setHotel(hotelExisting);
         tour.setCarCompany(carExisting);
         tour.setCheckin(checkinExisting);
-        tour.setCityArrive(cityArrive);
-        tour.setCityDepart(cityDepart);
+        tour.setRoute(route);
         tourRepository.save(tour);
 
         TourResponse tourResponse = tourMapper.toResponse(tour);
@@ -197,5 +194,10 @@ public class TourService implements ITourService {
         }
         tourRepository.saveAndFlush(Tour);
         return tourMapper.toResponse(Tour);
+    }
+
+    @Override
+    public List<TourScheduleResponse> getScheduleAvailable(LocalDateTime day, String cityId) {
+        return null;
     }
 }

@@ -20,11 +20,8 @@ public class Tour {
     Integer id;
     String title;
     @ManyToOne
-    @JoinColumn(name = "city_depart_id")
-    City cityDepart;
-    @ManyToOne
-    @JoinColumn(name = "city_arrive_id")
-    City cityArrive;
+    @JoinColumn(name = "route_id")
+    Route route;
     Integer numberPeople;
     Double rating;
     Double totalPrice;
