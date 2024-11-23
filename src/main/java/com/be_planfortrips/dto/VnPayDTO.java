@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -13,9 +14,9 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VnPayDTO {
     @JsonProperty("ticket_id")
-    int ticketId;
+    List<Integer> ticketId;
     @JsonProperty("booking_id")
-    int bookingId;
+    List<Long> bookingId;
     BigDecimal amount;
     @JsonProperty("bank_code")
     String bankCode = "NCB";

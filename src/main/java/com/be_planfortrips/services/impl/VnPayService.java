@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,13 +40,21 @@ public class VnPayService implements IVnPayService {
             VnPayDTO vnPayDTO,
             HttpServletRequest httpServletRequest) throws IOException {
             try {
-                Optional<Ticket> optionalTicket = ticketRepository.findById(vnPayDTO.getTicketId());
-                Optional<BookingHotel> optionalBookingHotel = bookingHotelRepository.findById(Long.valueOf(vnPayDTO.getBookingId()));
-                Ticket ticket = new Ticket();
-                BookingHotel bookingHotel = new BookingHotel();
-                if (optionalTicket.isPresent() && optionalBookingHotel.isPresent()) {
-                    ticket = optionalTicket.get();
-                    bookingHotel = optionalBookingHotel.get();
+                List<Ticket> optionalTicket = ticketRepository.findAllById(vnPayDTO.getTicketId());
+                List<BookingHotel> optionalBookingHotel = bookingHotelRepository.findAllById((vnPayDTO.getBookingId()));
+                String ticketIds = optionalTicket.isEmpty()
+                        ? "0"
+                        : optionalTicket.stream()
+                        .map(ticket -> String.valueOf(ticket.getId()))
+                        .collect(Collectors.joining(", "));
+
+                String bookingIds = optionalBookingHotel.isEmpty()
+                        ? "0"
+                        : optionalBookingHotel.stream()
+                        .map(bookingHotel -> String.valueOf(bookingHotel.getBookingHotelId()))
+                        .collect(Collectors.joining(", "));
+                if (optionalTicket.size() == 0 && optionalBookingHotel.size() == 0) {
+                    throw new AppException(ErrorType.TicketOrBookingHotelIsRequired);
                 }
                 String orderType = "other";
                 String vnp_TxnRef = VnPayConfig.getRandomNumber(8);
@@ -62,9 +71,11 @@ public class VnPayService implements IVnPayService {
 
                 vnp_Params.put("vnp_BankCode", vnPayDTO.getBankCode());
                 vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-                vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef
-                        + "Ticket:" +(ticket.getId()==null?0:ticket.getId())
-                        +" Booking:"+(bookingHotel.getBookingHotelId()==null?0:bookingHotel.getBookingHotelId()));
+                vnp_Params.put("vnp_OrderInfo",
+                        "Thanh toan don hang: " + vnp_TxnRef
+                                + " Ticket: [" + ticketIds + "]"
+                                + " Booking: [" + bookingIds + "]"
+                );
                 vnp_Params.put("vnp_OrderType", orderType);
 
                 vnp_Params.put("vnp_Locale", "vn");
@@ -123,47 +134,57 @@ public class VnPayService implements IVnPayService {
     @Transactional
     public String returnPage(Map<String, String> requestParams) throws IOException {
         VnPayConfig.hashAllFields(requestParams);
-        Pattern pattern = Pattern.compile("Ticket:(\\d+) Booking:(\\d+)");
+        Pattern pattern = Pattern.compile("Ticket:\\s*\\[(.*?)\\]\\s*Booking:\\s*\\[(.*?)\\]");
         Matcher matcher = pattern.matcher(requestParams.get("vnp_OrderInfo"));
-        String ticketId = "";
-        String bookingId = "";
+        String ticketIds = "";
+        String bookingIds = "";
         if (matcher.find()) {
-             ticketId = matcher.group(1);
-             bookingId = matcher.group(2);
+             ticketIds = matcher.group(1);
+             bookingIds = matcher.group(2);
         } else {
             System.out.println("Không tìm thấy ticket id và booking id trong chuỗi.");
         }
-        Optional<Ticket> optionalTicket = ticketRepository.findById(Integer.valueOf(ticketId));
-        Optional<BookingHotel> optionalBookingHotel = bookingHotelRepository.findById(Long.valueOf(bookingId));
-        Ticket ticket = new Ticket();
-        BookingHotel bookingHotel = new BookingHotel();
-        if (optionalTicket.isPresent() && optionalBookingHotel.isPresent()) {
-            ticket = optionalTicket.get();
-            bookingHotel = optionalBookingHotel.get();
+        List<Integer> ticketIdList = Arrays.stream(ticketIds.split(","))
+                .map(String::trim)
+                .map(Integer::valueOf)
+                .collect(Collectors.toList());
+        List<Long> bookingIdList = Arrays.stream(bookingIds.split(","))
+                .map(String::trim)
+                .map(Long::valueOf)
+                .collect(Collectors.toList());
+        List<Ticket> optionalTicket = ticketRepository.findAllById(ticketIdList);
+        List<BookingHotel> optionalBookingHotel = bookingHotelRepository.findAllById(bookingIdList);
+        if (optionalTicket.isEmpty() && optionalBookingHotel.isEmpty()) {
+            throw new AppException(ErrorType.CarCompanyHaveNotSeatAvailable);
         }
         if ("00".equals(requestParams.get("vnp_ResponseCode")) && "00".equals(requestParams.get("vnp_TransactionStatus"))) {
-            if (optionalTicket.isPresent()) {
-                ticket.setStatus(Status.Complete);
-                ticketRepository.save(ticket);
-                List<ScheduleSeat> scheduleSeats = scheduleSeatRepository.findByScheduleId(ticket.getSchedule().getId());
-                for (ScheduleSeat scheduleSeat : scheduleSeats) {
-                    for (Seat seat : ticket.getSeats()) {
-                        if (scheduleSeat.getSeat().getId().equals(seat.getId())) {
-                            scheduleSeat.setStatus(StatusSeat.Full);
-                            scheduleSeatRepository.save(scheduleSeat);
+            for (Ticket t: optionalTicket){
+                if (t != null) {
+                    t.setStatus(Status.Complete);
+                    ticketRepository.save(t);
+                    List<ScheduleSeat> scheduleSeats = scheduleSeatRepository.findByScheduleId(t.getSchedule().getId());
+                    for (ScheduleSeat scheduleSeat : scheduleSeats) {
+                        for (Seat seat : t.getSeats()) {
+                            if (scheduleSeat.getSeat().getId().equals(seat.getId())) {
+                                scheduleSeat.setStatus(StatusSeat.Full);
+                                scheduleSeatRepository.save(scheduleSeat);
+                            }
                         }
                     }
                 }
-            }if(bookingHotel != null){
-                bookingHotel.setStatus(Status.Complete);
-                bookingHotelRepository.save(bookingHotel);
-                List<BookingHotelDetail> bookingHotelDetails = bookingHotelDetailRepository
+            }
+            for(BookingHotel bookingHotel: optionalBookingHotel){
+                if(bookingHotel != null){
+                    bookingHotel.setStatus(Status.Complete);
+                    bookingHotelRepository.save(bookingHotel);
+                    List<BookingHotelDetail> bookingHotelDetails = bookingHotelDetailRepository
                             .findByBookingHotelBookingHotelId(bookingHotel.getBookingHotelId());
-                for(BookingHotelDetail bookingHotelDetail: bookingHotelDetails){
-                    Room room = roomRepository.findById(bookingHotelDetail.getRoom().getId())
-                            .orElseThrow(()-> new AppException(ErrorType.notFound));
-                    room.setAvailable(false);
-                    roomRepository.save(room);
+                    for(BookingHotelDetail bookingHotelDetail: bookingHotelDetails){
+                        Room room = roomRepository.findById(bookingHotelDetail.getRoom().getId())
+                                .orElseThrow(()-> new AppException(ErrorType.notFound));
+                        room.setAvailable(false);
+                        roomRepository.save(room);
+                    }
                 }
             }
             return "00";
