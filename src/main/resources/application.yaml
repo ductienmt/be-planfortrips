@@ -5,17 +5,19 @@ spring:
 #         username: postgres
 #         password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
 #         driver-class-name: org.postgresql.Driver
-
-       url: jdbc:postgresql://localhost:5432/a
-       username: postgres
-       password: 123
-  #    url: jdbc:postgresql://localhost:5432/Planfortrips
-  #    username: admin
-  #    password: admin
-       driver-class-name: org.postgresql.Driver
-#       url: jdbc:postgresql://localhost:5432/a
-#       username: postgres
-#       password: 123
+    #       url: jdbc:postgresql://localhost:5432/a
+    #       username: postgres
+    #       password: 123
+    #    url: jdbc:postgresql://localhost:5432/Planfortrips
+    #    username: admin
+    #    password: admin
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      connection-timeout: 20000
+      max-lifetime: 2000000
   mvc:
     throw-exception-if-no-handler-found: true
   web:
@@ -25,7 +27,7 @@ spring:
     show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   jackson:
     serialization:
       fail-on-empty-beans: false

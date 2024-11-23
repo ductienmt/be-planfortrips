@@ -100,6 +100,8 @@ public class PlanServiceImpl implements IPlanService {
                     planResponse.setDestination(plan.getDestination());
                     planResponse.setOrigin_location(plan.getOriginLocation());
                     planResponse.setTotal_price(plan.getTotalPrice());
+                    planResponse.setDiscount_price(plan.getDiscountPrice());
+                    planResponse.setFinal_price(plan.getFinalPrice());
                     return planResponse;
                 }).collect(Collectors.toList());
     }
@@ -177,21 +179,36 @@ public class PlanServiceImpl implements IPlanService {
     public void save(PlanDto planDto) {
         Plan plan = new Plan();
         plan.setPlanName(planDto.getPlanName());
-        plan.setStartDate(planDto.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        plan.setEndDate(planDto.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        plan.setStartDate(planDto.getStartDate().toLocalDate());
+        plan.setEndDate(planDto.getEndDate().toLocalDate());
         plan.setOriginLocation(planDto.getLocation());
         plan.setDestination(planDto.getDestination());
         plan.setBudget(planDto.getBudget());
         plan.setNumberPeople(planDto.getNumberPeople());
         plan.setTotalPrice(planDto.getTotalPrice());
+        plan.setDiscountPrice(planDto.getDiscountPrice());
+        plan.setFinalPrice(planDto.getFinalPrice());
         plan.setStatus(StatusPlan.NOT_STARTED);
         plan.setUser(userRepository.findById(tokenMapperImpl.getIdUserByToken()).orElseThrow(() -> new RuntimeException("Lỗi lấy thông tin user")));
 
-        plan = planRepository.save(plan);
+        Plan planSave = planRepository.save(plan);
+        System.out.println("planSave: " + planSave.getId());
+
+        if (planDto.getPlanDetails() == null || planDto.getPlanDetails().isEmpty()) {
+            throw new AppException(ErrorType.internalServerError, "Lỗi lưu kế hoạch");
+        }
+
+        if (planSave == null || planSave.getId() == null) {
+            throw  new AppException(ErrorType.internalServerError, "Lỗi lưu kế hoạch");
+        }
 
         for (PlanDetailDto detailDto : planDto.getPlanDetails()) {
             PlanDetail detail = new PlanDetail();
-            detail.setPlan(plan);
+
+            Plan planInDetail = planRepository.findById(planSave.getId().longValue()).orElseThrow(() -> new AppException(ErrorType.notFound));
+            if (planInDetail != null) {
+                detail.setPlan(planInDetail);
+            }
 
             if (detailDto.getHotelId() != null) {
                 try {
@@ -220,8 +237,16 @@ public class PlanServiceImpl implements IPlanService {
                 detail.setTicketId(detailDto.getTicketId());
             }
             detail.setTotalPrice(detailDto.getTotalPrice());
-            detail.setStartDate(detailDto.getStartDate());
-            detail.setEndDate(detailDto.getEndDate());
+            if (detailDto.getStartDate() != null) {
+                detail.setStartDate(detailDto.getStartDate());
+            } else {
+                detail.setStartDate(null);
+            }
+            if (detailDto.getEndDate() != null) {
+                detail.setEndDate(detailDto.getEndDate());
+            } else {
+                detail.setEndDate(null);
+            }
 
             detail.setStatus(StatusPlan.NOT_STARTED);
 

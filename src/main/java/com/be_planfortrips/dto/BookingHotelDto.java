@@ -3,6 +3,7 @@ package com.be_planfortrips.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -11,7 +12,7 @@ import java.util.Set;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingHotelDto {
-    Set<BookingHotelDetailDto> bookingHotelDetailDto;
+    List<BookingHotelDetailDto> bookingHotelDetailDto;
 //    Long userId;
     Long paymentId;
 }

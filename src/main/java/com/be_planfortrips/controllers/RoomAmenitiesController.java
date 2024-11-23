@@ -121,6 +121,7 @@ public class RoomAmenitiesController {
                             .build()
             );
         } catch (Exception e) {
+            log.error("Error: {}", e.getMessage());
             return buildApiResponse(HttpStatus.SERVICE_UNAVAILABLE, "Upload icon thất bại.");
         }
     }

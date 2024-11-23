@@ -4,6 +4,7 @@ import com.be_planfortrips.dto.RoomDto;
 import com.be_planfortrips.dto.response.RoomResponse;
 import com.be_planfortrips.dto.response.RoomResponseEnterprise;
 import com.be_planfortrips.entity.Image;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ public interface IRoomService {
 
     RoomResponse updateRoomById(Long roomId, RoomDto roomDto);
 
-    List<RoomResponse> getRoomByHotelId(Long id);
+    Page<RoomResponse> getRoomByHotelId(Long id, Integer pageNo, Integer pageSize, String sortBy, String sortType);
 
     List<RoomResponse> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut, String destination);
 

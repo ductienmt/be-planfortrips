@@ -196,8 +196,4 @@ public class TourService implements ITourService {
         return tourMapper.toResponse(Tour);
     }
 
-    @Override
-    public List<TourScheduleResponse> getScheduleAvailable(LocalDateTime day, String cityId) {
-        return null;
-    }
 }

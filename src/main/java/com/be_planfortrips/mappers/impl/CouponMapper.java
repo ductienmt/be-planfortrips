@@ -3,6 +3,8 @@ package com.be_planfortrips.mappers.impl;
 import com.be_planfortrips.dto.CouponDto;
 import com.be_planfortrips.dto.response.CouponResponse;
 import com.be_planfortrips.entity.Coupon;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.MapperInterface;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class CouponMapper implements MapperInterface<CouponResponse, Coupon, Cou
 
     @Override
     public CouponResponse toResponse(Coupon coupon) {
+        if (coupon == null) throw new AppException(ErrorType.notFound, "Coupon not found");
         CouponResponse response = modelMapper.map(coupon, CouponResponse.class);
         response.setIsActive(coupon.isActive());
         if(coupon.getAccountEnterprise() != null)response.setEnterpriseId(coupon.getAccountEnterprise().getAccountEnterpriseId());
