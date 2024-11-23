@@ -32,8 +32,14 @@ public class RoomAmenitiesMapper implements MapperInterface<RoomAmenitiesRespons
     public RoomAmenities toEntity(RoomAmenitiesDto roomAmenitiesDto) {
 //        System.out.println("RoomAmenitiesMapper toEntity" + roomAmenitiesDto.getFee());
         TypeMap<RoomAmenitiesDto, RoomAmenities> typeMap = modelMapper.createTypeMap(RoomAmenitiesDto.class, RoomAmenities.class);
-        typeMap.addMappings(mapper -> mapper.skip(RoomAmenities::setId));
-        typeMap.addMappings(mapper -> mapper.skip(RoomAmenities::setIcon));
+        if (typeMap == null) {
+            typeMap = modelMapper.createTypeMap(RoomAmenitiesDto.class, RoomAmenities.class);
+            typeMap.addMappings(mapper -> mapper.skip(RoomAmenities::setId));
+            typeMap.addMappings(mapper -> mapper.skip(RoomAmenities::setIcon));
+        } else {
+            typeMap.addMappings(mapper -> mapper.skip(RoomAmenities::setId));
+            typeMap.addMappings(mapper -> mapper.skip(RoomAmenities::setIcon));
+        }
         RoomAmenities roomAmenities = typeMap.map(roomAmenitiesDto);
         if (roomAmenitiesDto.getRoomId() != null) {
             roomRepository.findById(roomAmenitiesDto.getRoomId().longValue()).ifPresent(roomAmenities::setRoom);

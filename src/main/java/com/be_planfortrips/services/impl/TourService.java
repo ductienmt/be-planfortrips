@@ -2,6 +2,7 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.TourDTO;
 import com.be_planfortrips.dto.response.TourResponse;
+import com.be_planfortrips.dto.response.rsTourResponse.TourScheduleResponse;
 import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
@@ -197,5 +198,10 @@ public class TourService implements ITourService {
         }
         tourRepository.saveAndFlush(Tour);
         return tourMapper.toResponse(Tour);
+    }
+
+    @Override
+    public List<TourScheduleResponse> getScheduleAvailable(LocalDateTime day, String cityId) {
+        return List.of();
     }
 }

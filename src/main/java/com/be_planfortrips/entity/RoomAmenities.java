@@ -26,7 +26,7 @@ public class RoomAmenities {
     private String description;
     @Column(name = "status")
     private Boolean status;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "icon_id")
     private Image icon;
     @ManyToOne
