@@ -3,11 +3,14 @@ package com.be_planfortrips.controllers;
 import com.be_planfortrips.dto.CouponDto;
 import com.be_planfortrips.dto.response.TListResponse;
 import com.be_planfortrips.dto.response.CouponResponse;
+import com.be_planfortrips.mappers.impl.PageMapperImpl;
 import com.be_planfortrips.services.interfaces.ICouponService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,7 +26,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class CouponController {
+    private static final Logger log = LoggerFactory.getLogger(CouponController.class);
     ICouponService iCouponService;
+    private final PageMapperImpl pageMapperImpl;
+
     @PostMapping("/create")
     public ResponseEntity<?> createCoupon(@RequestBody @Valid CouponDto CouponDTO,
                                           BindingResult result){
@@ -88,6 +94,30 @@ public class CouponController {
             CouponResponse response = iCouponService.getByCouponId(id);
             return ResponseEntity.ok(response);
         }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("getByCode")
+    public ResponseEntity<?> getCouponByCode(@RequestParam String code, @RequestParam(defaultValue = "true", required = false) String status){
+        try {
+            CouponResponse response = iCouponService.getByCouponCode(code, status);
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("getByEnterpriseId")
+    public ResponseEntity<?> getCouponByEnterpriseId(@RequestParam(defaultValue = "0", required = false) Integer pageNo, @RequestParam(defaultValue = "10", required = false) Integer pageSize, @RequestParam(defaultValue = "true", required = false) String status,
+                                                     @RequestParam(defaultValue = "id", required = false) String sortBy, @RequestParam(defaultValue = "ASC", required = false) String sortType){
+        try {
+            var pageable = pageMapperImpl.customPage(pageNo, pageSize, sortBy, sortType);
+            Page<CouponResponse> response = iCouponService.getByEnterpriseId(pageable, status);
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

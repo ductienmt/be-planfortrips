@@ -89,7 +89,7 @@ public class SeatService implements ISeatService {
         List<ScheduleSeat> emptySeats = scheduleSeatRepository.findEmptySeatsByScheduleId(scheduleId);
         return emptySeats.stream().map(emptySeat -> {
             SeatResponse seatResponse = new SeatResponse();
-            seatResponse.setId(emptySeat.getId());
+            seatResponse.setId(emptySeat.getSeat().getId());
             seatResponse.setSeatNumber(emptySeat.getSeatNumber());
             seatResponse.setStatus(emptySeat.getStatus().toString());
             return seatResponse;

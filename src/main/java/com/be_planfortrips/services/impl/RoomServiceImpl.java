@@ -1,28 +1,32 @@
 package com.be_planfortrips.services.impl;
 
+import com.be_planfortrips.dto.AccountEnterpriseDto;
 import com.be_planfortrips.dto.RoomDto;
+import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.dto.response.RoomResponse;
 import com.be_planfortrips.dto.response.RoomResponseEnterprise;
-import com.be_planfortrips.entity.AccountEnterprise;
-import com.be_planfortrips.entity.Image;
-import com.be_planfortrips.entity.Room;
-import com.be_planfortrips.entity.RoomImage;
+import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.MapperInterface;
+import com.be_planfortrips.mappers.impl.PageMapperImpl;
 import com.be_planfortrips.mappers.impl.RoomMapper;
 import com.be_planfortrips.mappers.impl.RoomMapper_2;
 import com.be_planfortrips.mappers.impl.TokenMapperImpl;
+import com.be_planfortrips.repositories.BookingHotelDetailRepository;
+import com.be_planfortrips.repositories.HotelRepository;
 import com.be_planfortrips.repositories.RoomRepository;
 import com.be_planfortrips.services.interfaces.ICloudinaryService;
 import com.be_planfortrips.services.interfaces.IRoomService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -38,8 +42,11 @@ public class RoomServiceImpl implements IRoomService {
     RoomRepository roomRepository;
     MapperInterface<RoomResponse, Room, RoomDto> roomMapper;
     ICloudinaryService cloudinaryService;
-    private final TokenMapperImpl tokenMapperImpl;
+    TokenMapperImpl tokenMapperImpl;
     RoomMapper_2 roomMapper_2;
+    PageMapperImpl pageMapperImpl;
+    private final HotelRepository hotelRepository;
+    private final BookingHotelDetailRepository bookingHotelDetailRepository;
 
     @Override
     public Set<RoomResponse> getAllRoom() {
@@ -61,24 +68,54 @@ public class RoomServiceImpl implements IRoomService {
 
     @Override
     public void deleteRoomById(Long roomId) {
-        Room roomCreate = roomRepository.findById(roomId).orElseThrow();
-        roomCreate.setAvailable(false);
-        roomRepository.save(roomCreate);
+        boolean isRoomInBooking = bookingHotelDetailRepository.existsByRoomId(roomId);
+        if (isRoomInBooking) {
+            Room roomCreate = roomRepository.findById(roomId).orElseThrow();
+            roomCreate.setAvailable(false);
+            roomRepository.save(roomCreate);
+        } else {
+            roomRepository.deleteById(roomId);
+        }
     }
 
     @Override
     public RoomResponse updateRoomById(Long roomId, RoomDto roomDto) {
-        roomRepository.findById(roomId).orElseThrow(
+        Room room = roomRepository.findById(roomId).orElseThrow(
                 () -> new AppException(ErrorType.notFound)
         );
-        Room room = roomMapper.toEntity(roomDto);
-        room.setId(roomId);
+        for (Field field : RoomDto.class.getDeclaredFields()) {
+            try {
+                field.setAccessible(true);
+                Object newValue = field.get(roomDto);
+
+                if (newValue != null) {
+                    if (field.getName().equals("hotelId")) {
+                        Long hotelId = (Long) newValue;
+                        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(
+                                () -> new AppException(ErrorType.notFound, "Khách sạn không tồn tại")
+                        );
+                        room.setHotel(hotel);
+                    } else {
+                        try {
+                            Field serviceField = Room.class.getDeclaredField(field.getName());
+                            serviceField.setAccessible(true);
+                            serviceField.set(room, newValue);
+                        } catch (NoSuchFieldException e) {
+                            continue;
+                        }
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Error accessing field: " + field.getName(), e);
+            }
+        }
         return roomMapper.toResponse(roomRepository.save(room));
     }
 
     @Override
-    public List<RoomResponse> getRoomByHotelId(Long id) {
-        return this.roomRepository.findByHotelId(id).stream().map(roomMapper::toResponse).collect(Collectors.toList());
+    public Page<RoomResponse> getRoomByHotelId(Long id, Integer pageNo, Integer pageSize, String sortBy, String sortType) {
+        var pageable = pageMapperImpl.customPage(pageNo, pageSize, sortBy, sortType);
+        return this.roomRepository.findByHotelId(id, pageable).map(roomMapper::toResponse);
     }
 
     @Override
@@ -89,9 +126,9 @@ public class RoomServiceImpl implements IRoomService {
                 .map(roomMapper::toResponse)
                 .collect(Collectors.toList());
 
-        for (RoomResponse roomResponse : roomResponses) {
+//        for (RoomResponse roomResponse : roomResponses) {
 //            System.out.println(roomResponse.getRoomName() + " " + ro);
-        }
+//        }
         return roomResponses;
     }
 

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -84,5 +85,18 @@ public class CatchMyException {
                 .message(errorMessage)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiResponse<String>> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+        String errorMessage = String.format("Thiếu tham số yêu cầu '%s' kiểu '%s'.", ex.getParameterName(), ex.getParameterType());
+        log.warn("Lỗi thiếu tham số yêu cầu: {}", errorMessage);
+
+        ApiResponse<String> response = ApiResponse.<String>builder()
+                .code(HttpStatus.BAD_REQUEST.value())
+                .message(errorMessage)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }

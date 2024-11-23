@@ -18,6 +18,8 @@ public class RoomResponse {
     String roomName;
     TypeOfRoom typeOfRoom;
     BigDecimal price;
+    String description;
+
     Integer rating;
     Integer maxSize;
     boolean isAvailable;

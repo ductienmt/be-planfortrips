@@ -23,6 +23,8 @@ public class PlanResponse {
     LocalDate end_date;
     BigDecimal budget;
     BigDecimal total_price;
+    BigDecimal discount_price;
+    BigDecimal final_price;
     StatusPlan status;
     String destination;
     String origin_location;

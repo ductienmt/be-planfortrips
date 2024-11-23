@@ -226,9 +226,21 @@ public class HotelService implements IHotelService {
     }
 
     @Override
-    public List<HotelResponse> getHotelDetail() {
+    public List<Map<String, Object>> getHotelDetail() {
         List<Hotel> hotels = this.hotelRepository.findByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken());
-        return hotels.stream().map(hotelMapper::toResponse).collect(Collectors.toList());
+        List<Map<String, Object>> listHotelResponse = new ArrayList<>();
+        for (Hotel hotel : hotels){
+            Map<String, Object> hotelResponse = new HashMap<>();
+            hotelResponse.put("hotelId", hotel.getId());
+            hotelResponse.put("hotelName", hotel.getName());
+            hotelResponse.put("hotelAddress", hotel.getAddress());
+            hotelResponse.put("hotelPhoneNumber", hotel.getPhoneNumber());
+            hotelResponse.put("rating", hotel.getRating());
+            hotelResponse.put("hotelImages", hotel.getImages());
+            hotelResponse.put("hotelStatus", null);
+            listHotelResponse.add(hotelResponse);
+        }
+        return listHotelResponse;
     }
 
     @Override

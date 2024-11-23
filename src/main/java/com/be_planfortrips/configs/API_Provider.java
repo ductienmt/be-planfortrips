@@ -18,7 +18,6 @@ public class API_Provider {
             "/api/v1/users/findByUsername",
             "/api/v1/check-in/all",
             "/api/v1/check-in/upload-image",
-            "/api/v1/plans/save",
             "/api/v1/vehicles/getById/**",
             "/api/v1/hotels/getById/**",
             "/api/v1/hotels/all",
@@ -34,15 +33,11 @@ public class API_Provider {
             "/api/v1/routes/getCityByRouteId",
             "/api/v1/hotel-amenities/get-by-hotel-id",
             "/api/v1/room-amenities/get-by-room-id",
-
-            "/api/v1/coupons/all",
-
             "/api/v1/tags/all",
             "/api/v1/tours/all",
             "/api/v1/tours/**",
             "/api/v1/hotels/**",
             "/api/v1/areas/**",
-            "/api/v1/vietqr/**"
     };
 
     public static final String[] ADMIN_API = {
@@ -104,6 +99,12 @@ public class API_Provider {
             "/api/v1/users/verify-email",
             "/api/v1/email/send",
             "/api/v1/email/validate",
+            "/api/v1/coupons/all",
+            "/api/v1/plans/save",
+            "/api/v1/vietqr/**"
+
+
+
     };
 
     public static final String[] USER_ADMIN_API = {
@@ -123,12 +124,13 @@ public class API_Provider {
             "/api/v1/schedules/getById/**",
     };
 
-        public static final String[] ADMIN_USER_ENTERPRISE_API = {
+    public static final String[] ADMIN_USER_ENTERPRISE_API = {
             "/api/v1/areas/all",
             "/api/v1/plan/check-in/detail",
             "/api/v1/plan/check-in/search",
             "/api/v1/car-companies/getById/**",
             "/api/v1/hotels/getById/**",
+            "/api/v1/coupons/getByCode",
     };
 
     public static final String[] ADMIN_ENTERPRISE_API = {
@@ -143,6 +145,7 @@ public class API_Provider {
             "/api/v1/type-enterprise-details/getById/**",
             "/api/v1/account-enterprises/detail",
             "/api/v1/account-enterprises/update/**",
+            "/api/v1/coupons/getByEnterpriseId",
     };
 
     public static final String[] ENTERPRISE_API = {

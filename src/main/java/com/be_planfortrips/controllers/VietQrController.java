@@ -2,10 +2,12 @@ package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.entity.BookingHotel;
 import com.be_planfortrips.entity.Status;
+import com.be_planfortrips.entity.Ticket;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.repositories.BookingHotelRepository;
 import com.be_planfortrips.repositories.HotelRepository;
+import com.be_planfortrips.repositories.TicketRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,6 +22,7 @@ public class VietQrController {
 
 
     BookingHotelRepository bookingHotelRepository;
+    private final TicketRepository ticketRepository;
 
     @PostMapping("/{bookingHotelId}")
     public ResponseEntity<?> paymentVietQr(
@@ -35,5 +38,48 @@ public class VietQrController {
         });
         bookingHotelRepository.save(bookingHotel);
         return ResponseEntity.ok("OKKKKKK");
+    }
+
+    @PostMapping("/payment-transportation")
+    public ResponseEntity<?> paymentTransportation(
+
+            @RequestParam("ticketId") Integer departureTicketId
+    ) {
+
+        Ticket ticket = ticketRepository.findById(departureTicketId).orElseThrow(
+                () -> new AppException(ErrorType.notFound, "Không tìm thấy vé với id: " + departureTicketId)
+        );
+        ticket.setStatus(Status.Complete);
+        ticketRepository.save(ticket);
+
+        return ResponseEntity.ok("Đặt vé thành công");
+    }
+
+    @PostMapping("/payment-plan")
+    public ResponseEntity<?> cancelBooking(
+            @RequestParam("bookingHotelId") Long bookingHotelId,
+            @RequestParam("departureTicketId") Integer departureTicketId,
+            @RequestParam("returnTicketId") Integer returnTicketId
+    ) {
+        BookingHotel bookingHotel =
+                bookingHotelRepository.findById(bookingHotelId).orElseThrow(
+                        () -> new AppException(ErrorType.notFound, "Không tìm thấy booking với id: " + bookingHotelId)
+                );
+        bookingHotel.setStatus(Status.Complete);
+        bookingHotel.getBookingHotelDetails().forEach((bk) -> {
+            bk.setStatus(Status.Complete);
+        });
+        bookingHotelRepository.save(bookingHotel);
+        Ticket departureTicket = ticketRepository.findById(departureTicketId).orElseThrow(
+                () -> new AppException(ErrorType.notFound, "Không tìm thấy vé với id: " + departureTicketId)
+        );
+        departureTicket.setStatus(Status.Complete);
+        ticketRepository.save(departureTicket);
+        Ticket returnTicket = ticketRepository.findById(returnTicketId).orElseThrow(
+                () -> new AppException(ErrorType.notFound, "Không tìm thấy vé với id: " + returnTicketId)
+        );
+        returnTicket.setStatus(Status.Complete);
+        ticketRepository.save(returnTicket);
+        return ResponseEntity.ok("Đặt vé thành công");
     }
 }
