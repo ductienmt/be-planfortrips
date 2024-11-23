@@ -16,13 +16,7 @@ public interface ITourService {
     Page<TourResponse> getActiveTours(PageRequest request, String title,Integer rating, List<String> tags);
     TourResponse getByTourId(Integer id) throws Exception;
     void deleteTourById(Integer id);
-<<<<<<< HEAD
     TourResponse uploadImage(Integer id, List<MultipartFile> files) throws Exception;
     TourResponse deleteImage(Integer id,  List<Integer> imageIds) throws Exception;
-
-=======
-
-    // Get Schedule Available
     List<TourScheduleResponse> getScheduleAvailable(LocalDateTime day, String cityId);
->>>>>>> f5ef60153cc1ac20fec948869a423d0b87824a0a
 }
