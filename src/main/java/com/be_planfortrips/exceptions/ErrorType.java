@@ -55,7 +55,7 @@ public enum ErrorType {
     HotelHaveNotRoomAvailable(714,"Khách sạn không có phòng có sẵn",HttpStatus.BAD_REQUEST),
     CarCompanyHaveNotScheduleAvailable(715,"Nhà xe không có chuyến có sẵn",HttpStatus.BAD_REQUEST),
     CarCompanyHaveNotSeatAvailable(716,"Nhà xe không có ghes có sẵn",HttpStatus.BAD_REQUEST),
-
+    TicketOrBookingHotelIsRequired(717,"Vé xe hoặc vé xe cần phải có",HttpStatus.BAD_REQUEST),
     ;
 
     private static String getString() {

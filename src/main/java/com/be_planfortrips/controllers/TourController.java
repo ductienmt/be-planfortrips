@@ -1,8 +1,8 @@
 package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.TourDTO;
+import com.be_planfortrips.dto.response.CarResponse;
 import com.be_planfortrips.dto.response.TListResponse;
-import com.be_planfortrips.dto.response.TagResponse;
 import com.be_planfortrips.dto.response.TourResponse;
 import com.be_planfortrips.dto.response.rsTourResponse.TourScheduleResponse;
 import com.be_planfortrips.services.interfaces.ITourService;
@@ -11,17 +11,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${api.prefix}/tours")
@@ -40,7 +43,7 @@ public class TourController {
             PageRequest request = PageRequest.of(page,limit);
             int totalPage = 0;
             List<String> tags = tagNames!=null?Arrays.stream(tagNames.split(",")).toList():new ArrayList<>();
-            Page<TourResponse> tourResponses = iTourService.getTours(request,titleName,rating,tags);
+            Page<TourResponse> tourResponses = iTourService.getActiveTours(request,titleName,rating,tags);
             totalPage = tourResponses.getTotalPages();
             TListResponse<TourResponse> listResponse = new TListResponse<>();
             listResponse.setTotalPage(totalPage);
@@ -64,10 +67,11 @@ public class TourController {
                 return ResponseEntity.badRequest().body(errorMessages);
             }
             List<String> tags = tagNames!=null?Arrays.stream(tagNames.split(",")).toList():new ArrayList<>();
-            if(tags.size() > 0)            tourDTO.setTagNames(tags);
+            if(tags.size() > 0) tourDTO.setTagNames(tags);
             TourResponse tourResponse = iTourService.createTour(tourDTO);
             return ResponseEntity.ok(tourResponse);
         }catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -89,6 +93,7 @@ public class TourController {
             TourResponse tourResponse = iTourService.updateTour(id,tourDTO);
             return ResponseEntity.ok(tourResponse);
         }catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -109,7 +114,30 @@ public class TourController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    @PostMapping(value = "uploads/{id}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadImages(@PathVariable Integer id,@RequestPart("files") List<MultipartFile> files)throws IllegalArgumentException{
+        try{
+            TourResponse response = iTourService.uploadImage(id,files);
+            return ResponseEntity.ok(response);
+        }catch (Exception ex){
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+    @DeleteMapping("deleteImages/{id}")
+    public ResponseEntity<?> deleteImages(@PathVariable Integer id,
+                                          @RequestParam String imageIds){
+        try {
+            List<Integer> imageIdsList = Arrays.stream(imageIds.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+            TourResponse response = iTourService.deleteImage(id,imageIdsList);
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     @GetMapping("/schedule/")
     public ResponseEntity<List<TourScheduleResponse>> getScheduleEnable(
             @RequestParam("day") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime day,
