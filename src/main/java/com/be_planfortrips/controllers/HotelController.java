@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -90,6 +91,7 @@ public class HotelController {
         iHotelService.deleteHotelById(id);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("getById/{id}")
     public ResponseEntity<?> getHotelById(@PathVariable Long id){
         try {
@@ -149,7 +151,7 @@ public class HotelController {
     @GetMapping("detail")
     public ResponseEntity<?> getHotelDetail(){
         try {
-            List<HotelResponse> hotelResponse = iHotelService.getHotelDetail();
+            List<Map<String, Object>> hotelResponse = iHotelService.getHotelDetail();
             return ResponseEntity.ok(hotelResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

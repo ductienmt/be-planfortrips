@@ -45,6 +45,7 @@ public class TicketController {
                     .map(Integer::parseInt)
                     .collect(Collectors.toList());
             ticketDTO.setSeatIds(seatIdsList);
+            System.out.println(ticketDTO.getSeatIds());
             ticketDTO.setCodeCoupon(codeCoupon);
             TicketResponse TicketResponse = iTicketService.createTicket(ticketDTO);
             return ResponseEntity.ok(TicketResponse);

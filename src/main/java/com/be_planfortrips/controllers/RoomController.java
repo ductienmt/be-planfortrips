@@ -96,8 +96,11 @@ public class RoomController {
     }
 
     @GetMapping("/getRoomByHotelId")
-    public ResponseEntity<?> getRoomByHotelId(@RequestParam Long id) {
-        return ResponseEntity.ok(roomService.getRoomByHotelId(id));
+    public ResponseEntity<?> getRoomByHotelId(@RequestParam Long id, @RequestParam(defaultValue = "0") Integer pageNo,
+                                             @RequestParam(defaultValue = "2") Integer pageSize,
+                                             @RequestParam(defaultValue = "id") String sortBy,
+                                             @RequestParam(defaultValue = "asc") String sortType) {
+        return ResponseEntity.ok(roomService.getRoomByHotelId(id, pageNo, pageSize, sortBy, sortType));
     }
 
 }

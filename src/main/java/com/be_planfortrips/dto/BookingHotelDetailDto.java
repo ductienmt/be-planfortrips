@@ -19,9 +19,5 @@ public class BookingHotelDetailDto {
     Long roomId;
     LocalDateTime checkInTime;
     LocalDateTime checkOutTime;
-
     BigDecimal price;
-
-    Status status;
-
 }

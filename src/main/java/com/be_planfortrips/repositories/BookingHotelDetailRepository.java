@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface BookingHotelDetailRepository extends JpaRepository<BookingHotelDetail, UUID> {
     List<BookingHotelDetail> findByBookingHotelBookingHotelId(Long bookingHotelId);
+
+    boolean existsByRoomId(Long roomId);
 }

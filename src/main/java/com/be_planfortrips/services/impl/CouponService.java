@@ -8,6 +8,7 @@ import com.be_planfortrips.entity.DiscountType;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.CouponMapper;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.CouponRepository;
 import com.be_planfortrips.services.interfaces.ICouponService;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,7 @@ public class CouponService implements ICouponService {
     CouponRepository couponRepository;
     CouponMapper couponMapper;
     AccountEnterpriseRepository enterpriseRepository;
+    private final TokenMapperImpl tokenMapperImpl;
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void deactivateExpiredCoupons() {
@@ -140,6 +143,21 @@ public class CouponService implements ICouponService {
     public void deleteCouponById(Integer id) {
         Optional<Coupon> coupon = couponRepository.findById(id);
         coupon.ifPresent(couponRepository::delete);
+    }
+
+    @Override
+    public CouponResponse getByCouponCode(String code, String status) {
+        return couponMapper.toResponse(couponRepository.findByCodeAndStatus(code, Boolean.valueOf(status)));
+    }
+
+    @Override
+    public Page<CouponResponse> getByEnterpriseId(Pageable pageable, String status) {
+        Long id = tokenMapperImpl.getIdEnterpriseByToken();
+
+        if (id != null) {
+            return couponRepository.getCouponByEnterpriseIdAndStatus(pageable, id, Boolean.valueOf(status)).map(couponMapper::toResponse);
+        }
+        throw new AppException(ErrorType.notFound, "Enterprise not found");
     }
 
 
