@@ -18,5 +18,4 @@ public interface ITourService {
     void deleteTourById(Integer id);
     TourResponse uploadImage(Integer id, List<MultipartFile> files) throws Exception;
     TourResponse deleteImage(Integer id,  List<Integer> imageIds) throws Exception;
-    List<TourScheduleResponse> getScheduleAvailable(LocalDateTime day, String cityId);
 }
