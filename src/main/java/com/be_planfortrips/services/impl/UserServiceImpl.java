@@ -2,15 +2,15 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.dto.request.ChangePasswordDto;
+import com.be_planfortrips.entity.CarCompany;
+import com.be_planfortrips.entity.Hotel;
 import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.entity.User;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.mappers.impl.UserMapper;
-import com.be_planfortrips.repositories.ImageRepository;
-import com.be_planfortrips.repositories.RoleRepository;
-import com.be_planfortrips.repositories.UserRepository;
+import com.be_planfortrips.repositories.*;
 import com.be_planfortrips.dto.response.AccountUserResponse;
 import com.be_planfortrips.services.interfaces.IUserService;
 import com.be_planfortrips.utils.Utils;
@@ -29,6 +29,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -36,6 +37,10 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CarCompanyRepository carCompanyRepository;
+    @Autowired
+    private HotelRepository hotelRepository;
 
     @Autowired
     private UserMapper userMapper;
@@ -285,5 +290,29 @@ public class UserServiceImpl implements IUserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new AppException(ErrorType.notMatchPassword);
         }
+    }
+
+    @Override
+    public List<AccountUserResponse> findByCarCompanyId(Integer id) {
+        CarCompany carCompany = carCompanyRepository.findById(id)
+                .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
+        List<AccountUserResponse> userResponses = userRepository.findUserByCarCompanyId(carCompany.getId())
+                .stream()
+                .map(
+                        userMapper::toResponse
+                ).collect(Collectors.toList());
+        return userResponses;
+    }
+
+    @Override
+    public List<AccountUserResponse> findByHotelId(Integer id) {
+        Hotel hotel = hotelRepository.findById(Long.valueOf(id))
+                .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
+        List<AccountUserResponse> userResponses = userRepository.findUserByHotelId(hotel.getId())
+                .stream()
+                .map(
+                        userMapper::toResponse
+                ).collect(Collectors.toList());
+        return userResponses;
     }
 }
