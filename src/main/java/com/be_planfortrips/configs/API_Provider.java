@@ -113,7 +113,7 @@ public class API_Provider {
     };
 
     public static final String[] USER_ADMIN_API = {
-            "/api/v1/car-companies/all",
+            "/api/v1/car-companies/all/**",
             "/api/v1/hotels/all",
             "/api/v1/users/getDetail",
     };
