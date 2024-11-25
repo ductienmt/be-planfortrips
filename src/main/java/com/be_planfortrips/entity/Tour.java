@@ -14,17 +14,16 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name="tours")
-public class Tour {
+public class Tour extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String title;
-    @ManyToOne
-    @JoinColumn(name = "city_depart_id")
-    City cityDepart;
-    @ManyToOne
-    @JoinColumn(name = "city_arrive_id")
-    City cityArrive;
+    String description;
+
+     @ManyToOne
+     Route route;
+
     Integer numberPeople;
     Double rating;
     Double totalPrice;
