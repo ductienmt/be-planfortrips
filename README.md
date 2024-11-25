@@ -32,12 +32,12 @@
 1. Cài đặt Node.js và npm (Node Package Manager).
 2. Clone repository dự án về máy:
    ```bash
-   git clone https://github.com/ductienmt/plan-for-trips.git
+   git clone https://github.com/ductienmt/fe-planfortrips.git
    ```
-3. Di chuyển vào thư mục `frontend`:
    ```bash
-   cd plan-for-trips/frontend
+   git clone https://github.com/ductienmt/be-planfortrips.git
    ```
+3. Mở project `frontend`:
 4. Cài đặt các gói phụ thuộc:
    ```bash
    npm install

@@ -49,4 +49,20 @@ public class VnPayController {
     public String returnPage(@RequestParam Map<String, String> requestParams) throws IOException {
         return iVnPayService.returnPage(requestParams);
     }
+    @PostMapping("/create-payment-plan")
+    public ResponseEntity<?> createPaymentForPlan(
+            @Valid @RequestParam("plan_id") Integer id,
+            HttpServletRequest request){
+        try {
+            VnpPayResponse vnpPayResponse = iVnPayService.createPaymentForPlan(id,request);
+            return ResponseEntity.ok(vnpPayResponse);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/return-plan")
+    public String returnPageForPlan(@RequestParam Map<String, String> requestParams) throws IOException {
+        return iVnPayService.returnPageForPlan(requestParams);
+    }
 }

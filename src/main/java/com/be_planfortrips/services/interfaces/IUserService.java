@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 public interface IUserService {
@@ -25,4 +26,6 @@ public interface IUserService {
     Map<String, Object> getAvatar();
     AccountUserResponse getUserDetail();
     void verifyPassword(String password);
+    List<AccountUserResponse> findByCarCompanyId(Integer id);
+    List<AccountUserResponse> findByHotelId(Integer id);
 }

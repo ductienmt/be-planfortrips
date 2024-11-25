@@ -259,4 +259,22 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/findByCarCompany/{id}")
+    public ResponseEntity<?> findByCarCompanyId(@PathVariable Integer id){
+        try {
+            return ResponseEntity.ok(userService.findByCarCompanyId(id));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/findByHotel/{id}")
+    public ResponseEntity<?> findByHotelId(@PathVariable Integer id){
+        try {
+            return ResponseEntity.ok(userService.findByHotelId(id));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

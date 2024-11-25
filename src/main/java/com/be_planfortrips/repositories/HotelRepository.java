@@ -19,4 +19,11 @@ public interface HotelRepository extends JpaRepository<Hotel,Long> {
 
     @Query("select h from Hotel h where h.accountEnterprise.accountEnterpriseId = :enterpriseId")
     List<Hotel> findByEnterpriseId(@Param("enterpriseId") Long enterpriseId);
+    @Query("select h from Hotel h inner join AccountEnterprise ae " +
+            "ON ae.accountEnterpriseId = h.accountEnterprise.accountEnterpriseId \n" +
+            "inner join City c ON c.id = ae.city.id \n" +
+            "inner join Station s ON s.city.id = c.id \n" +
+            "INNER JOIN Route r ON r.originStation.id = s.id OR r.destinationStation.id = s.id \n" +
+            "where r.id = :route_id")
+    List<Hotel> findHotelByRouteId(@Param("route_id") String routeId);
 }

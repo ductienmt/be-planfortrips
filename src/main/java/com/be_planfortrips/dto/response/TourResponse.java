@@ -18,10 +18,8 @@ public class TourResponse {
     @JsonProperty("tour_id")
     Integer id;
     String title;
-    @JsonProperty("city_depart_id")
-    String cityDepartId;
-    @JsonProperty("city_arrive_id")
-    String cityArriveId;
+    @JsonProperty("route")
+    Route route;
     @JsonProperty("number_people")
     Integer numberPeople;
     Double rating;

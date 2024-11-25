@@ -24,5 +24,6 @@ public interface IHotelService {
     Map<String, Object> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut, String destination);
     List<Map<String, Object>> getHotelDetail();
     List<HotelResponse> getByEnterpriseId(Long enterpriseId);
+    List<HotelResponse> getByRouteId(String routeId);
 }
 

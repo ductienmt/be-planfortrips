@@ -42,6 +42,7 @@ public class API_Provider {
             "/api/v1/account-enterprises/validate-username",
             "/api/v1/account-enterprises/validate-email",
             "/api/v1/account-enterprises/validate-phone",
+            "/api/v1/payments/vnpay/return-plan",
     };
 
     public static final String[] ADMIN_API = {
@@ -84,7 +85,7 @@ public class API_Provider {
             "/api/v1/tours/findById/**",
             "/api/v1/tours/uploads/**",
             "/api/v1/tours/deleteImages/**",
-            "/api/v1/payments/vnpay/create-payment",
+            "/api/v1/payments/vnpay/create-payment-plan",
     };
 
     public static final String[] USER_API = {
@@ -108,7 +109,8 @@ public class API_Provider {
             "/api/v1/email/validate",
             "/api/v1/coupons/all",
             "/api/v1/plans/save",
-            "/api/v1/vietqr/**"
+            "/api/v1/vietqr/**",
+            "/api/v1/payments/vnpay/create-payment-plan",
 
 
 
@@ -153,6 +155,8 @@ public class API_Provider {
             "/api/v1/account-enterprises/detail",
             "/api/v1/account-enterprises/update/**",
             "/api/v1/coupons/getByEnterpriseId",
+            "/api/v1/users/findByCarCompany/**",
+            "/api/v1/users/findByHotel/**",
     };
 
     public static final String[] ENTERPRISE_API = {
