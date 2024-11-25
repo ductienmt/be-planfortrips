@@ -81,6 +81,11 @@ public class CouponService implements ICouponService {
     }
 
     @Override
+    public CouponResponse createCouponRoom(CouponDto CouponDto, Long roomId) throws Exception {
+        return null;
+    }
+
+    @Override
     @Transactional
     public CouponResponse updateCoupon(Integer id, CouponDto couponDto) throws Exception {
         Coupon existingCoupon = couponRepository.findById(id)

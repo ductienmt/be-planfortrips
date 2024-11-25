@@ -38,4 +38,9 @@ public class City {
     @JsonManagedReference
     @JsonIgnore
     List<Checkin> checkins;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "image_id")
+    @JsonBackReference
+    Image image;
 }

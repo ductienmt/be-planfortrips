@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface ICouponService {
     CouponResponse createCoupon(CouponDto CouponDto) throws Exception;
+    CouponResponse createCouponRoom(CouponDto CouponDto, Long roomId) throws Exception;
     CouponResponse updateCoupon(Integer id, CouponDto CouponDto) throws Exception;
     Page<CouponResponse> getCoupons(PageRequest request, Long id);
     CouponResponse getByCouponId(Integer id) throws Exception;

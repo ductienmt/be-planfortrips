@@ -199,6 +199,6 @@ public class CheckinServiceImpl implements ICheckinService {
 
     @Override
     public List<Image> getImagesByCheckinId(Long checkinId) {
-        return null;
+        return getCheckin(checkinId).getImages();
     }
 }
