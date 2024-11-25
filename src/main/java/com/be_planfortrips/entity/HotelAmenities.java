@@ -1,5 +1,6 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,5 +32,6 @@ public class HotelAmenities {
     private Image icon;
     @ManyToOne
     @JoinColumn(name = "hotel_id")
+    @JsonBackReference
     private Hotel hotel;
 }

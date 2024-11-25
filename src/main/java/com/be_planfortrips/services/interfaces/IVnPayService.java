@@ -15,5 +15,10 @@ public interface IVnPayService {
             VnPayDTO vnPayDTO,
             HttpServletRequest httpServletRequest
     ) throws IOException;
+    VnpPayResponse createPaymentForPlan(
+            Integer planId,
+            HttpServletRequest httpServletRequest
+    ) throws IOException;
     String returnPage(Map<String, String> requestParams) throws IOException;
+    String returnPageForPlan(Map<String, String> requestParams) throws IOException;
 }

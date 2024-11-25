@@ -138,15 +138,4 @@ public class TourController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("/schedule/")
-    public ResponseEntity<List<TourScheduleResponse>> getScheduleEnable(
-            @RequestParam("day") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime day,
-            @RequestParam("cityId") String cityId
-    ) {
-        List<TourScheduleResponse> scheduleBringData = iTourService.getScheduleAvailable(day, cityId);
-        return ResponseEntity.ok(scheduleBringData);
-    }
-
-
-
 }
