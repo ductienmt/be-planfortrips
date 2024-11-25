@@ -191,5 +191,22 @@ public class CheckinController {
         }
     }
 
+    @GetMapping("getByCityId")
+    public ResponseEntity<?> getCheckinByCityId(@RequestParam("cityId") String city) {
+        try {
+            List<CheckinResponse> checkins = this.checkinService.getCheckinByCityId(city);
+            return ResponseEntity.ok(
+                    ApiResponse.<List<CheckinResponse>>builder()
+                            .code(HttpStatus.OK.value())
+                            .data(checkins)
+                            .message("Lấy danh sách điểm checkin thành công.")
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy danh sách điểm checkin thất bại.");
+        }
+    }
+
 
 }
