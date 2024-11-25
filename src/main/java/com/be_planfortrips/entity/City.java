@@ -1,6 +1,7 @@
 package com.be_planfortrips.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,6 +36,7 @@ public class City {
 
     @OneToMany(mappedBy = "city", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JsonManagedReference
+    @JsonIgnore
     List<Checkin> checkins;
 
     @ManyToOne(fetch = FetchType.EAGER)
