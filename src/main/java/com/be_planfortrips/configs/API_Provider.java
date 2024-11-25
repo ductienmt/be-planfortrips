@@ -84,7 +84,7 @@ public class API_Provider {
             "/api/v1/tours/findById/**",
             "/api/v1/tours/uploads/**",
             "/api/v1/tours/deleteImages/**",
-            "/api/v1/payments/vnpay/create-payment",
+//            "/api/v1/payments/vnpay/create-payment",
     };
 
     public static final String[] USER_API = {
