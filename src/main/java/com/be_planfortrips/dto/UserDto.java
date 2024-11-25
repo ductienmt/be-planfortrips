@@ -25,9 +25,8 @@ public class UserDto {
     String fullName;
     @NotBlank(message = "Vui lòng nhập email")
     String email;
-    @NotBlank(message = "Vui lòng nhập địa chỉ")
     String address;
     @NotNull(message = "Vui lòng nhập ngày sinh")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate birthdate;
 }

@@ -16,4 +16,9 @@ public interface AccountEnterpriseRepository extends JpaRepository<AccountEnterp
     @Query("SELECT a FROM AccountEnterprise a WHERE a.username = :username AND a.status = true")
     AccountEnterprise findByUsername(String username);
 
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+    boolean existsByPhoneNumber(String phone);
+
+
 }

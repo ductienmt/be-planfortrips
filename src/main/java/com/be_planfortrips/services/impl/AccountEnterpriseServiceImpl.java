@@ -153,7 +153,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
  @Override
     public Boolean toggleStage(Long userId) {
         AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(userId).orElseThrow(
-                () -> new AppException(ErrorType.notFound) // Ném exception nếu không tìm thấy
+                () -> new AppException(ErrorType.notFound)
         );
 
         if (accountEnterprise.isStatus()) {
@@ -167,6 +167,31 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
 
         return accountEnterprise.isStatus();
     }
+
+    @Override
+    public void validateUsername(String username) {
+        boolean exists = accountEnterpriseRepository.existsByUsername(username);
+        if (exists) {
+            throw new AppException(ErrorType.usernameExisted);
+        }
+    }
+
+    @Override
+    public void validateEmail(String email) {
+        boolean exists = accountEnterpriseRepository.existsByEmail(email);
+        if (exists) {
+            throw new AppException(ErrorType.emailExisted);
+        }
+    }
+
+    @Override
+    public void validatePhone(String phone) {
+        boolean exists = accountEnterpriseRepository.existsByPhoneNumber(phone);
+        if (exists) {
+            throw new AppException(ErrorType.phoneExisted);
+        }
+    }
+
 
     private void validateForm(AccountEnterpriseDto accountEnterpriseDto) {
         if (accountEnterpriseDto.getUsername() == null || accountEnterpriseDto.getUsername().isEmpty()) {
@@ -183,7 +208,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
             throw new RuntimeException("Loại hình doanh nghiệp không được để trống.");
         } else if (accountEnterpriseDto.getRepresentative() == null || accountEnterpriseDto.getRepresentative().isEmpty()) {
             throw new RuntimeException("Người đại diện doanh nghiệp không được để trống.");
-        } else if (Utils.isValidPhoneNumber(accountEnterpriseDto.getPhoneNumber())) {
+        } else if (!Utils.isValidPhoneNumber(accountEnterpriseDto.getPhoneNumber())) {
             throw new RuntimeException("Số điện thoại không hợp lệ.");
         }
         if (accountEnterpriseRepository.findByUsername(accountEnterpriseDto.getUsername()) != null) {

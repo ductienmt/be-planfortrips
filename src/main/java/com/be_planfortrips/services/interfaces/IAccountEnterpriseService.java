@@ -26,4 +26,10 @@ public interface IAccountEnterpriseService {
     AccountEnterpriseResponse getAccountEnterpriseDetail();
 
     Boolean toggleStage(Long userId);
+
+    void validateUsername(String username);
+
+    void validateEmail(String email);
+
+    void validatePhone(String phone);
 }

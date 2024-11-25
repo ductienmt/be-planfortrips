@@ -36,4 +36,9 @@ public class City {
     @OneToMany(mappedBy = "city", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JsonManagedReference
     List<Checkin> checkins;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "image_id")
+    @JsonBackReference
+    Image image;
 }

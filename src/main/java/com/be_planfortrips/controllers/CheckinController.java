@@ -177,10 +177,11 @@ public class CheckinController {
     @GetMapping("getImages")
     public ResponseEntity<?> getImagesByCheckinId(@RequestParam("checkinId") Long checkinId) {
         try {
+            List<Image> images = this.checkinService.getImagesByCheckinId(checkinId);
             return ResponseEntity.ok(
                     ApiResponse.<List<Image>>builder()
                             .code(HttpStatus.OK.value())
-                            .data(this.checkinService.getImagesByCheckinId(checkinId))
+                            .data(images)
                             .message("Lấy danh sách ảnh thành công.")
                             .build()
             );
