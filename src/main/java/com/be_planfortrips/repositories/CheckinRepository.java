@@ -19,5 +19,8 @@ public interface CheckinRepository extends JpaRepository<Checkin, Long> {
     @Query(value = "SELECT c FROM Checkin c where c.city.nameCity like %:cityName% ORDER BY RANDOM() LIMIT :limit")
     List<Checkin> findRandomCheckins(@Param("limit") int limit, @Param("cityName") String cityName);
 
+    @Query("SELECT c FROM Checkin c WHERE c.city.id = :cityId")
+    List<Checkin> findByCityId(@Param("cityId") String city);
+
 
 }

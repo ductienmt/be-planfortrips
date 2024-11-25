@@ -17,6 +17,7 @@ public class API_Provider {
             "/api/v1/areas/all",
             "/api/v1/users/findByUsername",
             "/api/v1/check-in/all",
+            "/api/v1/check-in/getByCityId",
             "/api/v1/check-in/upload-image",
             "/api/v1/vehicles/getById/**",
             "/api/v1/hotels/getById/**",
