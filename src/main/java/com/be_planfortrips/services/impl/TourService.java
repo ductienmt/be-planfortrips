@@ -38,6 +38,7 @@ public class TourService implements ITourService {
     AdminRepository adminRepository;
     CheckinRepository checkinRepository;
     CityRepository cityRepository;
+    RouteRepository routeRepository;
     ImageRepository imageRepository;
     TourMapper tourMapper;
     CloudinaryService cloudinaryService;
@@ -70,7 +71,9 @@ public class TourService implements ITourService {
                 .orElseThrow(() -> {
                     throw new AppException(ErrorType.notFound);
                 });
-        List<Tag> tags = TourDTO.getTagNames() != null
+        Route route =  routeRepository.findById(TourDTO.getRouteId())
+                .orElseThrow(()-> {throw new AppException(ErrorType.notFound);});
+        List<Tag> tags = TourDTO.getTagNames()!= null
                 ? tagRepository.findAllByNameIn(TourDTO.getTagNames())
                 : new ArrayList<>();
         tour.setTags(tags);
@@ -78,11 +81,13 @@ public class TourService implements ITourService {
         tour.setHotel(hotelExisting);
         tour.setCarCompany(carExisting);
         tour.setCheckin(checkinExisting);
+        tour.setRoute(route);
         tourRepository.save(tour);
 
         TourResponse tourResponse = tourMapper.toResponse(tour);
         tourResponse.setHotel(hotelExisting);
         tourResponse.setCarCompany(carExisting);
+        tourResponse.setRoute(route);
         tourResponse.setAdminUsername(admin.getUserName());
         return tourResponse;
     }
@@ -115,7 +120,9 @@ public class TourService implements ITourService {
                 .orElseThrow(() -> {
                     throw new AppException(ErrorType.notFound);
                 });
-        List<Tag> tags = TourDTO.getTagNames() != null
+        Route route =  routeRepository.findById(TourDTO.getRouteId())
+                .orElseThrow(()-> {throw new AppException(ErrorType.notFound);});
+        List<Tag> tags = TourDTO.getTagNames()!= null
                 ? tagRepository.findAllByNameIn(TourDTO.getTagNames())
                 : new ArrayList<>();
         tour.setId(id);
@@ -124,6 +131,7 @@ public class TourService implements ITourService {
         tour.setHotel(hotelExisting);
         tour.setCarCompany(carExisting);
         tour.setCheckin(checkinExisting);
+        tour.setRoute(route);
         tourRepository.save(tour);
 
         TourResponse tourResponse = tourMapper.toResponse(tour);

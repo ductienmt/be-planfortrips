@@ -24,10 +24,11 @@ public class CheckinImage {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "checkin_id")
-            @JsonBackReference
+    @JsonBackReference
     Checkin checkin;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "image_id")
+    @JsonBackReference
     Image image;
 }

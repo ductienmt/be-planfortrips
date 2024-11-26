@@ -157,6 +157,13 @@ public class HotelController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    @GetMapping("getByRouteId/{id}")
+    public ResponseEntity<?> getHotelByRouteId(@PathVariable String id){
+        try {
+            return ResponseEntity.ok(iHotelService.getByRouteId(id));
+        }catch (Exception e){
+            return  ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 }

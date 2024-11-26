@@ -199,6 +199,14 @@ public class CheckinServiceImpl implements ICheckinService {
 
     @Override
     public List<Image> getImagesByCheckinId(Long checkinId) {
-        return null;
+        return getCheckin(checkinId).getImages();
+    }
+
+    @Override
+    public List<CheckinResponse> getCheckinByCityId(String cityId) {
+        return this.checkinRepository.findByCityId(cityId)
+                .stream()
+                .map(checkinMapper::toResponse)
+                .collect(Collectors.toList());
     }
 }

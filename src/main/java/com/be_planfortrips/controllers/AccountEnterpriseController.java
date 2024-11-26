@@ -2,7 +2,10 @@ package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.AccountEnterpriseDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.services.interfaces.IAccountEnterpriseService;
+import com.be_planfortrips.utils.Utils;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -66,4 +70,45 @@ public class AccountEnterpriseController {
     )  {
         return ResponseEntity.ok(accountEnterpriseService.toggleStage(id));
     }
+
+    @PostMapping("validate-username")
+    public ResponseEntity<?> validateUsername(@RequestParam String username) {
+        try {
+            accountEnterpriseService.validateUsername(username);
+            return ResponseEntity.ok(Map.of("message", "Tên đăng nhập hợp lệ."));
+        } catch (AppException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+//                    "error", e.getErrorType().name(),
+                    "message", e.getMessage()
+            ));
+        }
+    }
+    @PostMapping("validate-email")
+    public ResponseEntity<?> validateEmail(@RequestParam String email) {
+        try {
+            accountEnterpriseService.validateEmail(email);
+            return ResponseEntity.ok(Map.of("message", "Email hợp lệ."));
+        } catch (AppException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+//                    "error", e.getErrorType().name(),
+                    "message", e.getMessage()
+            ));
+        }
+    }
+    @PostMapping("validate-phone")
+    public ResponseEntity<?> validatePhone(@RequestParam String phone) {
+        try {
+            if(!Utils.isValidPhoneNumber(phone)){
+                throw new AppException(ErrorType.phoneNotValid);
+            }
+            accountEnterpriseService.validatePhone(phone);
+            return ResponseEntity.ok(Map.of("message", "Phone hợp lệ."));
+        } catch (AppException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+//                    "error", e.getErrorType().name(),
+                    "message", e.getMessage()
+            ));
+        }
+    }
+
 }

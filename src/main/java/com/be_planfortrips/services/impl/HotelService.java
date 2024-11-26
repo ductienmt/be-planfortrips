@@ -11,6 +11,7 @@ import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.HotelRepository;
 import com.be_planfortrips.repositories.ImageRepository;
 import com.be_planfortrips.dto.response.HotelResponse;
+import com.be_planfortrips.repositories.RouteRepository;
 import com.be_planfortrips.services.interfaces.IHotelService;
 import com.be_planfortrips.utils.Utils;
 import lombok.AccessLevel;
@@ -46,6 +47,7 @@ public class HotelService implements IHotelService {
     RoomServiceImpl roomServiceImpl;
 
     CloudinaryService cloudinaryService;
+    RouteRepository routeRepository;
     private final TokenMapperImpl tokenMapperImpl;
 
     @Override
@@ -240,5 +242,12 @@ public class HotelService implements IHotelService {
     public List<HotelResponse> getByEnterpriseId(Long enterpriseId) {
         List<Hotel> hotels = this.hotelRepository.findByEnterpriseId(enterpriseId);
         return List.of();
+    }
+
+    @Override
+    public List<HotelResponse> getByRouteId(String routeId) {
+        Route route = routeRepository.findById(routeId)
+                .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
+        return hotelRepository.findHotelByRouteId(route.getId()).stream().map(hotelMapper::toResponse).toList();
     }
 }

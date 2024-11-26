@@ -177,16 +177,34 @@ public class CheckinController {
     @GetMapping("getImages")
     public ResponseEntity<?> getImagesByCheckinId(@RequestParam("checkinId") Long checkinId) {
         try {
+            List<Image> images = this.checkinService.getImagesByCheckinId(checkinId);
             return ResponseEntity.ok(
                     ApiResponse.<List<Image>>builder()
                             .code(HttpStatus.OK.value())
-                            .data(this.checkinService.getImagesByCheckinId(checkinId))
+                            .data(images)
                             .message("Lấy danh sách ảnh thành công.")
                             .build()
             );
         } catch (Exception e) {
             log.error(e.getMessage());
             return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy danh sách ảnh thất bại.");
+        }
+    }
+
+    @GetMapping("getByCityId")
+    public ResponseEntity<?> getCheckinByCityId(@RequestParam("cityId") String city) {
+        try {
+            List<CheckinResponse> checkins = this.checkinService.getCheckinByCityId(city);
+            return ResponseEntity.ok(
+                    ApiResponse.<List<CheckinResponse>>builder()
+                            .code(HttpStatus.OK.value())
+                            .data(checkins)
+                            .message("Lấy danh sách điểm checkin thành công.")
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return buildApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Lấy danh sách điểm checkin thất bại.");
         }
     }
 

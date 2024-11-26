@@ -19,4 +19,5 @@ public interface ICheckinService {
     void uploadImage(Long checkinId, List<MultipartFile> files);
     List<CheckinResponse> getCheckinRandom(Integer limit,String cityName);
     List<Image> getImagesByCheckinId(Long checkinId);
+    List<CheckinResponse> getCheckinByCityId(String cityId);
 }

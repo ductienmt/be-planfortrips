@@ -24,6 +24,9 @@ public class Tour extends BaseEntity{
      @ManyToOne
      Route route;
 
+    @ManyToOne
+    @JoinColumn(name = "route_id")
+    Route route;
     Integer numberPeople;
     Double rating;
     Double totalPrice;

@@ -35,6 +35,8 @@ public enum ErrorType {
     DeleteImageFailed(606,"Xóa ảnh thất bại",HttpStatus.BAD_REQUEST),
     nameTypeExisted(607, "NameType Existed", HttpStatus.BAD_REQUEST),
     hasEtp(608,"TypeEnterprise Contain AccountEnterprise", HttpStatus.BAD_REQUEST),
+    emailExisted(609,"Email đã tồn tại",HttpStatus.BAD_REQUEST),
+    phoneExisted(610,"Số điện thoại đã tồn tại",HttpStatus.BAD_REQUEST),
     // Case Not Found
     // (Trong trường hợp tạo đối tượng từ đối tượng khác, cần biết rõ đối tượng nào
     // không tồn tại)

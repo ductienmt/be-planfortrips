@@ -48,6 +48,26 @@ public class CouponController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PostMapping("/create-coupon-room")
+    public ResponseEntity<?> createCouponRoom(@RequestBody @Valid CouponDto CouponDTO, @RequestParam Long roomId,
+                                          BindingResult result){
+        try {
+            if(result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
+            CouponResponse CouponResponse = iCouponService.createCouponRoom(CouponDTO, roomId);
+            return ResponseEntity.ok(CouponResponse);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("update/{id}")
     public ResponseEntity<?> updateCoupon(@PathVariable Integer id, @RequestBody @Valid CouponDto CouponDTO,
                                           BindingResult result){
