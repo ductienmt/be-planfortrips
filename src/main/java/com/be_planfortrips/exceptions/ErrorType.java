@@ -58,6 +58,9 @@ public enum ErrorType {
     CarCompanyHaveNotScheduleAvailable(715,"Nhà xe không có chuyến có sẵn",HttpStatus.BAD_REQUEST),
     CarCompanyHaveNotSeatAvailable(716,"Nhà xe không có ghes có sẵn",HttpStatus.BAD_REQUEST),
     TicketOrBookingHotelIsRequired(717,"Vé xe hoặc vé xe cần phải có",HttpStatus.BAD_REQUEST),
+    TourIdNotFound(718,"TourId Not found",HttpStatus.NOT_FOUND),
+    ScheduleIdNotFound(719, "ScheduleId Not Found",HttpStatus.NOT_FOUND),
+    SeatIdNotFound(720, "SeatId Not Found",HttpStatus.NOT_FOUND)
     ;
 
     private static String getString() {
