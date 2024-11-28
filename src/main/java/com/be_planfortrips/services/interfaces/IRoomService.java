@@ -31,4 +31,10 @@ public interface IRoomService {
 
     boolean uploadImageRoomById(List<MultipartFile> file, Long roomId) throws IOException;
 
+    Page<RoomResponseEnterprise> getRoomByStatus(Long hotelId, Integer status, Integer pageNo, Integer pageSize, String sortBy, String sortType);
+
+    Page<RoomResponseEnterprise> filterRoom(Long hotelId, Integer status, String roomType, Integer pageNo, Integer pageSize, String sortBy, String sortType);
+
+
+
 }

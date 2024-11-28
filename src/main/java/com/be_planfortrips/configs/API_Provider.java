@@ -44,6 +44,7 @@ public class API_Provider {
             "/api/v1/account-enterprises/validate-email",
             "/api/v1/account-enterprises/validate-phone",
             "/api/v1/payments/vnpay/return-plan",
+            "/api/v1/hotels/getHotelsSamePrice",
     };
 
     public static final String[] ADMIN_API = {
@@ -207,5 +208,9 @@ public class API_Provider {
             "/api/v1/room-amenities/change-status",
             "/api/v1/room-amenities/upload-icon",
             "/api/v1/room-amenities/delete-icon",
+            "/api/v1/rooms/getRoomAvailableByHotelId",
+            "/api/v1/rooms/filter",
+            "/api/v1/booking-hotels/getUsers",
+
     };
 }

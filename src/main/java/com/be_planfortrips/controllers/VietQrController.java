@@ -1,12 +1,14 @@
 package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.entity.BookingHotel;
+import com.be_planfortrips.entity.Plan;
 import com.be_planfortrips.entity.Status;
 import com.be_planfortrips.entity.Ticket;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.repositories.BookingHotelRepository;
 import com.be_planfortrips.repositories.HotelRepository;
+import com.be_planfortrips.repositories.PlanRepository;
 import com.be_planfortrips.repositories.TicketRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class VietQrController {
 
     BookingHotelRepository bookingHotelRepository;
     private final TicketRepository ticketRepository;
+    private final PlanRepository planRepository;
 
     @PostMapping("/{bookingHotelId}")
     public ResponseEntity<?> paymentVietQr(
@@ -56,11 +59,17 @@ public class VietQrController {
     }
 
     @PostMapping("/payment-plan")
-    public ResponseEntity<?> cancelBooking(
+    public ResponseEntity<?> paymentPlan(
+            @RequestParam("planId") Long planId,
             @RequestParam("bookingHotelId") Long bookingHotelId,
             @RequestParam("departureTicketId") Integer departureTicketId,
             @RequestParam("returnTicketId") Integer returnTicketId
     ) {
+        Plan plan = planRepository.findById(planId).orElseThrow(
+                () -> new AppException(ErrorType.notFound, "Không tìm thấy plan với id: " + planId)
+        );
+        plan.setStatusPayment(Status.Complete);
+        planRepository.save(plan);
         BookingHotel bookingHotel =
                 bookingHotelRepository.findById(bookingHotelId).orElseThrow(
                         () -> new AppException(ErrorType.notFound, "Không tìm thấy booking với id: " + bookingHotelId)

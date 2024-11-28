@@ -27,6 +27,18 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
             @Param("destination") String destination
     );
 
+    @Query("SELECT s FROM Schedule s " +
+            "WHERE s.route.originStation.city.nameCity LIKE %:originalLocation% " +
+            "AND s.route.destinationStation.city.nameCity LIKE %:destination% " +
+            "AND s.departureTime BETWEEN :departureTime AND :returnTime")
+    List<Schedule> findSchedulesByTimeAndLocations(
+            @Param("departureTime") LocalDateTime departureTime,
+            @Param("returnTime") LocalDateTime returnTime,
+            @Param("originalLocation") String originalLocation,
+            @Param("destination") String destination
+    );
+
+
     @Query("SELECT s.route.originStation.name AS departureStation, "
             + "s.route.destinationStation.name AS arrivalStation "
             + "FROM Schedule s "

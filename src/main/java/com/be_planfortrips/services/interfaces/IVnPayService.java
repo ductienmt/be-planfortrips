@@ -17,6 +17,9 @@ public interface IVnPayService {
     ) throws IOException;
     VnpPayResponse createPaymentForPlan(
             Integer planId,
+            Integer departureId,
+            Integer returnId,
+            Integer bookingId,
             HttpServletRequest httpServletRequest
     ) throws IOException;
     String returnPage(Map<String, String> requestParams) throws IOException;
