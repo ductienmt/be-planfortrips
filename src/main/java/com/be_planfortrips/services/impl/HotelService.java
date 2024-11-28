@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.ArrayList;
@@ -250,4 +251,37 @@ public class HotelService implements IHotelService {
                 .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
         return hotelRepository.findHotelByRouteId(route.getId()).stream().map(hotelMapper::toResponse).toList();
     }
+
+    @Override
+    public List<Map<String, Object>> getHotelsSamePrice(double price) {
+        BigDecimal minPrice = BigDecimal.valueOf(price - 50);
+        BigDecimal maxPrice = BigDecimal.valueOf(price + 50);
+
+        List<Object[]> hotels = hotelRepository.findHotelsWithRoomsInPriceRange(minPrice, maxPrice);
+
+        List<Map<String, Object>> hotelResponses = new ArrayList<>();
+        Set<Long> addedHotelIds = new HashSet<>();
+
+        for (Object[] result : hotels) {
+            Hotel hotel = (Hotel) result[0];
+            Room room = (Room) result[1];
+
+            if (!addedHotelIds.contains(hotel.getId())) {
+                Map<String, Object> hotelMap = new HashMap<>();
+                hotelMap.put("hotelId", hotel.getId());
+                hotelMap.put("hotelName", hotel.getName());
+                hotelMap.put("hotelAddress", hotel.getAddress());
+                hotelMap.put("hotelImage", hotel.getImages().stream().limit(1).collect(Collectors.toList()));
+                hotelMap.put("hotelAmenities", hotel.getHotelAmenities().stream().limit(3).collect(Collectors.toList()));
+                hotelMap.put("rating", hotel.getRating());
+                hotelMap.put("roomPrice", room.getPrice());
+
+                hotelResponses.add(hotelMap);
+                addedHotelIds.add(hotel.getId());
+            }
+        }
+
+        return hotelResponses;
+    }
+
 }

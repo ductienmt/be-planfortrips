@@ -139,6 +139,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         return response;
     }
 
+
     @Override
     public List<ScheduleResponse> getSchedules(DataSchedule dataSchedule) {
         if (dataSchedule.getEndDate() == null) {

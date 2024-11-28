@@ -14,9 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,6 +80,7 @@ public class PlanServiceImpl implements IPlanService {
         dataEssential.put("checkins", checkinResponses);
         return dataEssential;
     }
+
 
     @Override
     public List<PlanResponse> getAllPlan() {
@@ -199,7 +203,7 @@ public class PlanServiceImpl implements IPlanService {
         }
 
         if (planSave == null || planSave.getId() == null) {
-            throw  new AppException(ErrorType.internalServerError, "Lỗi lưu kế hoạch");
+            throw new AppException(ErrorType.internalServerError, "Lỗi lưu kế hoạch");
         }
 
         for (PlanDetailDto detailDto : planDto.getPlanDetails()) {

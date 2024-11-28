@@ -51,10 +51,13 @@ public class VnPayController {
     }
     @PostMapping("/create-payment-plan")
     public ResponseEntity<?> createPaymentForPlan(
-            @Valid @RequestParam("plan_id") Integer id,
+            @RequestParam("plan_id") Integer id,
+            @RequestParam("departure_ticket_id") Integer departureId,
+            @RequestParam("return_ticket_id") Integer returnId,
+            @RequestParam("booking_id") Integer bookingId,
             HttpServletRequest request){
         try {
-            VnpPayResponse vnpPayResponse = iVnPayService.createPaymentForPlan(id,request);
+            VnpPayResponse vnpPayResponse = iVnPayService.createPaymentForPlan(id, departureId, returnId, bookingId, request);
             return ResponseEntity.ok(vnpPayResponse);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
