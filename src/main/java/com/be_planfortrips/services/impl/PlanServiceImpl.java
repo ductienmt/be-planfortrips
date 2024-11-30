@@ -180,7 +180,7 @@ public class PlanServiceImpl implements IPlanService {
     }
 
     @Override
-    public void save(PlanDto planDto) {
+    public Map<String, Object> save(PlanDto planDto) {
         Plan plan = new Plan();
         plan.setPlanName(planDto.getPlanName());
         plan.setStartDate(planDto.getStartDate().toLocalDate());
@@ -256,6 +256,10 @@ public class PlanServiceImpl implements IPlanService {
 
             planDetailRepository.save(detail);
         }
+        Map<String, Object> response = new HashMap<>();
+        response.put("planId", planSave.getId());
+        response.put("message", "Lưu kế hoạch thành công");
+        return response;
     }
 
     @Override

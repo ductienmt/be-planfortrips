@@ -104,17 +104,14 @@ public class API_Provider {
             "/api/v1/users/verify-password",
             "/api/v1/users/getImage",
             "/api/v1/users/detail",
-            "/api/v1/payments/vnpay/create-payment",
             "/api/v1/users/verify-email",
             "/api/v1/email/send",
             "/api/v1/email/validate",
             "/api/v1/coupons/all",
             "/api/v1/plans/save",
             "/api/v1/vietqr/**",
+            "/api/v1/payments/vnpay/create-payment",
             "/api/v1/payments/vnpay/create-payment-plan",
-
-
-
     };
 
     public static final String[] USER_ADMIN_API = {
