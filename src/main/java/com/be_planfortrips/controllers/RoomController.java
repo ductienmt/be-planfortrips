@@ -27,7 +27,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("${api.prefix}/rooms")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RoomController {
 
     IRoomService roomService;
@@ -43,7 +43,7 @@ public class RoomController {
     @GetMapping("getById/{roomId}")
     public ResponseEntity<RoomResponse> getRoomById(
             @PathVariable Long roomId
-            ) {
+    ) {
         RoomResponse response = roomService.getRoomById(roomId);
         return ResponseEntity.ok(response);
     }
@@ -51,7 +51,7 @@ public class RoomController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/create")
     public ResponseEntity<RoomResponse> createRoom(
-           @RequestBody @Valid  RoomDto roomDto
+            @RequestBody @Valid RoomDto roomDto
     ) {
         RoomResponse response = roomService.createRoom(roomDto);
         return ResponseEntity.ok(response);
@@ -72,7 +72,7 @@ public class RoomController {
     @PutMapping("update/{roomId}")
     public ResponseEntity<RoomResponse> updateRoom(
             @RequestBody RoomDto roomDto, @PathVariable Long roomId
-    )  {
+    ) {
         RoomResponse response = roomService.updateRoomById(roomId, roomDto);
         return ResponseEntity.ok(response);
     }
@@ -95,12 +95,36 @@ public class RoomController {
         return ResponseEntity.ok(hotelService.getRoomAvailable(checkIn, checkOut, destination));
     }
 
+    @GetMapping("/getRoomAvailableByHotelId")
+    public ResponseEntity<?> getRoomAvailableByHotelId(
+            @RequestParam Long hotelId,
+            @RequestParam Integer status,
+            @RequestParam(defaultValue = "0", required = false) Integer pageNo,
+            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "id", required = false) String sortBy,
+            @RequestParam(defaultValue = "asc", required = false) String sortType
+
+    ) {
+        return ResponseEntity.ok(roomService.getRoomByStatus(hotelId, status, pageNo, pageSize, sortBy, sortType));
+    }
+
     @GetMapping("/getRoomByHotelId")
-    public ResponseEntity<?> getRoomByHotelId(@RequestParam Long id, @RequestParam(defaultValue = "0") Integer pageNo,
-                                             @RequestParam(defaultValue = "2") Integer pageSize,
-                                             @RequestParam(defaultValue = "id") String sortBy,
-                                             @RequestParam(defaultValue = "asc") String sortType) {
+    public ResponseEntity<?> getRoomByHotelId(@RequestParam Long id, @RequestParam(defaultValue = "0", required = false) Integer pageNo,
+                                              @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+                                              @RequestParam(defaultValue = "id", required = false) String sortBy,
+                                              @RequestParam(defaultValue = "asc", required = false) String sortType) {
         return ResponseEntity.ok(roomService.getRoomByHotelId(id, pageNo, pageSize, sortBy, sortType));
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<?> filterRoom(
+            @RequestParam Integer hotelId, @RequestParam(required = false) Integer status, @RequestParam(required = false) String roomType,
+            @RequestParam(defaultValue = "0", required = false) Integer pageNo,
+            @RequestParam(defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(defaultValue = "id", required = false) String sortBy,
+            @RequestParam(defaultValue = "asc", required = false) String sortType
+    ) {
+        return ResponseEntity.ok(roomService.filterRoom(hotelId.longValue(), status, roomType, pageNo, pageSize, sortBy, sortType));
     }
 
 }

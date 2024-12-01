@@ -1,6 +1,7 @@
 package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.BookingHotelDto;
+import com.be_planfortrips.dto.response.BookingCustomer;
 import com.be_planfortrips.dto.response.BookingHotelResponse;
 import com.be_planfortrips.services.interfaces.IBookingHotelService;
 import lombok.AccessLevel;
@@ -61,4 +62,12 @@ public class BookingHotelController {
         bookingHotelService.deleteBookingHotelByBookingId(bookingId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("getUsers")
+    public ResponseEntity<?> getUsers(@RequestParam(required = false) String status) {
+        List<BookingCustomer> customers = bookingHotelService.findCustomersByEnterpriseId(status);
+        return new ResponseEntity<>(customers, HttpStatus.OK);
+    }
+
+
 }

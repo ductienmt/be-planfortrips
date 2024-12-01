@@ -166,4 +166,13 @@ public class HotelController {
         }
     }
 
+    @GetMapping("getHotelsSamePrice")
+    public ResponseEntity<?> getHotelsSamePrice(@RequestParam("price") double price){
+        try {
+            return ResponseEntity.ok(iHotelService.getHotelsSamePrice(price));
+        }catch (Exception e){
+            return  ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
