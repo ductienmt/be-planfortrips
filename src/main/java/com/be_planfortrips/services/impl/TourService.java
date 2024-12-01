@@ -335,6 +335,13 @@ public class TourService implements ITourService {
                 map(this::convertTourToTourClientResponse).toList();
     }
 
+    @Override
+    public List<TourClientResponse> getTourByDestination(String cityDesId, String cityOriginId) {
+        List<Tour> res = tourRepository.getTourByCityId(cityDesId, cityOriginId);
+        return res.stream().
+                map(this::convertTourToTourClientResponse).toList();
+    }
+
 
     public TourClientResponse convertTourToTourClientResponse(Tour tour) {
         TourClientResponse clientResponse = new TourClientResponse();

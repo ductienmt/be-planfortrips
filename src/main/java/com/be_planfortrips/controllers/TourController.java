@@ -150,5 +150,14 @@ public class TourController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/route/{cityOriginId}/{cityDesId}")
+    public ResponseEntity<?> getTourByDestination(
+            @PathVariable String cityDesId,
+            @PathVariable String cityOriginId
+    ) {
+        List<TourClientResponse> res = iTourService.getTourByDestination(cityDesId, cityOriginId);
+        return ResponseEntity.ok(res);
+    }
+
 
 }

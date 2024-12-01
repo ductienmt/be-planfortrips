@@ -20,4 +20,6 @@ public interface ITourService {
     TourResponse deleteImage(Integer id,  List<Integer> imageIds) throws Exception;
     TourDetailResponse getTourDetail(Integer tourId);
     List<TourClientResponse> getAllTourClient();
+
+    List<TourClientResponse> getTourByDestination(String cityDesId, String cityOriginId);
 }

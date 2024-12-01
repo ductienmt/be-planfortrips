@@ -101,4 +101,13 @@ public interface TourRepository extends JpaRepository<Tour,Integer> {
                                            @Param("carCompanyId") Integer carCompanyId,
                                            @Param("numberOfPeople") int numberOfPeople);
 
+    @Query("SELECT t FROM Tour t " +
+            "JOIN t.route r " +
+            "JOIN r.destinationStation stDes " +
+            "JOIN r.originStation stOrigin " +
+            "JOIN stDes.city cDes " +
+            "JOIN stOrigin.city cOrigin " +
+            "WHERE cDes.id = :cityDesId AND cOrigin.id = :cityOriginId")
+    List<Tour> getTourByCityId(@Param("cityDesId") String cityDesId, @Param("cityOriginId") String cityOriginId);
+
 }
