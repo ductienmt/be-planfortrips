@@ -63,14 +63,6 @@ public class TourService implements ITourService {
                 .orElseThrow(() -> {
                     throw new AppException(ErrorType.notFound);
                 });
-        City cityDepart = cityRepository.findById(TourDTO.getCityDepartId())
-                .orElseThrow(() -> {
-                    throw new AppException(ErrorType.notFound);
-                });
-        City cityArrive = cityRepository.findById(TourDTO.getCityArriveId())
-                .orElseThrow(() -> {
-                    throw new AppException(ErrorType.notFound);
-                });
         Route route =  routeRepository.findById(TourDTO.getRouteId())
                 .orElseThrow(()-> {throw new AppException(ErrorType.notFound);});
         List<Tag> tags = TourDTO.getTagNames()!= null
@@ -109,14 +101,6 @@ public class TourService implements ITourService {
                     throw new AppException(ErrorType.notFound);
                 });
         Checkin checkinExisting = checkinRepository.findById(TourDTO.getCheckinId())
-                .orElseThrow(() -> {
-                    throw new AppException(ErrorType.notFound);
-                });
-        City cityDepart = cityRepository.findById(TourDTO.getCityDepartId())
-                .orElseThrow(() -> {
-                    throw new AppException(ErrorType.notFound);
-                });
-        City cityArrive = cityRepository.findById(TourDTO.getCityArriveId())
                 .orElseThrow(() -> {
                     throw new AppException(ErrorType.notFound);
                 });
@@ -280,6 +264,7 @@ public class TourService implements ITourService {
                     .arrivalTime(sDes.getArrivalTime())
                     .departureTime(sDes.getDepartureTime()).priceForOneTicket(BigDecimal.valueOf(tour.getTotalPrice()))
                     .routeId(tourDataSql.getRoute1Id())
+                    .priceForOneTicket(sDes.getPrice_for_one_seat())
                     .build();
             tourDataByDate.setScheduleDes(scheduleDes);
 
@@ -292,6 +277,7 @@ public class TourService implements ITourService {
                     .arrivalTime(sOrign.getArrivalTime())
                     .departureTime(sOrign.getDepartureTime()).priceForOneTicket(BigDecimal.valueOf(tour.getTotalPrice()))
                     .routeId(tourDataSql.getRoute2Id())
+                    .priceForOneTicket(sOrign.getPrice_for_one_seat())
                     .build();
             tourDataByDate.setScheduleOrigin(scheduleOrigin);
 

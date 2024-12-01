@@ -32,6 +32,12 @@ public class AccountEnterpriseController {
         return new ResponseEntity<>(accountEnterprises, HttpStatus.OK);
     }
 
+    @GetMapping("/accept")
+    public ResponseEntity<List<AccountEnterpriseResponse>> getEnterpriseNeedAccept() {
+        List<AccountEnterpriseResponse> accountEnterpriseResponses = accountEnterpriseService.getAccountEnterpriseDisable();
+        return ResponseEntity.ok(accountEnterpriseResponses);
+    }
+
     @GetMapping("/getById/{id}")
     public ResponseEntity<AccountEnterpriseResponse> getAccountEnterpriseById(@PathVariable Long id) {
         AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.getAccountEnterpriseById(id);

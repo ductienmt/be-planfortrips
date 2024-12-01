@@ -10,4 +10,7 @@ import java.util.List;
 public interface PlanRepository extends JpaRepository<Plan, Long>{
     @Query("SELECT p FROM Plan p WHERE p.user.id = :userId")
     List<Plan> findAllByUserId(@Param("userId") Long userId);
+
+    @Query("Select count(*) from Plan ")
+    Integer getCountPlan();
 }

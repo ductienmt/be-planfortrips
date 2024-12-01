@@ -21,9 +21,6 @@ public class Tour extends BaseEntity{
     String title;
     String description;
 
-     @ManyToOne
-     Route route;
-
     @ManyToOne
     @JoinColumn(name = "route_id")
     Route route;

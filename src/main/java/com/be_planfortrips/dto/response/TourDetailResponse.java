@@ -32,6 +32,7 @@ public class TourDetailResponse {
 
     List<Tag> tags;
     List<Image> images;
+    Double priceForOneTicket;
 
 
 }

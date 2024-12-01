@@ -42,4 +42,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "inner join Hotel h ON h.id = r.hotel.id\n" +
             "where h.id = :hotel_id")
     List<User> findUserByHotelId(@Param("hotel_id") Long id);
+
+    @Query("Select Count(*) from User")
+    Integer countAll();
 }

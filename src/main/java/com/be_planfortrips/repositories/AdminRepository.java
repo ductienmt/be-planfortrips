@@ -14,4 +14,7 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
 
     @Query("SELECT a FROM Admin a WHERE a.userName = :username")
     Admin findByUsername(@Param("username") String userName);
+
+    @Query("Select Count(*) from Admin")
+    Integer countAll();
 }

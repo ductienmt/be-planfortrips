@@ -44,6 +44,8 @@ public class API_Provider {
             "/api/v1/account-enterprises/validate-email",
             "/api/v1/account-enterprises/validate-phone",
             "/api/v1/payments/vnpay/return-plan",
+            "/api/v1/tours/**",
+            "/api/v1/statistical/**"
     };
 
     public static final String[] ADMIN_API = {
@@ -66,6 +68,7 @@ public class API_Provider {
             "/api/v1/check-in/upload-image",
             "/api/v1/feedbacks/all",
             "/api/v1/type-enterprises/all",
+            "/api/v1/type-enterprises/accept",
             "/api/v1/type-enterprises/create",
             "/api/v1/type-enterprises/update/**",
             "/api/v1/type-enterprises/delete/**",
