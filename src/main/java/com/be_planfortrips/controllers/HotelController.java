@@ -58,7 +58,7 @@ public class HotelController {
                                                        @RequestParam(value = "rating", required = false) Integer rating
                                                        ){
         PageRequest request = PageRequest.of(page, limit,
-                Sort.by("rating").ascending());
+                Sort.by("createAt").descending());
         int totalPage = 0;
         Page<HotelResponse> hotelResponses = iHotelService.searchHotels(request,keyword,rating);
         totalPage = hotelResponses.getTotalPages();

@@ -46,27 +46,27 @@ public class TicketService implements ITicketService {
         }
     }
 
-//    @Scheduled(cron = "*/30 * * * * *")
-//    @Transactional
-//    public void ticketStatusIsCancelled() {
-//        List<Ticket> tickets = ticketRepository.findByStatusCancelled();
-//        for (Ticket ticket : tickets) {
-//            List<Coupon> coupons = ticket.getCoupons();
-//            if(coupons.size() == 0){
-//                Coupon coupon = coupons.get(0);
-//                coupon.setUseCount(coupon.getUseCount() - 1);
-//                if (coupon.isActive() == false) {
-//                    coupon.setActive(true);
-//                } else {
-//                    coupon.setActive(false);
-//                }
-//                coupons.set(0, coupon);
-//                couponRepository.saveAll(coupons);
-//                ticket.setCoupons(coupons);
-//                ticketRepository.delete(ticket);
-//            }
-//        }
-//    }
+    @Scheduled(cron = "*/30 * * * * *")
+    @Transactional
+    public void ticketStatusIsCancelled() {
+        List<Ticket> tickets = ticketRepository.findByStatusCancelled();
+        for (Ticket ticket : tickets) {
+            List<Coupon> coupons = ticket.getCoupons();
+            if(coupons.size() != 0){
+                Coupon coupon = coupons.get(0);
+                coupon.setUseCount(coupon.getUseCount() - 1);
+                if (coupon.isActive() == false) {
+                    coupon.setActive(true);
+                } else {
+                    coupon.setActive(false);
+                }
+                coupons.set(0, coupon);
+                couponRepository.saveAll(coupons);
+                ticket.setCoupons(coupons);
+                ticketRepository.delete(ticket);
+            }
+        }
+    }
 
     @Override
     @Transactional
