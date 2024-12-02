@@ -52,7 +52,7 @@ public class TicketService implements ITicketService {
         List<Ticket> tickets = ticketRepository.findByStatusCancelled();
         for (Ticket ticket : tickets) {
             List<Coupon> coupons = ticket.getCoupons();
-            if(coupons.size() == 0){
+            if(coupons.size() != 0){
                 Coupon coupon = coupons.get(0);
                 coupon.setUseCount(coupon.getUseCount() - 1);
                 if (coupon.isActive() == false) {

@@ -50,7 +50,6 @@ public class TourService implements ITourService {
         Tour tour = tourMapper.toEntity(TourDTO);
 
         Admin admin = adminRepository.findByUsername(TourDTO.getAdminUsername());
-        if(admin==null) throw new AppException(ErrorType.notFound);
         Hotel hotelExisting = hotelRepository.findById(TourDTO.getHotelId())
                 .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
         CarCompany carExisting = carCompanyRepository.findById(TourDTO.getCarCompanyId())
@@ -83,8 +82,10 @@ public class TourService implements ITourService {
     public TourResponse updateTour(Integer id, TourDTO TourDTO) throws Exception {
         Tour tour = tourMapper.toEntity(TourDTO);
 
-        Admin admin = adminRepository.findByUsername(TourDTO.getAdminUsername());
-        if(admin==null) throw new AppException(ErrorType.notFound);
+        Admin admin = new Admin();
+        if(TourDTO.getAdminUsername()!=null){
+           admin = adminRepository.findByUsername(TourDTO.getAdminUsername());
+        }
         Hotel hotelExisting = hotelRepository.findById(TourDTO.getHotelId())
                 .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
         CarCompany carExisting = carCompanyRepository

@@ -37,12 +37,16 @@ public class API_Provider {
             "/api/v1/tours/all",
             "/api/v1/tours/**",
             "/api/v1/hotels/**",
+            "/api/v1/car-companies/**",
             "/api/v1/areas/**",
             "/api/v1/cities/**",
             "/api/v1/account-enterprises/validate-username",
             "/api/v1/account-enterprises/validate-email",
             "/api/v1/account-enterprises/validate-phone",
             "/api/v1/payments/vnpay/return-plan",
+            "/api/v1/tags/all",
+            "/api/v1/tags/create",
+
     };
 
     public static final String[] ADMIN_API = {
