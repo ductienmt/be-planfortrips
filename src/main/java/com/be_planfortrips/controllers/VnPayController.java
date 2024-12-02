@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -23,6 +25,7 @@ import java.util.*;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class VnPayController {
 
+    private static final Logger log = LoggerFactory.getLogger(VnPayController.class);
     IVnPayService iVnPayService;
 
     @PostMapping("/create-payment")
@@ -51,12 +54,16 @@ public class VnPayController {
     }
     @PostMapping("/create-payment-plan")
     public ResponseEntity<?> createPaymentForPlan(
-            @Valid @RequestParam("plan_id") Integer id,
+            @RequestParam("plan_id") Integer id,
+            @RequestParam("departure_ticket_id") Integer departureId,
+            @RequestParam("return_ticket_id") Integer returnId,
+            @RequestParam("booking_id") Integer bookingId,
             HttpServletRequest request){
         try {
-            VnpPayResponse vnpPayResponse = iVnPayService.createPaymentForPlan(id,request);
+            VnpPayResponse vnpPayResponse = iVnPayService.createPaymentForPlan(id, departureId, returnId, bookingId, request);
             return ResponseEntity.ok(vnpPayResponse);
         }catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

@@ -221,7 +221,8 @@ public class TicketService implements ITicketService {
 
         StringBuilder sb = new StringBuilder();
         for (Seat seat : seats) {
-            ScheduleSeat scheduleSeat = scheduleSeatRepository
+            ScheduleSeat scheduleSeat = new ScheduleSeat();
+            scheduleSeat = scheduleSeatRepository
                     .findByScheduleIdAndSeatId(scheduleId, seat.getId())
                     .orElseThrow(() -> new Exception(String.format("Không tìm thấy ghế %s trong lịch trình", seat.getSeatNumber())));
 
@@ -230,7 +231,7 @@ public class TicketService implements ITicketService {
                         seat.getSeatNumber(), seat.getVehicle().getCode()));
             } else {
                 scheduleSeat.setStatus(StatusSeat.Full);
-                scheduleSeatRepository.saveAndFlush(scheduleSeat);
+                scheduleSeatRepository.save(scheduleSeat);
             }
         }
 

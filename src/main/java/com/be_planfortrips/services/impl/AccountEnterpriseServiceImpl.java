@@ -19,15 +19,17 @@ import com.be_planfortrips.utils.Utils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.PageRequest;
+
 
 @RequiredArgsConstructor
 @Service
@@ -45,15 +47,12 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
 
     @Override
     public List<AccountEnterpriseResponse> getAllAccountEnterprises(int page, int size) {
-        // Tạo một Pageable với tham số page và size truyền vào từ người dùng
-        PageRequest pageable = PageRequest.of(page, size); // page là trang, size là số lượng trên mỗi trang
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("createAt").descending());
 
-        // Lấy tất cả tài khoản doanh nghiệp (có phân trang)
         Page<AccountEnterprise> accountEnterprisesPage = accountEnterpriseRepository.findAll(pageable);
 
-        // Chuyển đổi các tài khoản doanh nghiệp thành DTO (AccountEnterpriseResponse)
         return accountEnterprisesPage.getContent().stream()
-                .map(accountEnterpriseMapper::toResponse) // Chuyển đổi sang DTO
+                .map(accountEnterpriseMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -61,10 +60,9 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
 
     @Override
     public AccountEnterpriseResponse getAccountEnterpriseById(Long id) {
-        // Tìm tài khoản doanh nghiệp theo ID
-        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorType.notFound)); // Nếu không tìm thấy thì ném lỗi
-        return accountEnterpriseMapper.toResponse(accountEnterprise); // Trả về response DTO
+        Optional<AccountEnterprise> accountEnterprise = accountEnterpriseRepository.findById(id);
+        System.out.println(accountEnterprise.isEmpty());
+        return accountEnterpriseMapper.toResponse(null);
     }
 
     @Override
@@ -190,6 +188,11 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         if (exists) {
             throw new AppException(ErrorType.phoneExisted);
         }
+    }
+
+    @Override
+    public List<AccountEnterpriseResponse> getAccountEnterpriseDisable() {
+        return accountEnterpriseRepository.findAccountEnterpriseDisable().stream().map(accountEnterpriseMapper::toResponse).toList();
     }
 
 

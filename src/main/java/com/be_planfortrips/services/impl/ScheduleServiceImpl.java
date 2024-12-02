@@ -139,6 +139,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         return response;
     }
 
+
     @Override
     public List<ScheduleResponse> getSchedules(DataSchedule dataSchedule) {
         if (dataSchedule.getEndDate() == null) {
@@ -147,9 +148,14 @@ public class ScheduleServiceImpl implements IScheduleService {
         List<Schedule> schedules = this.scheduleRepository.findSchedule(
                 dataSchedule.getOriginalLocation(),
                 dataSchedule.getDestination(),
-                dataSchedule.getStartDate(),
+                dataSchedule.getStartDate()
+        );
+        List<Schedule> reverseSchedules = this.scheduleRepository.findSchedule(
+                dataSchedule.getDestination(),
+                dataSchedule.getOriginalLocation(),
                 dataSchedule.getEndDate()
         );
+        schedules.addAll(reverseSchedules);
         return schedules.stream().map(scheduleMapper::toResponse).collect(Collectors.toList());
     }
 

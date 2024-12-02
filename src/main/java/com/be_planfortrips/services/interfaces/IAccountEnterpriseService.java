@@ -32,4 +32,6 @@ public interface IAccountEnterpriseService {
     void validateEmail(String email);
 
     void validatePhone(String phone);
+
+    List<AccountEnterpriseResponse> getAccountEnterpriseDisable();
 }

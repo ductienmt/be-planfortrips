@@ -1,6 +1,7 @@
 package com.be_planfortrips.services.interfaces;
 
 import com.be_planfortrips.dto.BookingHotelDto;
+import com.be_planfortrips.dto.response.BookingCustomer;
 import com.be_planfortrips.dto.response.BookingHotelResponse;
 import com.be_planfortrips.entity.BookingHotel;
 
@@ -21,4 +22,6 @@ public interface IBookingHotelService {
     BookingHotelResponse updateBookingHotel(BookingHotelDto bookingHotelDto, Long bookingHotelId);
 
     void deleteBookingHotelByBookingId(Long bookingId);
+
+    List<BookingCustomer> findCustomersByEnterpriseId(String status);
 }

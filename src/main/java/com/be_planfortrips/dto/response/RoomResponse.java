@@ -2,6 +2,7 @@ package com.be_planfortrips.dto.response;
 
 import com.be_planfortrips.entity.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoomResponse {
-    Integer id;
+    Long id;
     String roomName;
     TypeOfRoom typeOfRoom;
     BigDecimal price;

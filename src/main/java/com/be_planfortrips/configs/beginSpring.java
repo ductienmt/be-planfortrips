@@ -1,17 +1,15 @@
 package com.be_planfortrips.configs;
 
-import com.be_planfortrips.entity.Admin;
-import com.be_planfortrips.services.interfaces.IAdminService;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import jakarta.servlet.MultipartConfigElement;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.util.unit.DataSize;
 
 @Configuration
 public class beginSpring {
@@ -41,4 +39,11 @@ public class beginSpring {
         ));
     }
 
+    @Bean
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setMaxFileSize(DataSize.parse("5MB"));
+        factory.setMaxRequestSize(DataSize.parse("10MB"));
+        return factory.createMultipartConfig();
+    }
 }

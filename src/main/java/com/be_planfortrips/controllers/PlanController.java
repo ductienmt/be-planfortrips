@@ -27,8 +27,8 @@ public class PlanController {
     @PostMapping("/save")
     public ResponseEntity<?> savePlan(@Valid @RequestBody PlanDto planDto) {
         try {
-            this.planService.save(planDto);
-            return ResponseEntity.ok().body("Lưu kế hoạch thành công");
+            Map<String, Object> res = this.planService.save(planDto);
+            return ResponseEntity.ok().body(res);
         } catch (Exception e) {
             log.error("Error: ", e.getMessage());
             return ResponseEntity.badRequest().body("Lưu kế hoạch thất bại");
