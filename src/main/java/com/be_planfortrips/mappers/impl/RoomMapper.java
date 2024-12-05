@@ -38,7 +38,9 @@ public class RoomMapper implements MapperInterface<RoomResponse, Room, RoomDto> 
     @Override
     public RoomResponse toResponse(Room room) {
         RoomResponse roomResponse = modelMapper.map(room, RoomResponse.class);
-        roomResponse.setImages(room.getImages().stream().toList());
+        roomResponse.setImages(room.getImages().stream()
+                .map(ri -> ri.getImage().getUrl())
+                .toList());
         roomResponse.setHotelName(room.getHotel().getName());
         roomResponse.setRoomAmenities(room.getRoomAmenities().stream().map(roomAmenitiesMapper::toResponse).toList());
         return roomResponse;
