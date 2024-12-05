@@ -95,20 +95,13 @@ public class CouponService implements ICouponService {
         if (!allowedDiscountTypes.contains(couponDto.getDiscountType())) {
             throw new Exception("The loai giam gia khong hop le");
         }
-
+        if (existingCoupon.getStartDate().isBefore(LocalDate.now())) {
+            throw new Exception("Shopping date must be at least today!");
+        }
         if (existingCoupon.getDiscountType().equals(DiscountType.PERCENT)) {
-            int percent = Integer.parseInt(String.valueOf(existingCoupon.getDiscountValue()));
+            BigDecimal discountValue = existingCoupon.getDiscountValue();
+            int percent = discountValue.intValue();
             if (percent < 0 || percent > 100) {
-// =======
-//         existingCoupon = couponMapper.toEntity(couponDto);
-//         if (existingCoupon.getStartDate().isBefore(LocalDate.now())) {
-//             throw new Exception("Shopping date must be at least today!");
-//         }
-//         if(existingCoupon.getDiscountType().equals(DiscountType.PERCENT)){
-//             BigDecimal discountValue = existingCoupon.getDiscountValue();
-//             int percent = discountValue.intValue();
-//             if(percent<0 || percent>100){
-// >>>>>>> master
                 throw new AppException(ErrorType.percentIsUnprocessed);
             }
         }
