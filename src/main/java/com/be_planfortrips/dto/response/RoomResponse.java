@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -27,7 +28,10 @@ public class RoomResponse {
     @JsonIgnore
     Hotel hotel;
 
+    LocalDateTime checkInTime;
+    LocalDateTime checkOutTime;
+
     String hotelName;
-    List<RoomImage> images;
+    List<String> images;
     List<RoomAmenitiesResponse> roomAmenities;
 }
