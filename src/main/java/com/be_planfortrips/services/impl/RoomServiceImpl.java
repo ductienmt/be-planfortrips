@@ -112,6 +112,7 @@ public class RoomServiceImpl implements IRoomService {
     @Override
     public Page<RoomResponse> getRoomByHotelId(Long id, Integer pageNo, Integer pageSize, String sortBy, String sortType) {
         var pageable = pageMapperImpl.customPage(pageNo, pageSize, sortBy, sortType);
+        
         return this.roomRepository.findByHotelId(id, pageable).map(roomMapper::toResponse);
     }
 

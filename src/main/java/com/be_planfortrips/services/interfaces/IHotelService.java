@@ -25,6 +25,6 @@ public interface IHotelService {
     List<Map<String, Object>> getHotelDetail();
     List<HotelResponse> getByEnterpriseId(Long enterpriseId);
     List<HotelResponse> getByRouteId(String routeId);
-    List<Map<String, Object>> getHotelsSamePrice(double price);
+    List<Map<String, Object>> getHotelsSamePrice(double price, String destination);
 }
 

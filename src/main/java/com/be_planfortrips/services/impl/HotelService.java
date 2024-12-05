@@ -57,7 +57,7 @@ public class HotelService implements IHotelService {
         AccountEnterprise accountEnterprise = enterpriseRepository.findById(tokenMapperImpl.getIdEnterpriseByToken())
                 .orElseThrow(() -> new Exception("Not found"));
         Hotel hotel = hotelMapper.toEntity(hotelDto);
-        if(!Utils.isValidPhoneNumber(hotel.getPhoneNumber()))throw new AppException(ErrorType.phoneNotValid);
+        if (!Utils.isValidPhoneNumber(hotel.getPhoneNumber())) throw new AppException(ErrorType.phoneNotValid);
         hotel.setAccountEnterprise(accountEnterprise);
         hotelRepository.save(hotel);
         return hotelMapper.toResponse(hotel);
@@ -71,7 +71,7 @@ public class HotelService implements IHotelService {
         AccountEnterprise accountEnterprise = enterpriseRepository.findById(tokenMapperImpl.getIdEnterpriseByToken())
                 .orElseThrow(() -> new Exception("Not found"));
         hotelMapper.updateEntityFromDto(hotelDto, existHotel);
-        if(!Utils.isValidPhoneNumber(existHotel.getPhoneNumber()))throw new AppException(ErrorType.notFound);
+        if (!Utils.isValidPhoneNumber(existHotel.getPhoneNumber())) throw new AppException(ErrorType.notFound);
         existHotel.setId(id);
         existHotel.setAccountEnterprise(accountEnterprise);
         hotelRepository.saveAndFlush(existHotel);
@@ -79,11 +79,11 @@ public class HotelService implements IHotelService {
     }
 
     @Override
-    public Page<HotelResponse> searchHotels(PageRequest request,String keyword,Integer rating) {
+    public Page<HotelResponse> searchHotels(PageRequest request, String keyword, Integer rating) {
         if (rating != null) {
             if (rating < 0 || rating > 5) throw new AppException(ErrorType.ratingInvalid);
         }
-         return hotelRepository.searchHotels(request,keyword,rating).map(hotel -> hotelMapper.toResponse(hotel));
+        return hotelRepository.searchHotels(request, keyword, rating).map(hotel -> hotelMapper.toResponse(hotel));
     }
 
 
@@ -225,7 +225,7 @@ public class HotelService implements IHotelService {
     public List<Map<String, Object>> getHotelDetail() {
         List<Hotel> hotels = this.hotelRepository.findByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken());
         List<Map<String, Object>> listHotelResponse = new ArrayList<>();
-        for (Hotel hotel : hotels){
+        for (Hotel hotel : hotels) {
             Map<String, Object> hotelResponse = new HashMap<>();
             hotelResponse.put("hotelId", hotel.getId());
             hotelResponse.put("hotelName", hotel.getName());
@@ -248,40 +248,44 @@ public class HotelService implements IHotelService {
     @Override
     public List<HotelResponse> getByRouteId(String routeId) {
         Route route = routeRepository.findById(routeId)
-                .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
+                .orElseThrow(() -> {
+                    throw new AppException(ErrorType.notFound);
+                });
         return hotelRepository.findHotelByRouteId(route.getId()).stream().map(hotelMapper::toResponse).toList();
     }
 
     @Override
-    public List<Map<String, Object>> getHotelsSamePrice(double price) {
+    public List<Map<String, Object>> getHotelsSamePrice(double price, String destination) {
         BigDecimal minPrice = BigDecimal.valueOf(price - 50);
         BigDecimal maxPrice = BigDecimal.valueOf(price + 50);
 
-        List<Object[]> hotels = hotelRepository.findHotelsWithRoomsInPriceRange(minPrice, maxPrice);
+        List<Object[]> hotels = hotelRepository.findHotelsWithRoomsInPriceRange(minPrice, maxPrice, destination);
+        if (hotels.isEmpty()) {
+            minPrice = BigDecimal.valueOf(price - 100);
+            maxPrice = BigDecimal.valueOf(price + 100);
+            hotels = hotelRepository.findHotelsWithRoomsInPriceRange(minPrice, maxPrice, destination);
+        }
+        System.out.println("Hotels found: " + hotels.size());
 
-        List<Map<String, Object>> hotelResponses = new ArrayList<>();
-        Set<Long> addedHotelIds = new HashSet<>();
-
+        Map<Long, Map<String, Object>> hotelMap = new HashMap<>();
         for (Object[] result : hotels) {
             Hotel hotel = (Hotel) result[0];
             Room room = (Room) result[1];
 
-            if (!addedHotelIds.contains(hotel.getId())) {
-                Map<String, Object> hotelMap = new HashMap<>();
-                hotelMap.put("hotelId", hotel.getId());
-                hotelMap.put("hotelName", hotel.getName());
-                hotelMap.put("hotelAddress", hotel.getAddress());
-                hotelMap.put("hotelImage", hotel.getImages().stream().limit(1).collect(Collectors.toList()));
-                hotelMap.put("hotelAmenities", hotel.getHotelAmenities().stream().limit(3).collect(Collectors.toList()));
-                hotelMap.put("rating", hotel.getRating());
-                hotelMap.put("roomPrice", room.getPrice());
-
-                hotelResponses.add(hotelMap);
-                addedHotelIds.add(hotel.getId());
-            }
+            hotelMap.computeIfAbsent(hotel.getId(), k -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("hotelId", hotel.getId());
+                map.put("hotelName", hotel.getName());
+                map.put("hotelAddress", hotel.getAddress());
+                map.put("hotelImage", hotel.getImages().stream().limit(1).collect(Collectors.toList()));
+                map.put("hotelAmenities", hotel.getHotelAmenities().stream().limit(3).collect(Collectors.toList()));
+                map.put("rating", hotel.getRating());
+                map.put("roomPrice", room.getPrice());
+                return map;
+            });
         }
 
-        return hotelResponses;
+        return new ArrayList<>(hotelMap.values());
     }
 
 }

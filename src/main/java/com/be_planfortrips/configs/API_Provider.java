@@ -45,7 +45,9 @@ public class API_Provider {
             "/api/v1/account-enterprises/validate-phone",
             "/api/v1/payments/vnpay/return-plan",
             "/api/v1/tours/**",
-            "/api/v1/statistical/**"
+            "/api/v1/statistical/**",
+            "/api/v1/rooms/getRoomByHotelId",
+            "/api/v1/schedules/getSamePrice",
     };
 
     public static final String[] ADMIN_API = {
@@ -179,7 +181,6 @@ public class API_Provider {
             "/api/v1/rooms/all",
             "/api/v1/rooms/update/**",
             "/api/v1/rooms/delete/**",
-            "/api/v1/rooms/getRoomByHotelId",
             "/api/v1/routes/create",
             "/api/v1/routes/update/**",
             "/api/v1/routes/delete/**",

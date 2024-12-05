@@ -70,4 +70,17 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
             "AND schedules.id = :scheduleId", nativeQuery = true)
     Integer getNumberSeatsEmpty(@Param("scheduleId") Long scheduleId);
 
+
+    @Query("SELECT s FROM Schedule s " +
+            "JOIN s.route r " +
+            "JOIN r.originStation os " +
+            "JOIN r.destinationStation ds " +
+            "WHERE os.city.nameCity like %:originalLocation% " +
+            "AND ds.city.nameCity like %:destination% " +
+            "AND cast(s.departureTime as date) = :departureDate " +
+            "AND s.price_for_one_seat BETWEEN :priceMin AND :priceMax")
+    List<Schedule> getSchedulesSamePrice(@Param("priceMin") double priceMin,@Param("priceMax") double priceMax,
+                                         @Param("originalLocation") String originalLocation, @Param("destination") String destination,
+                                         @Param("departureDate") LocalDate departureDate);
+
 }

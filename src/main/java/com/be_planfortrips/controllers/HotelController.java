@@ -167,9 +167,9 @@ public class HotelController {
     }
 
     @GetMapping("getHotelsSamePrice")
-    public ResponseEntity<?> getHotelsSamePrice(@RequestParam("price") double price){
+    public ResponseEntity<?> getHotelsSamePrice(@RequestParam("price") double price, @RequestParam String destination){
         try {
-            return ResponseEntity.ok(iHotelService.getHotelsSamePrice(price));
+            return ResponseEntity.ok(iHotelService.getHotelsSamePrice(price, destination));
         }catch (Exception e){
             return  ResponseEntity.badRequest().body(e.getMessage());
         }
