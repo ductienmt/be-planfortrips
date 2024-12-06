@@ -44,6 +44,7 @@ public class CityController {
         try {
             return ResponseEntity.ok(iCityService.getCitiesByAreaId(id));
         }catch (Exception e){
+            log.error(e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -54,6 +55,8 @@ public class CityController {
             iCityService.uploadImage(file, city_id);
             return ResponseEntity.ok().body("Upload ảnh thành công");
         }catch (Exception e){
+            e.printStackTrace();
+            log.error(e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

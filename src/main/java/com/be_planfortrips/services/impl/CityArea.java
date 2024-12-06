@@ -43,6 +43,9 @@ public class CityArea implements ICityService {
             cityMap.put("id", city.getId());
             cityMap.put("nameCity", city.getNameCity());
             cityMap.put("description", city.getDescription());
+            if (city.getImage() != null) {
+                cityMap.put("image", city.getImage().getUrl());
+            }
             citiesArea.add(cityMap);
         }
         return citiesArea;
@@ -57,6 +60,9 @@ public class CityArea implements ICityService {
             cityMap.put("id", city.getId());
             cityMap.put("nameCity", city.getNameCity());
             cityMap.put("description", city.getDescription());
+            if (city.getImage() != null) {
+                cityMap.put("image", city.getImage().getUrl());
+            }
             cityList.add(cityMap);
         }
         return cityList;

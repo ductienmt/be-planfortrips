@@ -45,7 +45,9 @@ public class AccountEnterpriseMapper implements
     public AccountEnterpriseResponse toResponse(AccountEnterprise accountEnterprise) {
         AccountEnterpriseResponse accountEnterpriseResponse =
                 modelMapper.map(accountEnterprise, AccountEnterpriseResponse.class);
-        accountEnterpriseResponse.setTypeEnterpriseDetailId(accountEnterprise.getTypeEnterpriseDetail().getId());
+        accountEnterpriseResponse.setTypeEnterpriseDetailName(
+                accountEnterprise.getTypeEnterpriseDetail().getName());
+        accountEnterpriseResponse.setCreateAt(accountEnterprise.getCreateAt());
 
         City city = accountEnterprise.getCity();
         if (city != null) {

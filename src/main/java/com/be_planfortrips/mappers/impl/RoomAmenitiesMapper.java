@@ -52,6 +52,7 @@ public class RoomAmenitiesMapper implements MapperInterface<RoomAmenitiesRespons
         RoomAmenitiesResponse response = modelMapper.map(roomAmenities, RoomAmenitiesResponse.class);
         if (roomAmenities.getIcon() != null && roomAmenities.getIcon().getUrl() != null) {
             response.setIcon(roomAmenities.getIcon().getUrl());
+//            System.out.println("RoomAmenitiesMapper toResponse" + roomAmenities.getIcon().getUrl());
         } else {
             response.setIcon(null);
         }

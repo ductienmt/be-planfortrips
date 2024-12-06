@@ -13,9 +13,7 @@ import com.be_planfortrips.mappers.impl.PageMapperImpl;
 import com.be_planfortrips.mappers.impl.RoomMapper;
 import com.be_planfortrips.mappers.impl.RoomMapper_2;
 import com.be_planfortrips.mappers.impl.TokenMapperImpl;
-import com.be_planfortrips.repositories.BookingHotelDetailRepository;
-import com.be_planfortrips.repositories.HotelRepository;
-import com.be_planfortrips.repositories.RoomRepository;
+import com.be_planfortrips.repositories.*;
 import com.be_planfortrips.services.interfaces.ICloudinaryService;
 import com.be_planfortrips.services.interfaces.IRoomService;
 import lombok.AccessLevel;
@@ -28,10 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -47,6 +42,8 @@ public class RoomServiceImpl implements IRoomService {
     PageMapperImpl pageMapperImpl;
     private final HotelRepository hotelRepository;
     private final BookingHotelDetailRepository bookingHotelDetailRepository;
+    private final ImageRepository imageRepository;
+    private final RoomImageRepository roomImageRepository;
 
     @Override
     public Set<RoomResponse> getAllRoom() {
@@ -115,12 +112,13 @@ public class RoomServiceImpl implements IRoomService {
     @Override
     public Page<RoomResponse> getRoomByHotelId(Long id, Integer pageNo, Integer pageSize, String sortBy, String sortType) {
         var pageable = pageMapperImpl.customPage(pageNo, pageSize, sortBy, sortType);
+        
         return this.roomRepository.findByHotelId(id, pageable).map(roomMapper::toResponse);
     }
 
     @Override
     public List<RoomResponse> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut, String destination) {
-        List<Room> availableRooms = roomRepository.findAvailableRooms(checkIn, checkOut, destination);
+        List<Room> availableRooms = roomRepository.findAvailableRoomsNew(checkIn, checkOut, destination);
 
         List<RoomResponse> roomResponses = availableRooms.stream()
                 .map(roomMapper::toResponse)
@@ -131,6 +129,8 @@ public class RoomServiceImpl implements IRoomService {
 //        }
         return roomResponses;
     }
+
+
 
 
     @Override
@@ -154,6 +154,7 @@ public class RoomServiceImpl implements IRoomService {
             // Create Image object and set URL
             Image image = Image.builder().build();
             image.setUrl(result.get("url").toString());
+            imageRepository.save(image);
 
             // Create RoomImage object and link it to the room
             RoomImage roomImage = RoomImage.builder()
@@ -163,6 +164,7 @@ public class RoomServiceImpl implements IRoomService {
 
             // Add the new RoomImage to the list of images
             roomImages.add(roomImage);
+            roomImageRepository.save(roomImage);
         }
 
         // Save the Room with updated images
@@ -170,6 +172,48 @@ public class RoomServiceImpl implements IRoomService {
 
         // Return true to indicate successful upload of all files
         return true;
+    }
+
+    @Override
+    public Page<RoomResponseEnterprise> getRoomByStatus(Long hotelId, Integer status, Integer pageNo, Integer pageSize, String sortBy, String sortType) {
+        if (status != 0 && status != 1) {
+            throw new AppException(ErrorType.statusInvalid);
+        }
+        var pageable = pageMapperImpl.customPage(pageNo, pageSize, sortBy, sortType);
+        LocalDateTime currentDate = LocalDateTime.now();
+        Page<Room> rooms = Page.empty();
+        if (status == 1) {
+            rooms = this.roomRepository.findAvailableRoomsByHotelIdAndDate(hotelId, currentDate,pageable);
+        }
+        if (status == 0){
+            rooms = this.roomRepository.findBookedRoomsByHotelIdAndDate(hotelId, currentDate,pageable);
+        }
+
+        return rooms.map(roomMapper_2::toResponse);
+
+    }
+
+    @Override
+    public Page<RoomResponseEnterprise> filterRoom(Long hotelId, Integer status, String roomType, Integer pageNo, Integer pageSize, String sortBy, String sortType) {
+        var pageable = pageMapperImpl.customPage(pageNo, pageSize, sortBy, sortType);
+
+        Boolean isAvailable = null;
+        if (status != null) {
+            isAvailable = status == 1;
+        }
+
+        TypeOfRoom typeOfRoom = null;
+        if (roomType != null && !roomType.isEmpty()) {
+            try {
+                typeOfRoom = TypeOfRoom.valueOf(roomType);
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Loại phòng không hợp lệ: " + roomType);
+            }
+        }
+
+        Page<Room> rooms = roomRepository.filterRoom(hotelId, isAvailable, typeOfRoom, pageable);
+
+        return rooms.map(roomMapper_2::toResponse);
     }
 
 

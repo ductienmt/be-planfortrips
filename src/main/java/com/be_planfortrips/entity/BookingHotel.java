@@ -39,6 +39,9 @@ public class BookingHotel extends BaseEntity {
     @JoinColumn(name = "user_id")
     User user;
 
+    @Column(name = "total_price")
+    BigDecimal totalPrice;
+
     @OneToMany(mappedBy = "bookingHotel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     Set<BookingHotelDetail> bookingHotelDetails = new HashSet<>();

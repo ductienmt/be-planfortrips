@@ -4,6 +4,8 @@ import com.be_planfortrips.entity.City;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,7 +19,8 @@ public class AccountEnterpriseResponse {
     String email;
     String address;
     String taxCode;
-    Long typeEnterpriseDetailId;
+    String typeEnterpriseDetailName;
+    LocalDateTime createAt;
     String cityName;
     boolean status;
 

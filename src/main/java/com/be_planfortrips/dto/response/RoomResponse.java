@@ -2,10 +2,12 @@ package com.be_planfortrips.dto.response;
 
 import com.be_planfortrips.entity.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -14,7 +16,7 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RoomResponse {
-    Integer id;
+    Long id;
     String roomName;
     TypeOfRoom typeOfRoom;
     BigDecimal price;
@@ -26,7 +28,10 @@ public class RoomResponse {
     @JsonIgnore
     Hotel hotel;
 
+    LocalDateTime checkInTime;
+    LocalDateTime checkOutTime;
+
     String hotelName;
-    List<RoomImage> images;
+    List<String> images;
     List<RoomAmenitiesResponse> roomAmenities;
 }
