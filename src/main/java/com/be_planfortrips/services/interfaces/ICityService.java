@@ -11,4 +11,5 @@ public interface ICityService {
     List<Map<String, Object>> getCitiesByAreaId(String id);
     List<Map<String, Object>> getAllCity();
     void uploadImage(MultipartFile file, String city_id);
+    List<String> findCityByName(String name);
 }

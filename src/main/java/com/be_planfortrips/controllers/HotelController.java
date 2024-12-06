@@ -4,6 +4,8 @@ import com.be_planfortrips.dto.HotelDto;
 import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.dto.response.HotelListResponse;
 import com.be_planfortrips.dto.response.HotelResponse;
+import com.be_planfortrips.dto.response.HotelResponses.AvailableHotels;
+import com.be_planfortrips.dto.response.HotelResponses.ListAvailableResponses;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.services.interfaces.IHotelService;
@@ -15,6 +17,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +26,11 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,7 +65,7 @@ public class HotelController {
                                                        @RequestParam(value = "rating", required = false) Integer rating
                                                        ){
         PageRequest request = PageRequest.of(page, limit,
-                Sort.by("createAt").descending());
+                Sort.by("createAt").ascending());
         int totalPage = 0;
         Page<HotelResponse> hotelResponses = iHotelService.searchHotels(request,keyword,rating);
         totalPage = hotelResponses.getTotalPages();
@@ -165,5 +172,25 @@ public class HotelController {
             return  ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    @GetMapping("findHotelAvailable")
+    public ResponseEntity<?> findHotelAvailable(@RequestParam(value = "",required = false) String keyword,
+                                                @RequestParam(value = "",required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                                @RequestParam(value = "",required = false) Long days,
+                                                @RequestParam int page,
+                                                @RequestParam int limit){
+        try {
+            PageRequest request = PageRequest.of(page,limit,Sort.by("name").descending());
+            int totalPage = 0;
+            LocalDateTime dateTime = date.atStartOfDay();
+            Page<HotelResponse> hotelResponses = iHotelService.findHotelAvailable(request,keyword, dateTime, days);
+            totalPage = hotelResponses.getTotalPages();
+            System.out.println("So luong khach san tim dc: "+hotelResponses.toList().size());
+            return ResponseEntity.ok(HotelListResponse.builder()
+                    .hotelResponseList(hotelResponses.toList())
+                    .totalPage(totalPage)
+                    .build());
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

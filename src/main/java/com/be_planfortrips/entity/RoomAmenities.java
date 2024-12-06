@@ -30,7 +30,7 @@ public class RoomAmenities {
     @ManyToOne
     @JoinColumn(name = "icon_id")
     private Image icon;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     @JsonBackReference
     private Room room;

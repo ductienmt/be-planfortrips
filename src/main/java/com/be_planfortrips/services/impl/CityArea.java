@@ -88,5 +88,13 @@ public class CityArea implements ICityService {
         cityRepository.saveAndFlush(city);
     }
 
-
+    @Override
+    public List<String> findCityByName(String name) {
+        List<City> cities = cityRepository.searchByNameCityContaining(name);
+        List<String> cityNames = new ArrayList<>();
+        for(City city: cities){
+            cityNames.add(city.getNameCity());
+        }
+        return cityNames;
+    }
 }
