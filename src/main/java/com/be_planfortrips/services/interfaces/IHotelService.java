@@ -29,5 +29,6 @@ public interface IHotelService {
     List<HotelResponse> getByRouteId(String routeId);
     Page<HotelResponse> findHotelAvailable(PageRequest request, String keyword, LocalDateTime dateTime, Long days);
 
+    List<Map<String, Object>> getHotelsSamePrice(double price, String destination);
 }
 

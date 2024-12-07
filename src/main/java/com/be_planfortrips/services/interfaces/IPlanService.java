@@ -15,5 +15,5 @@ public interface IPlanService {
     List<PlanResponse> getAllPlanByUserId();
     PlanResponse getPlanById(Long id);
     PlanResponseDetail getPlanDetail(Long id);
-    void save(PlanDto planDto);
+    Map<String, Object> save(PlanDto planDto);
 }

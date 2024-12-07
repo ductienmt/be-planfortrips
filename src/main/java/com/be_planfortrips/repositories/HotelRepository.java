@@ -9,12 +9,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.List;
 
-public interface HotelRepository extends JpaRepository<Hotel,Long> {
+public interface HotelRepository extends JpaRepository<Hotel, Long> {
     boolean existsByPhoneNumber(String phoneNumber);
+
     @Query("select h from Hotel h " +
             " where (:keyword is null or :keyword = '' or h.name like %:keyword% or h.address like %:keyword% " +
             "and (:rating is null or h.rating <= :rating))")
@@ -22,6 +23,7 @@ public interface HotelRepository extends JpaRepository<Hotel,Long> {
     List<Hotel> searchByNameContains(String name);
     @Query("select h from Hotel h where h.accountEnterprise.accountEnterpriseId = :enterpriseId")
     List<Hotel> findByEnterpriseId(@Param("enterpriseId") Long enterpriseId);
+
     @Query("select h from Hotel h inner join AccountEnterprise ae " +
             "ON ae.accountEnterpriseId = h.accountEnterprise.accountEnterpriseId \n" +
             "inner join City c ON c.id = ae.city.id \n" +
@@ -44,4 +46,13 @@ public interface HotelRepository extends JpaRepository<Hotel,Long> {
                                     @Param("checkInDate") LocalDateTime checkInDate,
                                     @Param("checkOutDate") LocalDateTime checkOutDate,
                                     @Param("destination") String destination);
+
+    @Query(value = "SELECT h, r " +
+            "FROM Hotel h " +
+            "JOIN h.rooms r " +
+            "WHERE r.price BETWEEN :minPrice AND :maxPrice " +
+            "AND h.accountEnterprise.city.nameCity ilike concat('%', :city, '%') ")
+    List<Object[]> findHotelsWithRoomsInPriceRange(@Param("minPrice") BigDecimal minPrice,
+                                                   @Param("maxPrice") BigDecimal maxPrice,
+                                                   @Param("city") String city);
 }

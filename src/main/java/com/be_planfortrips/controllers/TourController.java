@@ -1,10 +1,10 @@
 package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.TourDTO;
-import com.be_planfortrips.dto.response.CarResponse;
 import com.be_planfortrips.dto.response.TListResponse;
+import com.be_planfortrips.dto.response.TourClientResponse;
+import com.be_planfortrips.dto.response.TourDetailResponse;
 import com.be_planfortrips.dto.response.TourResponse;
-import com.be_planfortrips.dto.response.rsTourResponse.TourScheduleResponse;
 import com.be_planfortrips.services.interfaces.ITourService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -12,15 +12,12 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
-import org.springframework.data.repository.query.Param;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -138,4 +135,23 @@ public class TourController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+
+
+    @GetMapping("/client/")
+    public ResponseEntity<?> getAllTourClient() {
+        List<TourClientResponse> responses = iTourService.getAllTourClient();
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/route/{cityOriginId}/{cityDesId}")
+    public ResponseEntity<?> getTourByDestination(
+            @PathVariable String cityDesId,
+            @PathVariable String cityOriginId
+    ) {
+        List<TourClientResponse> res = iTourService.getTourByDestination(cityDesId, cityOriginId);
+        return ResponseEntity.ok(res);
+    }
+
+
 }

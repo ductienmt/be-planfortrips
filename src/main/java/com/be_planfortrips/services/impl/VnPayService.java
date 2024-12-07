@@ -132,7 +132,9 @@ public class VnPayService implements IVnPayService {
     }
 
     @Override
-    public VnpPayResponse createPaymentForPlan(Integer planId, HttpServletRequest httpServletRequest) throws IOException {
+    public VnpPayResponse createPaymentForPlan(Integer planId, Integer departureId,
+                                               Integer returnId,
+                                               Integer bookingId, HttpServletRequest httpServletRequest) throws IOException {
         try {
             Plan plan  = planRepository.findById(Long.valueOf(planId))
                     .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
@@ -150,10 +152,18 @@ public class VnPayService implements IVnPayService {
 
             vnp_Params.put("vnp_BankCode", "NCB");
             vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
+//            vnp_Params.put("vnp_OrderInfo",
+//                    "Thanh toan don hang: " + vnp_TxnRef
+//                            + " Plan: "+ plan.getId()
+//            );
             vnp_Params.put("vnp_OrderInfo",
                     "Thanh toan don hang: " + vnp_TxnRef
-                            + " Plan: "+ plan.getId()
+                            + " Plan: " + plan.getId()
+                            + " Departure: " + (departureId != null ? departureId : "null")
+                            + " Return: " + (returnId != null ? returnId : "null")
+                            + " Booking: " + (bookingId != null ? bookingId : "null")
             );
+
             vnp_Params.put("vnp_OrderType", orderType);
 
             vnp_Params.put("vnp_Locale", "vn");
@@ -310,17 +320,26 @@ public class VnPayService implements IVnPayService {
             return "02";
         }
     }
+
     @Override
     @Transactional
     public String returnPageForPlan(Map<String, String> requestParams) throws IOException {
         VnPayConfig.hashAllFields(requestParams);
-        Pattern pattern = Pattern.compile("Plan: (\\d+)");
+//        Pattern pattern = Pattern.compile("Plan: (\\d+)");
+//        Matcher matcher = pattern.matcher(requestParams.get("vnp_OrderInfo"));
+        Pattern pattern = Pattern.compile("Plan: (\\d+) Departure: (\\d+) Return: (\\w+) Booking: (\\w+)");
         Matcher matcher = pattern.matcher(requestParams.get("vnp_OrderInfo"));
         String planId = "";
+        String departureId = "";
+        String returnId = "";
+        String bookingId = "";
         if (matcher.find()) {
             planId = matcher.group(1);
+            departureId = matcher.group(2);
+            returnId = matcher.group(3).equals("null") ? null : matcher.group(3);
+            bookingId = matcher.group(4).equals("null") ? null : matcher.group(4);
         } else {
-            System.out.println("Không tìm thấy ticket id và booking id trong chuỗi.");
+            throw new RuntimeException("Không tìm thấy plan id trong chuỗi.");
         }
         Plan plan = planRepository.findById(Long.parseLong(planId))
                 .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
@@ -329,10 +348,29 @@ public class VnPayService implements IVnPayService {
         }
         if ("00".equals(requestParams.get("vnp_ResponseCode")) && "00".equals(requestParams.get("vnp_TransactionStatus"))) {
                 if (plan != null) {
-                    plan.setStatus(StatusPlan.COMPLETE);
                     plan.setStatusPayment(Status.Complete);
                     planRepository.save(plan);
                 }
+            if (departureId != null) {
+                Ticket departureTicket = ticketRepository.findById(Integer.parseInt(departureId))
+                        .orElseThrow(() -> new AppException(ErrorType.notFound));
+                departureTicket.setStatus(Status.Complete);
+                ticketRepository.save(departureTicket);
+            }
+
+            if (returnId != null) {
+                Ticket returnTicket = ticketRepository.findById(Integer.parseInt(returnId))
+                        .orElseThrow(() -> new AppException(ErrorType.notFound));
+                returnTicket.setStatus(Status.Complete);
+                ticketRepository.save(returnTicket);
+            }
+
+            if (bookingId != null) {
+                BookingHotel booking = bookingHotelRepository.findById(Long.parseLong(bookingId))
+                        .orElseThrow(() -> new AppException(ErrorType.notFound));
+                booking.setStatus(Status.Complete);
+                bookingHotelRepository.save(booking);
+            }
             return "00";
         } else {
             // cần có tài khoản đối tác vnpay

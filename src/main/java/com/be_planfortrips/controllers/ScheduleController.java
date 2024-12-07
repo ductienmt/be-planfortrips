@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
@@ -57,12 +58,7 @@ public class ScheduleController {
         return ResponseEntity.ok(responses);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<ScheduleResponse> createSchedule(
-            @RequestBody ScheduleDto scheduleDto) {
-        ScheduleResponse response = scheduleService.createSchedule(scheduleDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
+
 
     @PutMapping("update/{scheduleId}")
     public ResponseEntity<ScheduleResponse> updateSchedule(
@@ -130,6 +126,26 @@ public class ScheduleController {
         } catch (AppException e) {
             log.error(e.getMessage());
             throw e;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new AppException(ErrorType.internalServerError);
+        }
+    }
+
+    @GetMapping("/getSamePrice")
+    public ResponseEntity<?> getScheduleSamePrice(
+            @RequestParam("price") double price,
+            @RequestParam("originalLocation") String originalLocation,
+            @RequestParam("destination") String destination,
+            @RequestParam("departureDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate departureDate) {
+        try {
+            List<Map<String, Object>> response = scheduleService.getScheduleSamePrice(price, originalLocation, destination, departureDate);
+
+            return ResponseEntity.ok(ApiResponse.<List<Map<String, Object>>>builder()
+                    .code(HttpStatus.OK.value())
+                    .data(response)
+                    .message("")
+                    .build());
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new AppException(ErrorType.internalServerError);

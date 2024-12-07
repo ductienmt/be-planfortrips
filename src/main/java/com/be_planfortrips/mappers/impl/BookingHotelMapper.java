@@ -41,6 +41,7 @@ public class BookingHotelMapper implements MapperInterface<BookingHotelResponse,
 
         List<BookingHotelDetail> bookingHotelDetails = new ArrayList<>();
 
+        hotel.setTotalPrice(bookingHotelDto.getTotalPrice());
         bookingHotelDto.getBookingHotelDetailDto().forEach((detailDto) -> {
             Long roomId = detailDto.getRoomId();
             Room room = roomRepository.findById(roomId).orElseThrow(
@@ -49,6 +50,7 @@ public class BookingHotelMapper implements MapperInterface<BookingHotelResponse,
                 BookingHotelDetail detail = modelMapper.map(detailDto, BookingHotelDetail.class);
                 detail.setRoom(Room.builder().id(roomId).build());
                 detail.setBookingHotel(hotel);
+                detail.setPrice(detailDto.getPrice());
                 // Giá tại thời điểm hiện tại (Tránh trường hợp tăng giá -> Select Sai giá cũ)
                 detail.setPrice(room.getPrice());
                 bookingHotelDetails.add(detail);

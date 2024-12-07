@@ -15,7 +15,9 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -114,14 +116,14 @@ public class ScheduleServiceImpl implements IScheduleService {
         Map<String, Object> returnResponse = fetchSchedules(returnTime, "return", originalLocation, destination);
         System.out.println("Departure Response: " + departureResponse);
         System.out.println("Return Response: " + returnResponse);
-        if(departureResponse.isEmpty()) {
+        if (departureResponse.isEmpty()) {
             departureTime = departureTime.plusDays(1).withHour(0).withMinute(0).withSecond(0);
             System.out.println("Departure Time: " + departureTime);
             departureResponse = fetchSchedules(departureTime, "departure", originalLocation, destination);
             System.out.println("Departure Response 2: " + departureResponse);
         }
 
-        if(returnResponse.isEmpty()) {
+        if (returnResponse.isEmpty()) {
             returnTime = returnTime.plusDays(1).withHour(0).withMinute(0).withSecond(0);
             System.out.println("Return Time: " + returnTime);
             returnResponse = fetchSchedules(returnTime, "return", originalLocation, destination);
@@ -139,6 +141,7 @@ public class ScheduleServiceImpl implements IScheduleService {
         return response;
     }
 
+
     @Override
     public List<ScheduleResponse> getSchedules(DataSchedule dataSchedule) {
         if (dataSchedule.getEndDate() == null) {
@@ -147,9 +150,14 @@ public class ScheduleServiceImpl implements IScheduleService {
         List<Schedule> schedules = this.scheduleRepository.findSchedule(
                 dataSchedule.getOriginalLocation(),
                 dataSchedule.getDestination(),
-                dataSchedule.getStartDate(),
+                dataSchedule.getStartDate()
+        );
+        List<Schedule> reverseSchedules = this.scheduleRepository.findSchedule(
+                dataSchedule.getDestination(),
+                dataSchedule.getOriginalLocation(),
                 dataSchedule.getEndDate()
         );
+        schedules.addAll(reverseSchedules);
         return schedules.stream().map(scheduleMapper::toResponse).collect(Collectors.toList());
     }
 
@@ -166,6 +174,52 @@ public class ScheduleServiceImpl implements IScheduleService {
         List<Schedule> schedules =
                 scheduleRepository.getSchedulesByRouteAndVehicleCode(route, vehicle);
         return schedules.stream().map(scheduleMapper::toResponse).toList();
+    }
+
+    @Override
+    public List<Map<String, Object>> getScheduleSamePrice(double price, String originalLocation, String destination, LocalDate departureDate) {
+        double priceMin = price - 50;
+        double priceMax = price + 50;
+        List<Schedule> schedules = scheduleRepository.getSchedulesSamePrice(
+                priceMin,
+                priceMax,
+                originalLocation,
+                destination,
+                departureDate
+        );
+        if (schedules.isEmpty()) {
+            priceMax += 50;
+            priceMin -= 50;
+
+            schedules = scheduleRepository.getSchedulesSamePrice(
+                    priceMin,
+                    priceMax,
+                    originalLocation,
+                    destination,
+                    departureDate
+            );
+        }
+
+        List<Map<String, Object>> response = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        for (Schedule schedule : schedules) {
+            Map<String, Object> scheduleMap = new HashMap<>();
+            scheduleMap.put("scheduleId", schedule.getId());
+            scheduleMap.put("vehicleName", schedule.getVehicleCode().getCarCompany().getName());
+            scheduleMap.put("vehicleType", schedule.getVehicleCode().getTypeVehicle().toString());
+            scheduleMap.put("departureTime", schedule.getDepartureTime().format(formatter));
+            scheduleMap.put("arrivalTime", schedule.getArrivalTime().format(formatter));
+            scheduleMap.put("departureStation", schedule.getRoute().getOriginStation().getName());
+            scheduleMap.put("arrivalStation", schedule.getRoute().getDestinationStation().getName());
+            scheduleMap.put("departureLocation", schedule.getRoute().getOriginStation().getCity().getNameCity());
+            scheduleMap.put("arrivalLocation", schedule.getRoute().getDestinationStation().getCity().getNameCity());
+            scheduleMap.put("priceForOneSeat", schedule.getPrice_for_one_seat());
+            scheduleMap.put("rating", schedule.getVehicleCode().getCarCompany().getRating());
+            scheduleMap.put("totalSeat", scheduleRepository.getNumberSeatsEmpty(schedule.getId().longValue()));
+            response.add(scheduleMap);
+        }
+        return response;
+
     }
 
     private Map<String, Object> fetchSchedules(LocalDateTime time, String type, String originalLocation, String destination) {

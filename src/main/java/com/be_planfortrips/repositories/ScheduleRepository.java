@@ -27,6 +27,18 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
             @Param("destination") String destination
     );
 
+    @Query("SELECT s FROM Schedule s " +
+            "WHERE s.route.originStation.city.nameCity LIKE %:originalLocation% " +
+            "AND s.route.destinationStation.city.nameCity LIKE %:destination% " +
+            "AND s.departureTime BETWEEN :departureTime AND :returnTime")
+    List<Schedule> findSchedulesByTimeAndLocations(
+            @Param("departureTime") LocalDateTime departureTime,
+            @Param("returnTime") LocalDateTime returnTime,
+            @Param("originalLocation") String originalLocation,
+            @Param("destination") String destination
+    );
+
+
     @Query("SELECT s.route.originStation.name AS departureStation, "
             + "s.route.destinationStation.name AS arrivalStation "
             + "FROM Schedule s "
@@ -43,12 +55,10 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
             + "JOIN r.destinationStation ds "
             + "WHERE os.city.nameCity like %:originalLocation% "
             + "AND ds.city.nameCity like %:destination% "
-            + "AND CAST(s.departureTime AS DATE) = :departureDate "
-            + "AND CAST(s.arrivalTime AS DATE) >= :arrivalDate")
+            + "AND CAST(s.departureTime AS DATE) = :departureDate ")
     List<Schedule> findSchedule(@Param("originalLocation") String originalLocation,
                                 @Param("destination") String destination,
-                                @Param("departureDate") LocalDate departureDate,
-                                @Param("arrivalDate") LocalDate arrivalDate);
+                                @Param("departureDate") LocalDate departureDate);
 
     List<Schedule> getSchedulesByRouteAndVehicleCode(Route route, Vehicle vehicle);
     List<Schedule> findByVehicleCodeIn(List<String> code);
@@ -59,5 +69,18 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
             "WHERE schedule_seats.status = 'Empty' " +
             "AND schedules.id = :scheduleId", nativeQuery = true)
     Integer getNumberSeatsEmpty(@Param("scheduleId") Long scheduleId);
+
+
+    @Query("SELECT s FROM Schedule s " +
+            "JOIN s.route r " +
+            "JOIN r.originStation os " +
+            "JOIN r.destinationStation ds " +
+            "WHERE os.city.nameCity like %:originalLocation% " +
+            "AND ds.city.nameCity like %:destination% " +
+            "AND cast(s.departureTime as date) = :departureDate " +
+            "AND s.price_for_one_seat BETWEEN :priceMin AND :priceMax")
+    List<Schedule> getSchedulesSamePrice(@Param("priceMin") double priceMin,@Param("priceMax") double priceMax,
+                                         @Param("originalLocation") String originalLocation, @Param("destination") String destination,
+                                         @Param("departureDate") LocalDate departureDate);
 
 }

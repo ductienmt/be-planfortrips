@@ -24,4 +24,8 @@ public class RoomImage {
     @JoinColumn(name = "image_id")
     Image image;
 
+    @Override
+    public String toString() {
+        return "override ToString - Nhut";
+    }
 }
