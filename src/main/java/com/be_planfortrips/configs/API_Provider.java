@@ -46,7 +46,8 @@ public class API_Provider {
             "/api/v1/payments/vnpay/return-plan",
             "/api/v1/tags/all",
             "/api/v1/tags/create",
-
+            "/api/v1/feedbacks/enterpriseById/**",
+            "/api/v1/feedbacks/create",
     };
 
     public static final String[] ADMIN_API = {
