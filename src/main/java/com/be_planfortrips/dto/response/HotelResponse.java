@@ -21,7 +21,8 @@ public class HotelResponse {
     String description;
     int rating;
     Boolean status;
-    List<Image> images ;
+    List<Image> images;
+    Long enterpriseId;
     List<Room> rooms;
     List<HotelAmenitiesResponse> hotelAmenities;
 }
