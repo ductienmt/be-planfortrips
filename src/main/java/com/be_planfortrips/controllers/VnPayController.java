@@ -8,12 +8,15 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 
 
@@ -46,8 +49,17 @@ public class VnPayController {
     }
 
     @GetMapping("/return")
-    public String returnPage(@RequestParam Map<String, String> requestParams) throws IOException {
-        return iVnPayService.returnPage(requestParams);
+    public ResponseEntity<?> returnPage(@RequestParam Map<String, String> requestParams) throws IOException {
+        String returnValue= iVnPayService.returnPage(requestParams);
+        if(returnValue.equals("00")){
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(URI.create("http://localhost:5050/user/success"));
+            return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
+        }else{
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(URI.create("http://localhost:5050/user/fail"));
+            return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
+        }
     }
     @PostMapping("/create-payment-plan")
     public ResponseEntity<?> createPaymentForPlan(
@@ -62,7 +74,16 @@ public class VnPayController {
     }
 
     @GetMapping("/return-plan")
-    public String returnPageForPlan(@RequestParam Map<String, String> requestParams) throws IOException {
-        return iVnPayService.returnPageForPlan(requestParams);
+    public ResponseEntity<?> returnPageForPlan(@RequestParam Map<String, String> requestParams) throws IOException {
+        String returnValue=  iVnPayService.returnPageForPlan(requestParams);
+        if(returnValue.equals("00")){
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(URI.create("http://localhost:5050/user/success"));
+            return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
+        }else{
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(URI.create("http://localhost:5050/user/fail"));
+            return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
+        }
     }
 }
