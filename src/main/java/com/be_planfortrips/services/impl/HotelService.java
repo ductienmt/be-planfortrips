@@ -1,6 +1,7 @@
 package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.HotelDto;
+import com.be_planfortrips.dto.response.HotelResponses.AvailableHotels;
 import com.be_planfortrips.dto.response.RoomResponse;
 import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.Normalizer;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -253,6 +255,29 @@ public class HotelService implements IHotelService {
                 });
         return hotelRepository.findHotelByRouteId(route.getId()).stream().map(hotelMapper::toResponse).toList();
     }
+    public class StringUtils {
+        public static String removeAccents(String input) {
+            if (input == null) return null;
+            String normalized = Normalizer.normalize(input, Normalizer.Form.NFD)
+                    .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                    .toLowerCase();
+            return normalized;
+        }
+    }
+    @Override
+    public Page<HotelResponse> findHotelAvailable(PageRequest request, String keyword, LocalDateTime dateTime, Long days) {
+        String searchKeyword = (keyword == null || keyword.trim().isEmpty()) ?
+                null : StringUtils.removeAccents(keyword);
+
+        Page<HotelResponse> hotelResponses = hotelRepository.findAvailableHotels(
+                request,
+                dateTime,
+                dateTime.plusDays(days),
+                searchKeyword
+        ).map(hotel -> hotelMapper.toResponse(hotel));
+
+        return hotelResponses;
+    }
 
     @Override
     public List<Map<String, Object>> getHotelsSamePrice(double price, String destination) {
@@ -287,5 +312,4 @@ public class HotelService implements IHotelService {
 
         return new ArrayList<>(hotelMap.values());
     }
-
 }

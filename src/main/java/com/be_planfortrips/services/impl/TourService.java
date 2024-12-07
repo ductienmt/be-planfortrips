@@ -6,6 +6,7 @@ import com.be_planfortrips.dto.sql.TourDataSql;
 import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.mappers.impl.RoomAmenitiesMapper;
 import com.be_planfortrips.mappers.impl.TourMapper;
 import com.be_planfortrips.repositories.*;
 import com.be_planfortrips.services.interfaces.ITourService;
@@ -43,6 +44,7 @@ public class TourService implements ITourService {
     TourMapper tourMapper;
     CloudinaryService cloudinaryService;
     private final ScheduleSeatRepository scheduleSeatRepository;
+    RoomAmenitiesMapper roomAmenitiesMapper;
 
     @Override
     @Transactional
@@ -238,6 +240,7 @@ public class TourService implements ITourService {
         hotelResponse.setDescription(hotel.getDescription());
         hotelResponse.setImages(hotel.getImages());
         response.setHotelResponse(hotelResponse);
+//        hotelResponse.setStatus(hotel.get);
 
         response.setId(tour.getId());
 
@@ -318,6 +321,15 @@ public class TourService implements ITourService {
                 roomResponse.setTypeOfRoom(room.getTypeOfRoom());
                 roomResponse.setRating(room.getRating());
                 roomResponse.setAvailable(true);
+                roomResponse.setRoomAmenities(room.getRoomAmenities().stream().map(roomAmenitiesMapper::toResponse).toList());
+
+                // Thời gian CheckIn phong nho? hon 1h so voi thoi` gian den
+                // (Da~ Check Trong Sql) -> Nếu loi~ thi` do Sql Sai
+                roomResponse.setCheckInTime(scheduleDes.getArrivalTime().minusHours(1));
+
+                // Thời gian checkOut phong` nho? hon thoi` gian Xe khoi? hanh` 15
+                roomResponse.setCheckOutTime(scheduleOrigin.getDepartureTime().minusMinutes(15));
+
 
                 roomResponses.add(roomResponse);
             });

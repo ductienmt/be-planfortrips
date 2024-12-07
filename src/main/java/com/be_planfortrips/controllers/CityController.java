@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("${api.prefix}/cities")
 @RequiredArgsConstructor
@@ -58,6 +60,14 @@ public class CityController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    @GetMapping("findCityByName")
+    public ResponseEntity<?> findCityByName(@RequestParam String name){
+        try {
+            return ResponseEntity.ok(iCityService.findCityByName(name));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 }

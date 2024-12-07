@@ -11,5 +11,5 @@ public interface CityRepository extends JpaRepository<City, String> {
 
     @Query("SELECT c.id, c.nameCity, c.description FROM City c")
     List<Object[]> getAllCities();
-
+    List<City> searchByNameCityContaining(String nameCity);
 }

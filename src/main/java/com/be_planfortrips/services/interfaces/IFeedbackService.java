@@ -25,4 +25,6 @@ public interface IFeedbackService {
 
     // Lấy FeedBack By enterpriseId
     List<FeedbackResponse> getFeedBackByEnterpriseId();
+    List<FeedbackResponse> getFeedBackByEnterpriseId(Long id);
+
 }

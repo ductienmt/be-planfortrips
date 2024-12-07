@@ -37,6 +37,7 @@ public class HotelMapper implements MapperInterface<HotelResponse,Hotel,HotelDto
     public HotelResponse toResponse(Hotel hotel) {
         HotelResponse hotelResponse = modelMapper.map(hotel, HotelResponse.class);
         hotelResponse.setRooms(hotel.getRooms());
+        hotelResponse.setEnterpriseId(hotel.getAccountEnterprise().getAccountEnterpriseId());
         return hotelResponse;
     }
     @Override
