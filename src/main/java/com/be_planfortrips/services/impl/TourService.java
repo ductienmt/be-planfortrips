@@ -321,6 +321,11 @@ public class TourService implements ITourService {
                 roomResponse.setTypeOfRoom(room.getTypeOfRoom());
                 roomResponse.setRating(room.getRating());
                 roomResponse.setAvailable(true);
+                roomResponse.setImages(
+                        room.getImages().stream()
+                                .map(roomImage -> roomImage.getImage().getUrl())
+                                .collect(Collectors.toList())
+                );
                 roomResponse.setRoomAmenities(room.getRoomAmenities().stream().map(roomAmenitiesMapper::toResponse).toList());
 
                 // Thời gian CheckIn phong nho? hon 1h so voi thoi` gian den

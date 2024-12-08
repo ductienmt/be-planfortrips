@@ -13,9 +13,7 @@ import com.be_planfortrips.mappers.impl.PageMapperImpl;
 import com.be_planfortrips.mappers.impl.RoomMapper;
 import com.be_planfortrips.mappers.impl.RoomMapper_2;
 import com.be_planfortrips.mappers.impl.TokenMapperImpl;
-import com.be_planfortrips.repositories.BookingHotelDetailRepository;
-import com.be_planfortrips.repositories.HotelRepository;
-import com.be_planfortrips.repositories.RoomRepository;
+import com.be_planfortrips.repositories.*;
 import com.be_planfortrips.services.interfaces.ICloudinaryService;
 import com.be_planfortrips.services.interfaces.IRoomService;
 import lombok.AccessLevel;
@@ -44,6 +42,8 @@ public class RoomServiceImpl implements IRoomService {
     PageMapperImpl pageMapperImpl;
     private final HotelRepository hotelRepository;
     private final BookingHotelDetailRepository bookingHotelDetailRepository;
+    private final RoomImageRepository roomImageRepository;
+    ImageRepository imageRepository;
 
     @Override
     public Set<RoomResponse> getAllRoom() {
@@ -155,6 +155,8 @@ public class RoomServiceImpl implements IRoomService {
             Image image = Image.builder().build();
             image.setUrl(result.get("url").toString());
 
+            imageRepository.save(image);
+
             // Create RoomImage object and link it to the room
             RoomImage roomImage = RoomImage.builder()
                     .room(room)
@@ -163,6 +165,8 @@ public class RoomServiceImpl implements IRoomService {
 
             // Add the new RoomImage to the list of images
             roomImages.add(roomImage);
+            roomImageRepository.save(roomImage);
+            room.setImages(roomImages);
         }
 
         // Save the Room with updated images
