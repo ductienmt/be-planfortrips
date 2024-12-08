@@ -37,6 +37,11 @@ public class FeedbackController {
         List<FeedbackResponse> responses = feedbackService.getFeedBackByEnterpriseId();
         return ResponseEntity.ok(responses);
     }
+    @GetMapping("/enterpriseById/{enterpriseId}")
+    public ResponseEntity<List<FeedbackResponse>> getFeedBacksByEnterpriseId(@PathVariable Long enterpriseId) {
+        List<FeedbackResponse> responses = feedbackService.getFeedBackByEnterpriseId(enterpriseId);
+        return ResponseEntity.ok(responses);
+    }
 
 
     @PostMapping("/create")

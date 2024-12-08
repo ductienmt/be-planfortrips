@@ -47,6 +47,8 @@ public class API_Provider {
             "/api/v1/payments/vnpay/return-plan",
             "/api/v1/tags/all",
             "/api/v1/tags/create",
+            "/api/v1/feedbacks/enterpriseById/**",
+            "/api/v1/feedbacks/create",
             "/api/v1/tours/**",
             "/api/v1/statistical/**",
             "/api/v1/rooms/getRoomByHotelId",

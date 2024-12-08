@@ -2,11 +2,13 @@ package com.be_planfortrips.services.interfaces;
 
 import com.be_planfortrips.dto.HotelDto;
 import com.be_planfortrips.dto.response.HotelResponse;
+import com.be_planfortrips.dto.response.HotelResponses.AvailableHotels;
 import com.be_planfortrips.dto.response.RoomResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 import java.time.LocalDateTime;
@@ -25,6 +27,8 @@ public interface IHotelService {
     List<Map<String, Object>> getHotelDetail();
     List<HotelResponse> getByEnterpriseId(Long enterpriseId);
     List<HotelResponse> getByRouteId(String routeId);
+    Page<HotelResponse> findHotelAvailable(PageRequest request, String keyword, LocalDateTime dateTime, Long days);
+
     List<Map<String, Object>> getHotelsSamePrice(double price, String destination);
 }
 

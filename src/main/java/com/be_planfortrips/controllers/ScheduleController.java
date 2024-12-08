@@ -58,12 +58,7 @@ public class ScheduleController {
         return ResponseEntity.ok(responses);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<ScheduleResponse> createSchedule(
-            @RequestBody ScheduleDto scheduleDto) {
-        ScheduleResponse response = scheduleService.createSchedule(scheduleDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
+
 
     @PutMapping("update/{scheduleId}")
     public ResponseEntity<ScheduleResponse> updateSchedule(

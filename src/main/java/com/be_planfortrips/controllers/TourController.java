@@ -136,13 +136,7 @@ public class TourController {
         }
     }
 
-    @GetMapping("/available/{tourId}")
-    public ResponseEntity<?> getTourAvailable(
-            @PathVariable Integer tourId
-    ) {
-        TourDetailResponse tourDetailResponse = iTourService.getTourDetail(tourId);
-        return ResponseEntity.ok(tourDetailResponse);
-    }
+
 
     @GetMapping("/client/")
     public ResponseEntity<?> getAllTourClient() {
