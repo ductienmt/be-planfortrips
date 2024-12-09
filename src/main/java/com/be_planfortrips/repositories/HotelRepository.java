@@ -55,4 +55,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     List<Object[]> findHotelsWithRoomsInPriceRange(@Param("minPrice") BigDecimal minPrice,
                                                    @Param("maxPrice") BigDecimal maxPrice,
                                                    @Param("city") String city);
+    @Query("select h FROM Hotel h " +
+            "join h.rooms r " +
+            "where  r.id = :roomId")
+    Hotel getHotelByRoomId(@Param("roomId") Long id);
 }
