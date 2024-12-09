@@ -108,6 +108,16 @@ public class HotelController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("getByRoomId/{id}")
+    public ResponseEntity<?> getHotelByRoomId(@PathVariable Long id){
+        try {
+            HotelResponse hotelResponse = iHotelService.getHotelByRoomId(id);
+            return ResponseEntity.ok(hotelResponse);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping(value = "uploads/{id}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadImages(@PathVariable long id,@RequestParam("files") List<MultipartFile> files)throws IllegalArgumentException{

@@ -53,7 +53,11 @@ public class API_Provider {
             "/api/v1/statistical/**",
             "/api/v1/rooms/getRoomByHotelId",
             "/api/v1/schedules/getSamePrice",
-            "/api/v1/rooms/**"
+            "/api/v1/rooms/**",
+            "/api/v1/coupons/all",
+            "/api/v1/booking-hotel-details/all",
+            "/api/v1/booking-hotel-details/getById/**",
+            "/api/v1/hotels/getByRoomId/**",
     };
 
     public static final String[] ADMIN_API = {
@@ -97,6 +101,9 @@ public class API_Provider {
             "/api/v1/tours/findById/**",
             "/api/v1/tours/uploads/**",
             "/api/v1/tours/deleteImages/**",
+            "/api/v1/coupons/all",
+            "/api/v1/booking-hotel-details/all",
+            "/api/v1/booking-hotel-details/getById/**"
     };
 
     public static final String[] USER_API = {

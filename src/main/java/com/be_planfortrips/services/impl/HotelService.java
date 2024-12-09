@@ -96,6 +96,16 @@ public class HotelService implements IHotelService {
         return hotelMapper.toResponse(hotel);
     }
 
+    @Override
+    public HotelResponse getHotelByRoomId(Long id) throws Exception {
+        RoomResponse room = roomServiceImpl.getRoomById(id);
+        if(room == null){
+            throw new AppException(ErrorType.notFound);
+        }
+        Hotel hotel = hotelRepository.getHotelByRoomId(room.getId());
+        return hotelMapper.toResponse(hotel);
+    }
+
 
     @Override
     @Transactional
