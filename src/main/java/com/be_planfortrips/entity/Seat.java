@@ -28,7 +28,9 @@ public class Seat {
 
     @Column(name = "seat_number", length = 5)
     String seatNumber;
-
+    @OneToMany(mappedBy = "seat",cascade = CascadeType.REMOVE,orphanRemoval = true)
+    @JsonIgnore
+    List<ScheduleSeat> scheduleSeats;
 //    @Column(name = "status")
 //    @Enumerated(EnumType.STRING)
 //    StatusSeat status = StatusSeat.Empty;

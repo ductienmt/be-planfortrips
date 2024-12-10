@@ -16,6 +16,7 @@ import com.be_planfortrips.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -79,7 +80,7 @@ public class CheckinServiceImpl implements ICheckinService {
         if (page == null || page < 1) {
             throw new IllegalArgumentException("Số trang phải lớn hơn hoặc bằng 1");
         }
-        Page<Checkin> checkinPage = this.checkinRepository.findAll(PageRequest.of(page - 1, pageSize));
+        Page<Checkin> checkinPage = this.checkinRepository.findAll(PageRequest.of(page - 1, pageSize, Sort.by("createAt").descending()));
         List<CheckinResponse> checkinResponses = checkinPage.getContent()
                 .stream().map(checkinMapper::toResponse).collect(Collectors.toList());
 
