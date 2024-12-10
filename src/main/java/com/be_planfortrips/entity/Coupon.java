@@ -56,4 +56,8 @@ public class Coupon extends BaseEntity {
 
     @ManyToOne
     AccountEnterprise accountEnterprise;
+
+    @ManyToMany(mappedBy = "coupons", cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    List<Ticket> tickets;
 }
