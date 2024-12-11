@@ -58,7 +58,12 @@ public class ScheduleController {
         return ResponseEntity.ok(responses);
     }
 
-
+    @PostMapping("/create")
+    public ResponseEntity<ScheduleResponse> createSchedule(
+            @RequestBody ScheduleDto scheduleDto) {
+        ScheduleResponse response = scheduleService.createSchedule(scheduleDto);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
     @PutMapping("update/{scheduleId}")
     public ResponseEntity<ScheduleResponse> updateSchedule(
@@ -149,6 +154,19 @@ public class ScheduleController {
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new AppException(ErrorType.internalServerError);
+        }
+    }
+
+    @GetMapping("getByEnterpriseId")
+    public ResponseEntity<?> getByEnterpriseId(){
+        try {
+            return ResponseEntity.ok(ApiResponse.<List<ScheduleResponse>>builder()
+                    .code(HttpStatus.OK.value())
+                    .data(scheduleService.getScheduleByEnterpriseId())
+                    .message("")
+                    .build());
+        } catch (Exception e){
+            return null;
         }
     }
 

@@ -8,6 +8,7 @@ import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.ScheduleMapper;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.*;
 import com.be_planfortrips.services.interfaces.IScheduleService;
 import lombok.AccessLevel;
@@ -35,6 +36,7 @@ public class ScheduleServiceImpl implements IScheduleService {
     VehicleRepository vehicleRepository;
     RouteRepository routeRepository;
     ScheduleSeatRepository scheduleSeatRepository;
+    private final TokenMapperImpl tokenMapperImpl;
 
     @Override
     public List<ScheduleResponse> getAllSchedule() {
@@ -219,7 +221,11 @@ public class ScheduleServiceImpl implements IScheduleService {
             response.add(scheduleMap);
         }
         return response;
+    }
 
+    @Override
+    public List<ScheduleResponse> getScheduleByEnterpriseId() {
+        return this.scheduleRepository.getSchedulesByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken()).stream().map(this.scheduleMapper::toResponse).toList();
     }
 
     private Map<String, Object> fetchSchedules(LocalDateTime time, String type, String originalLocation, String destination) {
