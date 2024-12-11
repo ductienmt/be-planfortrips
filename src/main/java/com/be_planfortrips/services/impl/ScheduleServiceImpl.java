@@ -179,7 +179,6 @@ public class ScheduleServiceImpl implements IScheduleService {
     }
 
     @Override
-<<<<<<< Updated upstream
     public List<Map<String, Object>> getScheduleSamePrice(double price, String originalLocation, String destination, LocalDate departureDate) {
         double priceMin = price - 50;
         double priceMax = price + 50;
@@ -222,11 +221,11 @@ public class ScheduleServiceImpl implements IScheduleService {
             response.add(scheduleMap);
         }
         return response;
+    }
 
-=======
+    @Override
     public List<ScheduleResponse> getScheduleByEnterpriseId() {
         return this.scheduleRepository.getSchedulesByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken()).stream().map(this.scheduleMapper::toResponse).toList();
->>>>>>> Stashed changes
     }
 
     private Map<String, Object> fetchSchedules(LocalDateTime time, String type, String originalLocation, String destination) {
