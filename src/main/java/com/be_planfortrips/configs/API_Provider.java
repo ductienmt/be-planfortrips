@@ -51,7 +51,6 @@ public class API_Provider {
             "/api/v1/statistical/**",
             "/api/v1/rooms/getRoomByHotelId",
             "/api/v1/schedules/getSamePrice",
-            "/api/v1/rooms/**"
     };
 
     public static final String[] ADMIN_API = {
@@ -191,6 +190,7 @@ public class API_Provider {
             "/api/v1/schedules/create",
             "/api/v1/schedules/update/**",
             "/api/v1/schedules/delete/**",
+            "/api/v1/schedules/getByEnterpriseId",
             "/api/v1/seats/create",
             "/api/v1/seats/update/**",
             "/api/v1/seats/delete/**",

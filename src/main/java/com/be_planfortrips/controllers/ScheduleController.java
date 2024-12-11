@@ -157,4 +157,17 @@ public class ScheduleController {
         }
     }
 
+    @GetMapping("getByEnterpriseId")
+    public ResponseEntity<?> getByEnterpriseId(){
+        try {
+            return ResponseEntity.ok(ApiResponse.<List<ScheduleResponse>>builder()
+                    .code(HttpStatus.OK.value())
+                    .data(scheduleService.getScheduleByEnterpriseId())
+                    .message("")
+                    .build());
+        } catch (Exception e){
+            return null;
+        }
+    }
+
 }
