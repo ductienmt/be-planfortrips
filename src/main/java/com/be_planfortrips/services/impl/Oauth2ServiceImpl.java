@@ -98,7 +98,7 @@ public class Oauth2ServiceImpl implements IAuth2Service {
                     .build();
         }
         // Neu User (GoogleID) chua ton tai
-        Role role = roleRepository.findByName("USER").orElseThrow(
+        Role role = roleRepository.findByName("ROLE_USER").orElseThrow(
                 () -> new AppException(ErrorType.roleNameNotFound)
         );
 //        Image mediaFile = Image.

@@ -164,6 +164,7 @@ public class UserController {
         }
     }
 
+
     @GetMapping("/getDetail")
     public ResponseEntity<?> getUserById(@RequestParam(value = "id", required = false) Long id, @RequestParam(value = "username", required = false) String username, @RequestParam(value = "email", required = false) String email) {
         try {
