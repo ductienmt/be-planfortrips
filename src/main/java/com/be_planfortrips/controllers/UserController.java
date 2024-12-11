@@ -165,9 +165,9 @@ public class UserController {
     }
 
     @GetMapping("/getDetail")
-    public ResponseEntity<?> getUserById(@RequestParam(value = "id", required = false) Long id, @RequestParam(value = "username", required = false) String username, @RequestParam(value = "email", required = false) String email){
+    public ResponseEntity<?> getUserById(@RequestParam(value = "id", required = false) Long id, @RequestParam(value = "username", required = false) String username, @RequestParam(value = "email", required = false) String email) {
         try {
-            if(id == null && username == null && email == null) {
+            if (id == null && username == null && email == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                         ApiResponse.<Void>builder()
                                 .code(HttpStatus.BAD_REQUEST.value())
@@ -178,9 +178,9 @@ public class UserController {
 
             AccountUserResponse user;
 
-            if(id != null) {
+            if (id != null) {
                 user = this.userService.getUserByIdActive(id);
-            } else if(username != null) {
+            } else if (username != null) {
                 user = this.userService.getUserByUsername(username);
             } else {
                 user = this.userService.getUserByEmail(email);
@@ -250,31 +250,57 @@ public class UserController {
             return buildApiResponse(HttpStatus.NOT_FOUND, "Lấy thông tin người dùng thất bại.");
         }
     }
+
     @GetMapping("/findByUsername")
-        public ResponseEntity<?> findByUserName(@RequestParam("username") String username){
+    public ResponseEntity<?> findByUserName(@RequestParam("username") String username) {
         try {
             AccountUserResponse user = userService.getUserByUsername(username);
             return ResponseEntity.ok(user);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @GetMapping("/findByCarCompany/{id}")
-    public ResponseEntity<?> findByCarCompanyId(@PathVariable Integer id){
+    public ResponseEntity<?> findByCarCompanyId(@PathVariable Integer id) {
         try {
             return ResponseEntity.ok(userService.findByCarCompanyId(id));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @GetMapping("/findByHotel/{id}")
-    public ResponseEntity<?> findByHotelId(@PathVariable Integer id){
+    public ResponseEntity<?> findByHotelId(@PathVariable Integer id) {
         try {
             return ResponseEntity.ok(userService.findByHotelId(id));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/resetPassword")
+    public ResponseEntity<?> changePassword(
+            @RequestParam String email,
+            @RequestParam String newPass
+            ) {
+        try {
+            // lấy từ param xuống email với newPass
+            // làm hàm resetPass email xác định tài khoản user
+            // nếu có thì encode newPass và set dô rồi lưu lại
+            // nếu ko có thất bại
+            userService.resetPass(email, newPass);
+            return ResponseEntity.ok(
+                    ApiResponse.<Void>builder()
+                            .code(HttpStatus.OK.value())
+                            .message("Đổi mật khẩu thành công.")
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return buildApiResponse(HttpStatus.METHOD_FAILURE, "Đổi mật khẩu thất bại.");
         }
     }
 }

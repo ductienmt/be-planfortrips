@@ -1,8 +1,14 @@
 package com.be_planfortrips.controllers;
 
+import com.be_planfortrips.dto.response.AccountUserResponse;
+import com.be_planfortrips.entity.User;
+import com.be_planfortrips.exceptions.AppException;
+import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.services.impl.UserServiceImpl;
 import com.be_planfortrips.services.interfaces.IEmailService;
 import com.be_planfortrips.services.interfaces.IOTPService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +24,24 @@ public class EmailController {
     @Autowired
     private IOTPService otpService;
 
+    @Autowired
+    private UserServiceImpl userService;
+
     @PostMapping("/send")
     public ResponseEntity<String> sendOTP(@RequestParam String email, @RequestParam String content) {
-        String otp = otpService.generateOTP(email);
-        emailService.sendOTPEmail(email, otp, content);
-        return ResponseEntity.ok("OTP đã được gửi tới " + email);
+        try {
+             AccountUserResponse user = userService.getUserByEmail(email);
+             if (user == null) {
+                 throw new AppException(ErrorType.notFound);
+             }
+
+            String otp = otpService.generateOTP(email);
+            emailService.sendOTPEmail(email, otp, content);
+
+            return ResponseEntity.ok("OTP đã được gửi tới " + email);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PostMapping("/validate")

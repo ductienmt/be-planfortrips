@@ -98,4 +98,13 @@ public class VehicleController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("getByEnterpriseId")
+    public ResponseEntity<?> getByEnterpriseId() {
+        try {
+            return ResponseEntity.ok(this.iVehicleService.getVehiclesByEnterpriseId());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

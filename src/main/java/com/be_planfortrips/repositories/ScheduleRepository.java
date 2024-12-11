@@ -70,6 +70,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
             "AND schedules.id = :scheduleId", nativeQuery = true)
     Integer getNumberSeatsEmpty(@Param("scheduleId") Long scheduleId);
 
+<<<<<<< Updated upstream
 
     @Query("SELECT s FROM Schedule s " +
             "JOIN s.route r " +
@@ -82,5 +83,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
     List<Schedule> getSchedulesSamePrice(@Param("priceMin") double priceMin,@Param("priceMax") double priceMax,
                                          @Param("originalLocation") String originalLocation, @Param("destination") String destination,
                                          @Param("departureDate") LocalDate departureDate);
+=======
+    @Query("select s from Schedule s where s.vehicleCode.carCompany.enterprise.accountEnterpriseId = :id")
+    List<Schedule> getSchedulesByEnterpriseId(@Param("id") Long id);
+>>>>>>> Stashed changes
 
 }

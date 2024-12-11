@@ -1,5 +1,6 @@
 package com.be_planfortrips.services.impl;
 
+import com.be_planfortrips.repositories.UserRepository;
 import com.be_planfortrips.services.interfaces.IEmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
