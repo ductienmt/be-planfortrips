@@ -2,6 +2,7 @@ package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.HotelDto;
 import com.be_planfortrips.dto.response.ApiResponse;
+import com.be_planfortrips.dto.response.HotelAmenitiesResponse;
 import com.be_planfortrips.dto.response.HotelListResponse;
 import com.be_planfortrips.dto.response.HotelResponse;
 import com.be_planfortrips.dto.response.HotelResponses.AvailableHotels;
@@ -103,6 +104,7 @@ public class HotelController {
     public ResponseEntity<?> getHotelById(@PathVariable Long id){
         try {
             HotelResponse hotelResponse = iHotelService.getByHotelId(id);
+            System.out.println(hotelResponse.getHotelAmenities().stream().map(HotelAmenitiesResponse::getName).collect(Collectors.toList()));
             return ResponseEntity.ok(hotelResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

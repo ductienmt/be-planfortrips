@@ -1,6 +1,7 @@
 package com.be_planfortrips.dto.response;
 import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.entity.Room;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,5 +25,6 @@ public class HotelResponse {
     List<Image> images;
     Long enterpriseId;
     List<Room> rooms;
+    @JsonManagedReference
     List<HotelAmenitiesResponse> hotelAmenities;
 }

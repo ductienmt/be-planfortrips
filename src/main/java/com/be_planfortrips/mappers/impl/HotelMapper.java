@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class HotelMapper implements MapperInterface<HotelResponse,Hotel,HotelDto> {
     ModelMapper modelMapper;
+    private final HotelAmenitiesMapper hotelAmenitiesMapper;
+
     @Override
     public Hotel toEntity(HotelDto hotelDto) {
         TypeMap<HotelDto, Hotel> typeMap = modelMapper.getTypeMap(HotelDto.class, Hotel.class);
@@ -38,6 +40,7 @@ public class HotelMapper implements MapperInterface<HotelResponse,Hotel,HotelDto
         HotelResponse hotelResponse = modelMapper.map(hotel, HotelResponse.class);
         hotelResponse.setRooms(hotel.getRooms());
         hotelResponse.setEnterpriseId(hotel.getAccountEnterprise().getAccountEnterpriseId());
+        hotelResponse.setHotelAmenities(hotel.getHotelAmenities().stream().map(hotelAmenitiesMapper::toResponse).collect(Collectors.toList()));
         return hotelResponse;
     }
     @Override
