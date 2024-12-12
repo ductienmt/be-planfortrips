@@ -21,6 +21,7 @@ public enum ErrorType {
     typeEnterpriseDetailNotFound(804, "TypeEnterpriseDetail không tồn tại", HttpStatus.NOT_FOUND),
     inputFieldInvalid(805, "Trường nhập không hợp lệ", HttpStatus.BAD_REQUEST),
 
+
     notVerified(400, "OTP không hợp lệ hoặc đã hết hạn", HttpStatus.BAD_REQUEST),
 
     // Định nghĩa lỗi chung

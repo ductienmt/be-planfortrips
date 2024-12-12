@@ -16,4 +16,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle,String> {
     @Query("select h from Vehicle h " +
             " where (:keyword is null or :keyword = '' or h.carCompany.name like %:keyword%)")
     Page<Vehicle> searchVehicles(Pageable pageable, @Param("keyword") String keyword);
+
+    @Query("select v from Vehicle v where v.carCompany.enterprise.accountEnterpriseId = :id")
+    List<Vehicle> getVehicleByEnterpriseId(@Param("id") Long id);
 }
