@@ -34,7 +34,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     @Query("SELECT h " +
             "FROM Hotel h " +
             "INNER JOIN Room r ON h.id = r.hotel.id " +
-            "WHERE (:destination IS NULL OR :destination = '' " +
+            "WHERE (:destination IS NULL OR trim(:destination) = '' " +
             "   OR lower(r.hotel.accountEnterprise.city.nameCity) LIKE lower(concat('%', :destination, '%')) " +
             "   OR lower(h.name) LIKE lower(concat('%', :destination, '%')) " +
             "   OR lower(h.address) LIKE lower(concat('%', :destination, '%'))) " +
