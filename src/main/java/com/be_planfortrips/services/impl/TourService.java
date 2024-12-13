@@ -269,6 +269,7 @@ public class TourService implements ITourService {
                     .departureTime(sDes.getDepartureTime()).priceForOneTicket(BigDecimal.valueOf(tour.getTotalPrice()))
                     .routeId(tourDataSql.getRoute1Id())
                     .priceForOneTicket(sDes.getPrice_for_one_seat())
+                    .code(sDes.getVehicleCode().getCode())
                     .build();
             tourDataByDate.setScheduleDes(scheduleDes);
 

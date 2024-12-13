@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,17 +22,23 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-    @RequestMapping("${api.prefix}/account-enterprises")
+@RequestMapping("${api.prefix}/account-enterprises")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AccountEnterpriseController {
 
     IAccountEnterpriseService accountEnterpriseService;
 
-    @GetMapping("all")
-    public ResponseEntity<List<AccountEnterpriseResponse>> getAllAccountEnterprises() {
-        List<AccountEnterpriseResponse> accountEnterprises = accountEnterpriseService.getAllAccountEnterprises(1, 30);
-        return new ResponseEntity<>(accountEnterprises, HttpStatus.OK);
+    @GetMapping("/all")
+    public ResponseEntity<Page<AccountEnterpriseResponse>> getAllAccountEnterprises(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        Page<AccountEnterpriseResponse> accountEnterprises = accountEnterpriseService.getAllAccountEnterprises(name, page, size);
+        return ResponseEntity.ok(accountEnterprises);
     }
+
+
 
     @GetMapping("/accept")
     public ResponseEntity<List<AccountEnterpriseResponse>> getEnterpriseNeedAccept() {

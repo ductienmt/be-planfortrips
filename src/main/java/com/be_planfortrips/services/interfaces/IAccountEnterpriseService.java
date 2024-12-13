@@ -2,13 +2,14 @@ package com.be_planfortrips.services.interfaces;
 
 import com.be_planfortrips.dto.AccountEnterpriseDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface IAccountEnterpriseService {
 
     // Lấy tất cả tài khoản doanh nghiệp
-    List<AccountEnterpriseResponse> getAllAccountEnterprises(int page, int size);
+    Page<AccountEnterpriseResponse> getAllAccountEnterprises(String name,int page, int size);
 
     // Lấy tài khoản doanh nghiệp theo ID
     AccountEnterpriseResponse getAccountEnterpriseById(Long id);

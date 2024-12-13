@@ -1,16 +1,13 @@
 package com.be_planfortrips.repositories;
 
-import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
 import com.be_planfortrips.entity.AccountEnterprise;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
-import java.awt.print.Pageable;
 import java.util.List;
-import java.util.Optional;
 
 public interface AccountEnterpriseRepository extends JpaRepository<AccountEnterprise, Long> {
     @Query("SELECT a FROM AccountEnterprise a WHERE a.username = :username AND a.password = :password AND a.status = true")
@@ -28,6 +25,11 @@ public interface AccountEnterpriseRepository extends JpaRepository<AccountEnterp
 
     @Query("Select count(*) from AccountEnterprise")
     Integer countAll();
+
+    @Query(value = "SELECT * FROM account_enterprises e WHERE unaccent(e.enterprise_name) LIKE unaccent(CONCAT('%', :name, '%'))", nativeQuery = true)
+    Page<AccountEnterprise> findByEnterpriseNameStartingWithIgnoreCase(@Param("name") String name, Pageable pageable);
+
+
 
 
 
