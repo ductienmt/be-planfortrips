@@ -4,6 +4,7 @@ import com.be_planfortrips.dto.AccountEnterpriseDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
 import com.be_planfortrips.entity.AccountEnterprise;
 import com.be_planfortrips.entity.City;
+import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.entity.TypeEnterpriseDetail;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
@@ -49,11 +50,17 @@ public class AccountEnterpriseMapper implements
                 accountEnterprise.getTypeEnterpriseDetail().getName());
         accountEnterpriseResponse.setCreateAt(accountEnterprise.getCreateAt());
 
+        accountEnterprise.setTaxCode(accountEnterprise.getTaxCode());
         City city = accountEnterprise.getCity();
         if (city != null) {
             accountEnterpriseResponse.setCityName(city.getNameCity());
         } else {
             accountEnterpriseResponse.setCityName("No city assigned");
+        }
+
+        Image image = accountEnterprise.getImage();
+        if (image != null) {
+            accountEnterpriseResponse.setUrlImage(image.getUrl());
         }
 
         return accountEnterpriseResponse;

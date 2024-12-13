@@ -62,7 +62,8 @@ public enum ErrorType {
     TicketOrBookingHotelIsRequired(717,"Vé xe hoặc vé xe cần phải có",HttpStatus.BAD_REQUEST),
     TourIdNotFound(718,"TourId Not found",HttpStatus.NOT_FOUND),
     ScheduleIdNotFound(719, "ScheduleId Not Found",HttpStatus.NOT_FOUND),
-    SeatIdNotFound(720, "SeatId Not Found",HttpStatus.NOT_FOUND)
+    SeatIdNotFound(720, "SeatId Not Found",HttpStatus.NOT_FOUND),
+    PhoneNumberNotExist(721, "PhoneNumber Not Found", HttpStatus.NOT_FOUND)
     ;
 
     private static String getString() {

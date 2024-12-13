@@ -136,9 +136,17 @@ public class TourController {
         }
     }
 
+    @GetMapping("/available/{tourId}")
+    public ResponseEntity<?> getTourAvailable(
+            @PathVariable Integer tourId
+    ) {
+        TourDetailResponse tourDetailResponse = iTourService.getTourDetail(tourId);
+        return ResponseEntity.ok(tourDetailResponse);
+    }
 
 
-    @GetMapping("/client/")
+
+    @GetMapping("/client")
     public ResponseEntity<?> getAllTourClient() {
         List<TourClientResponse> responses = iTourService.getAllTourClient();
         return ResponseEntity.ok(responses);
@@ -151,6 +159,12 @@ public class TourController {
     ) {
         List<TourClientResponse> res = iTourService.getTourByDestination(cityDesId, cityOriginId);
         return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/top1")
+    public ResponseEntity<TourClientResponse> getTourTop1Used() {
+        TourClientResponse response = iTourService.getTourTopUsed();
+        return ResponseEntity.ok(response);
     }
 
 

@@ -43,8 +43,8 @@ public class RoomServiceImpl implements IRoomService {
     PageMapperImpl pageMapperImpl;
     private final HotelRepository hotelRepository;
     private final BookingHotelDetailRepository bookingHotelDetailRepository;
-    private final ImageRepository imageRepository;
     private final RoomImageRepository roomImageRepository;
+    ImageRepository imageRepository;
 
     @Override
     public Set<RoomResponse> getAllRoom() {
@@ -155,6 +155,7 @@ public class RoomServiceImpl implements IRoomService {
             // Create Image object and set URL
             Image image = Image.builder().build();
             image.setUrl(result.get("url").toString());
+
             imageRepository.save(image);
 
             // Create RoomImage object and link it to the room
@@ -166,6 +167,7 @@ public class RoomServiceImpl implements IRoomService {
             // Add the new RoomImage to the list of images
             roomImages.add(roomImage);
             roomImageRepository.save(roomImage);
+            room.setImages(roomImages);
         }
 
         // Save the Room with updated images

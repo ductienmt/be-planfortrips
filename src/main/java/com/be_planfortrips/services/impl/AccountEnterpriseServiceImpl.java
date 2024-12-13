@@ -1,14 +1,10 @@
 package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.AccountEnterpriseDto;
-import com.be_planfortrips.dto.TypeEnterpriseDetailDto;
-import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
 import com.be_planfortrips.entity.AccountEnterprise;
-import com.be_planfortrips.entity.User;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
-import com.be_planfortrips.mappers.TokenMapper;
 import com.be_planfortrips.mappers.impl.AccountEnterpriseMapper;
 import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
@@ -24,10 +20,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.text.Normalizer;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
 import org.springframework.data.domain.PageRequest;
 
 
@@ -46,15 +42,28 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     TokenMapperImpl tokenMapper;
 
     @Override
-    public List<AccountEnterpriseResponse> getAllAccountEnterprises(int page, int size) {
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("createAt").descending());
+    public Page<AccountEnterpriseResponse> getAllAccountEnterprises(String name, int page, int size) {
 
-        Page<AccountEnterprise> accountEnterprisesPage = accountEnterpriseRepository.findAll(pageable);
+        Page<AccountEnterprise> accountEnterprisesPage;
+        if (name != null && !name.isEmpty()) {
+            Pageable pageable = PageRequest.of(page, size, Sort.by("create_At").descending());
+            String normalizedSearchTerm = normalizeString(name.toLowerCase());  // Chuẩn hóa và chuyển về chữ thường
+            accountEnterprisesPage = accountEnterpriseRepository.findByEnterpriseNameStartingWithIgnoreCase(normalizedSearchTerm, pageable);
+        } else {
+            Pageable pageable = PageRequest.of(page, size, Sort.by("createAt").descending());
+            accountEnterprisesPage = accountEnterpriseRepository.findAll(pageable);
+        }
 
-        return accountEnterprisesPage.getContent().stream()
-                .map(accountEnterpriseMapper::toResponse)
-                .collect(Collectors.toList());
+        return accountEnterprisesPage.map(accountEnterpriseMapper::toResponse);
     }
+
+    private String normalizeString(String input) {
+        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
+        return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+    }
+
+
+
 
 
 
@@ -193,6 +202,14 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     @Override
     public List<AccountEnterpriseResponse> getAccountEnterpriseDisable() {
         return accountEnterpriseRepository.findAccountEnterpriseDisable().stream().map(accountEnterpriseMapper::toResponse).toList();
+    }
+
+    @Override
+    public AccountEnterpriseResponse getAccountEnterpriseByPhoneNumber(String phoneNumber) {
+        AccountEnterprise accountEnterprise = accountEnterpriseRepository.getAccountEnterpriseByPhoneNumber(phoneNumber).orElseThrow(
+                () -> new AppException(ErrorType.PhoneNumberNotExist)
+        );
+        return accountEnterpriseMapper.toResponse(accountEnterprise);
     }
 
 

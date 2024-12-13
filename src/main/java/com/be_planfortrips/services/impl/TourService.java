@@ -269,6 +269,7 @@ public class TourService implements ITourService {
                     .departureTime(sDes.getDepartureTime()).priceForOneTicket(BigDecimal.valueOf(tour.getTotalPrice()))
                     .routeId(tourDataSql.getRoute1Id())
                     .priceForOneTicket(sDes.getPrice_for_one_seat())
+                    .code(sDes.getVehicleCode().getCode())
                     .build();
             tourDataByDate.setScheduleDes(scheduleDes);
 
@@ -321,6 +322,11 @@ public class TourService implements ITourService {
                 roomResponse.setTypeOfRoom(room.getTypeOfRoom());
                 roomResponse.setRating(room.getRating());
                 roomResponse.setAvailable(true);
+                roomResponse.setImages(
+                        room.getImages().stream()
+                                .map(roomImage -> roomImage.getImage().getUrl())
+                                .collect(Collectors.toList())
+                );
                 roomResponse.setRoomAmenities(room.getRoomAmenities().stream().map(roomAmenitiesMapper::toResponse).toList());
 
                 // Thời gian CheckIn phong nho? hon 1h so voi thoi` gian den
@@ -355,6 +361,12 @@ public class TourService implements ITourService {
                 map(this::convertTourToTourClientResponse).toList();
     }
 
+    @Override
+    public TourClientResponse getTourTopUsed() {
+        Tour tour = tourRepository.getTourTop1Used();
+        return this.convertTourToTourClientResponse(tour);
+    }
+
 
     public TourClientResponse convertTourToTourClientResponse(Tour tour) {
         TourClientResponse clientResponse = new TourClientResponse();
@@ -367,6 +379,11 @@ public class TourService implements ITourService {
         clientResponse.setTimeCreate(tour.getCreateAt());
         clientResponse.setTimeUpdate(tour.getUpdateAt());
         clientResponse.setTags(tour.getTags());
+        clientResponse.setListUserUsed(
+                tour.getUserUsed().stream()
+                        .map(user -> user.getId())  // Lấy ID của mỗi user
+                        .collect(Collectors.toList())  // Thu thập kết quả vào một danh sách
+        );
         if (!tour.getImages().isEmpty()) {
             clientResponse.setUrlImage(tour.getImages().getFirst().getUrl());
         }
