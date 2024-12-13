@@ -110,4 +110,11 @@ public interface TourRepository extends JpaRepository<Tour,Integer> {
             "WHERE cDes.id = :cityDesId AND cOrigin.id = :cityOriginId")
     List<Tour> getTourByCityId(@Param("cityDesId") String cityDesId, @Param("cityOriginId") String cityOriginId);
 
+    @Query(value = "SELECT tours.*, COUNT(tours_user_used.user_used_id) AS user_count " +
+            "FROM tours " +
+            "JOIN tours_user_used ON tours.id = tours_user_used.tour_id " +
+            "GROUP BY tours.id " +
+            "ORDER BY user_count DESC " +
+            "LIMIT 1", nativeQuery = true)
+    Tour getTourTop1Used();
 }

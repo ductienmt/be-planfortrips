@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,5 +24,7 @@ public class AccountEnterpriseResponse {
     LocalDateTime createAt;
     String cityName;
     boolean status;
+    String urlImage;
+
 
 }
