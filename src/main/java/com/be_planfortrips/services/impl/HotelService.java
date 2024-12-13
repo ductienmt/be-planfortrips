@@ -18,6 +18,8 @@ import com.be_planfortrips.utils.Utils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class HotelService implements IHotelService {
 
+    private static final Logger log = LoggerFactory.getLogger(HotelService.class);
     HotelRepository hotelRepository;
 
     AccountEnterpriseRepository enterpriseRepository;
@@ -93,6 +96,16 @@ public class HotelService implements IHotelService {
     public HotelResponse getByHotelId(Long id) throws Exception {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new Exception("Not found"));
+        return hotelMapper.toResponse(hotel);
+    }
+
+    @Override
+    public HotelResponse getHotelByRoomId(Long id) throws Exception {
+        RoomResponse room = roomServiceImpl.getRoomById(id);
+        if(room == null){
+            throw new AppException(ErrorType.notFound);
+        }
+        Hotel hotel = hotelRepository.getHotelByRoomId(room.getId());
         return hotelMapper.toResponse(hotel);
     }
 

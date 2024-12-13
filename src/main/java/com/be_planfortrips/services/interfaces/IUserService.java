@@ -28,4 +28,5 @@ public interface IUserService {
     void verifyPassword(String password);
     List<AccountUserResponse> findByCarCompanyId(Integer id);
     List<AccountUserResponse> findByHotelId(Integer id);
+    void resetPass(String email, String newPass);
 }

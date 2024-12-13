@@ -85,11 +85,11 @@ public class VnPayController {
         String returnValue=  iVnPayService.returnPageForPlan(requestParams);
         if(returnValue.equals("00")){
             HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(URI.create("http://localhost:5050/user/success"));
+            headers.setLocation(URI.create("http://localhost:5050/success"));
             return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
         }else{
             HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(URI.create("http://localhost:5050/user/fail"));
+            headers.setLocation(URI.create("http://localhost:5050/failed"));
             return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
         }
     }

@@ -315,4 +315,25 @@ public class UserServiceImpl implements IUserService {
                 ).collect(Collectors.toList());
         return userResponses;
     }
+
+    @Override
+    public void resetPass(String email, String newPass) {
+        // tìm tài khoản user bằng email trước
+        // dùng cái trong repository có sẵn
+        // tìm email nhưng mà tài khoản đó còn hoạt động
+        User user = userRepository.findByEmail(email);
+        // check user có null không
+        // báo lỗi bằng cái này
+        if (user == null) throw new AppException(ErrorType.userIdNotFound);
+
+        // encode new pass bằng bcrypt
+        String passEncode = passwordEncoder.encode(newPass);
+
+        // chỉ set pass ko thay đổi cái khác
+        user.setPassword(passEncode);
+
+        // set xong thì lưu lại
+        userRepository.save(user);
+
+    }
 }

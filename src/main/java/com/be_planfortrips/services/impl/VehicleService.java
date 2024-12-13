@@ -6,6 +6,7 @@ import com.be_planfortrips.entity.CarCompany;
 import com.be_planfortrips.entity.Vehicle;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.mappers.impl.VehicleMapper;
 import com.be_planfortrips.repositories.CarCompanyRepository;
 import com.be_planfortrips.repositories.VehicleRepository;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -27,6 +29,8 @@ public class VehicleService implements IVehicleService {
     VehicleRepository vehicleRepository;
     CarCompanyRepository carCompanyRepository;
     VehicleMapper vehicleMapper;
+    private final TokenMapperImpl tokenMapperImpl;
+
     @Override
     @Transactional
     public VehicleResponse createVehicle(VehicleDTO vehicleDto) throws Exception {
@@ -83,5 +87,10 @@ public class VehicleService implements IVehicleService {
             throw new AppException(ErrorType.notFound);
         }
         vehicleRepository.delete(optionalVehicle);
+    }
+
+    @Override
+    public List<VehicleResponse> getVehiclesByEnterpriseId() {
+        return this.vehicleRepository.getVehicleByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken()).stream().map(this.vehicleMapper::toResponse).toList();
     }
 }

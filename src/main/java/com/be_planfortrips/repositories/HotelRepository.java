@@ -34,7 +34,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     @Query("SELECT h " +
             "FROM Hotel h " +
             "INNER JOIN Room r ON h.id = r.hotel.id " +
-            "WHERE (:destination IS NULL OR :destination = '' " +
+            "WHERE (:destination IS NULL OR trim(:destination) = '' " +
             "   OR lower(r.hotel.accountEnterprise.city.nameCity) LIKE lower(concat('%', :destination, '%')) " +
             "   OR lower(h.name) LIKE lower(concat('%', :destination, '%')) " +
             "   OR lower(h.address) LIKE lower(concat('%', :destination, '%'))) " +
@@ -55,4 +55,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     List<Object[]> findHotelsWithRoomsInPriceRange(@Param("minPrice") BigDecimal minPrice,
                                                    @Param("maxPrice") BigDecimal maxPrice,
                                                    @Param("city") String city);
+    @Query("select h FROM Hotel h " +
+            "join h.rooms r " +
+            "where  r.id = :roomId")
+    Hotel getHotelByRoomId(@Param("roomId") Long id);
 }

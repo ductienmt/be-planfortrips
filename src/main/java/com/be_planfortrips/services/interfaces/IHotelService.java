@@ -20,6 +20,7 @@ public interface IHotelService {
     HotelResponse updateHotel(Long id,HotelDto hotelDto) throws Exception;
     Page<HotelResponse> searchHotels(PageRequest request,String keyword,Integer rating);
     HotelResponse getByHotelId(Long id) throws Exception;
+    HotelResponse getHotelByRoomId(Long id) throws Exception;
     void deleteHotelById(Long id);
     HotelResponse createHotelImage(Long hotelId,  List<MultipartFile>  file) throws Exception ;
     HotelResponse deleteImage(Long id, List<Integer> imageIds) throws Exception;
@@ -28,7 +29,6 @@ public interface IHotelService {
     List<HotelResponse> getByEnterpriseId(Long enterpriseId);
     List<HotelResponse> getByRouteId(String routeId);
     Page<HotelResponse> findHotelAvailable(PageRequest request, String keyword, LocalDateTime dateTime, Long days);
-
     List<Map<String, Object>> getHotelsSamePrice(double price, String destination);
 }
 

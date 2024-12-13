@@ -5,9 +5,9 @@ spring:
 #    username: postgres
 #    password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
     #    driver-class-name: org.postgresql.Driver
-    #    url: jdbc:postgresql://localhost:5432/datn
-    #    username: postgres
-    #    password: 123
+#    url: jdbc:postgresql://localhost:5432/datn
+#    username: postgres
+#    password: 123
     url: jdbc:postgresql://localhost:5432/Planfortrips
     username: admin
     password: admin
@@ -61,3 +61,6 @@ cloudinary:
 google:
   clientId: 424498509357-mdqgg2eferdtjkeh6s89ooce1rmcjdmi.apps.googleusercontent.com
   clientSecret: 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
+plan_for_trip:
+  env: development
+#  env: production

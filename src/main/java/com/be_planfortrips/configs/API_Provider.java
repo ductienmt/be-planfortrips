@@ -45,6 +45,11 @@ public class API_Provider {
             "/api/v1/account-enterprises/validate-email",
             "/api/v1/account-enterprises/validate-phone",
             "/api/v1/payments/vnpay/return-plan",
+            "/api/v1/users/verify-email",
+            "/api/v1/users/resetPassword",
+            "/api/v1/email/send",
+            "/api/v1/email/validate",
+            "/api/v1/users/resetPassword",
             "/api/v1/tags/all",
             "/api/v1/tags/create",
             "/api/v1/feedbacks/enterpriseById/**",
@@ -53,7 +58,11 @@ public class API_Provider {
             "/api/v1/statistical/**",
             "/api/v1/rooms/getRoomByHotelId",
             "/api/v1/schedules/getSamePrice",
-            "/api/v1/rooms/**"
+            "/api/v1/rooms/**",
+            "/api/v1/coupons/all",
+            "/api/v1/booking-hotel-details/all",
+            "/api/v1/booking-hotel-details/getById/**",
+            "/api/v1/hotels/getByRoomId/**",
     };
 
     public static final String[] ADMIN_API = {
@@ -97,6 +106,9 @@ public class API_Provider {
             "/api/v1/tours/findById/**",
             "/api/v1/tours/uploads/**",
             "/api/v1/tours/deleteImages/**",
+            "/api/v1/coupons/all",
+            "/api/v1/booking-hotel-details/all",
+            "/api/v1/booking-hotel-details/getById/**"
     };
 
     public static final String[] USER_API = {
@@ -115,9 +127,6 @@ public class API_Provider {
             "/api/v1/users/getImage",
             "/api/v1/users/detail",
             "/api/v1/payments/vnpay/create-payment",
-            "/api/v1/users/verify-email",
-            "/api/v1/email/send",
-            "/api/v1/email/validate",
             "/api/v1/coupons/all",
             "/api/v1/plans/save",
             "/api/v1/vietqr/**",
@@ -202,6 +211,8 @@ public class API_Provider {
             "/api/v1/tickets/all",
             "/api/v1/tickets/getByScheduleId/**",
             "/api/v1/vehicles/all",
+            "/api/v1/vehicles/getByEnterpriseId",
+            "/api/v1/schedules/getByEnterpriseId",
             "/api/v1/vehicles/create",
             "/api/v1/vehicles/update/**",
             "/api/v1/vehicles/delete/**",

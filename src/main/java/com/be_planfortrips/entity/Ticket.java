@@ -47,7 +47,7 @@ public class Ticket extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "seat_id"))
     @JsonManagedReference
     List<Seat> seats;
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(name = "ticket_coupons",
             joinColumns = @JoinColumn(name = "ticket_id"),
             inverseJoinColumns = @JoinColumn(name = "coupon_id"))

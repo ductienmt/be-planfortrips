@@ -31,5 +31,7 @@ public interface IScheduleService {
     List<ScheduleResponse> getScheduleByVehicleCodeAndRouteId(String vehicleCode, String routeId);
 
     List<Map<String, Object>> getScheduleSamePrice(double price, String originalLocation, String destination, LocalDate departureDate);
+
+    List<ScheduleResponse> getScheduleByEnterpriseId();
 }
 
