@@ -63,6 +63,7 @@ public class API_Provider {
             "/api/v1/booking-hotel-details/all",
             "/api/v1/booking-hotel-details/getById/**",
             "/api/v1/hotels/getByRoomId/**",
+            "/api/v1/schedules/getSeatsByScheduleId",
     };
 
     public static final String[] ADMIN_API = {
@@ -131,7 +132,7 @@ public class API_Provider {
             "/api/v1/plans/save",
             "/api/v1/vietqr/**",
             "/api/v1/payments/vnpay/create-payment-plan",
-
+            "/api/v1/plans/check-time",
 
 
     };

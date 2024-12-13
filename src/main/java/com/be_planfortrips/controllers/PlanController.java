@@ -10,10 +10,13 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParseException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
 
@@ -24,6 +27,17 @@ public class PlanController {
     @Autowired
     private IPlanService planService;
 
+    // Phương thức hỗ trợ để tạo ApiResponse
+    private ResponseEntity<ApiResponse<Void>> buildApiResponse(HttpStatus status, String message) {
+        return ResponseEntity.status(status).body(
+                ApiResponse.<Void>builder()
+                        .code(status.value())
+                        .message(message)
+                        .build()
+        );
+    }
+
+
     @PostMapping("/save")
     public ResponseEntity<?> savePlan(@Valid @RequestBody PlanDto planDto) {
         try {
@@ -32,6 +46,21 @@ public class PlanController {
         } catch (Exception e) {
             log.error("Error: ", e.getMessage());
             return ResponseEntity.badRequest().body("Lưu kế hoạch thất bại");
+        }
+    }
+
+    @GetMapping("check-time")
+    public ResponseEntity<?> checkTime(@RequestParam("departure") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate departureDate,
+                                       @RequestParam("return") @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate returnDate) {
+        try {
+            this.planService.checkTime(departureDate, returnDate);
+            return buildApiResponse(HttpStatus.OK, "Thời gian hợp lệ");
+        } catch (DateTimeParseException e) {
+            return buildApiResponse(HttpStatus.BAD_REQUEST, ErrorType.notValidDateFormat.getMessage());
+        } catch (AppException e) {
+            return buildApiResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (JsonParseException e) {
+            return buildApiResponse(HttpStatus.BAD_REQUEST, ErrorType.notValidDateFormat.getMessage());
         }
     }
 
