@@ -38,6 +38,14 @@ public class AccountEnterpriseController {
         return ResponseEntity.ok(accountEnterprises);
     }
 
+    @GetMapping("/sdt/{sdt}")
+    public ResponseEntity<AccountEnterpriseResponse> getEtpByPhoneNumber(
+            @PathVariable String sdt
+    ) {
+        AccountEnterpriseResponse response = accountEnterpriseService.getAccountEnterpriseByPhoneNumber(sdt);
+        return ResponseEntity.ok(response);
+    }
+
 
 
     @GetMapping("/accept")

@@ -204,6 +204,14 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         return accountEnterpriseRepository.findAccountEnterpriseDisable().stream().map(accountEnterpriseMapper::toResponse).toList();
     }
 
+    @Override
+    public AccountEnterpriseResponse getAccountEnterpriseByPhoneNumber(String phoneNumber) {
+        AccountEnterprise accountEnterprise = accountEnterpriseRepository.getAccountEnterpriseByPhoneNumber(phoneNumber).orElseThrow(
+                () -> new AppException(ErrorType.PhoneNumberNotExist)
+        );
+        return accountEnterpriseMapper.toResponse(accountEnterprise);
+    }
+
 
     private void validateForm(AccountEnterpriseDto accountEnterpriseDto) {
         if (accountEnterpriseDto.getUsername() == null || accountEnterpriseDto.getUsername().isEmpty()) {

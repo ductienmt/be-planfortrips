@@ -68,6 +68,7 @@ public class API_Provider {
     public static final String[] ADMIN_API = {
             "/api/v1/account-enterprises/change-status",
             "/api/v1/account-enterprises/all",
+            "/api/v1/account-enterprise/sdt/**",
             "/api/v1/account-enterprises/delete/**",
             "/api/v1/account-enterprises/getById/**",
             "/api/v1/areas/create",
@@ -101,6 +102,7 @@ public class API_Provider {
             "/api/v1/tags/create",
             "/api/v1/hotels/create",
             "/api/v1/tours/create",
+            "/api/v1/tours/top1",
             "/api/v1/tours/update/**",
             "/api/v1/tours/delete/**",
             "/api/v1/tours/findById/**",

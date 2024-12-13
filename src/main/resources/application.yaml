@@ -4,7 +4,7 @@ spring:
 #    url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
 #    username: postgres
 #    password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
-    #    driver-class-name: org.postgresql.Driver
+#        driver-class-name: org.postgresql.Driver
 #    url: jdbc:postgresql://localhost:5432/datn
 #    username: postgres
 #    password: 123
@@ -31,7 +31,7 @@ spring:
     show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
   jackson:
     serialization:
       fail-on-empty-beans: false

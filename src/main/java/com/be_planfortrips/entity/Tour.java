@@ -52,4 +52,7 @@ public class Tour extends BaseEntity{
 
     @OneToMany
     List<Image> images;
+
+    @ManyToMany
+    List<User> userUsed;
 }
