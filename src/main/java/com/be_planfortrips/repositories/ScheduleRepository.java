@@ -87,4 +87,18 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
                                          @Param("departureDate") LocalDate departureDate);
 
 
+    @Query(nativeQuery = true, value = "SELECT\n" +
+            "    s.id AS seat_id,\n" +
+            "    s.seat_number,\n" +
+            "    ss.status AS status,\n" +
+            "    sc.price_for_one_seat AS price\n" +
+            "FROM\n" +
+            "    schedule_seats ss\n" +
+            "        JOIN\n" +
+            "    seats s ON ss.seat_id = s.id\n" +
+            "        JOIN\n" +
+            "    schedules sc ON ss.schedule_id = sc.id\n" +
+            "WHERE\n" +
+            "    ss.schedule_id = :scheduleId;")
+    List<Map<String, Object>> getSeatsByScheduleId(@Param("scheduleId") Integer scheduleId);
 }

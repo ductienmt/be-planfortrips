@@ -20,6 +20,7 @@ public enum ErrorType {
     phoneNotValid(803, "Số điện thoại không hợp lệ", HttpStatus.BAD_REQUEST),
     typeEnterpriseDetailNotFound(804, "TypeEnterpriseDetail không tồn tại", HttpStatus.NOT_FOUND),
     inputFieldInvalid(805, "Trường nhập không hợp lệ", HttpStatus.BAD_REQUEST),
+    exitedPlans(806, "Bạn đã có kế hoạch trong khoảng thời gian này, không thể tạo thêm.", HttpStatus.BAD_REQUEST),
 
 
     notVerified(400, "OTP không hợp lệ hoặc đã hết hạn", HttpStatus.BAD_REQUEST),

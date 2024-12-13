@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -109,11 +110,14 @@ public class RoomController {
     }
 
     @GetMapping("/getRoomByHotelId")
-    public ResponseEntity<?> getRoomByHotelId(@RequestParam Long id, @RequestParam(defaultValue = "0", required = false) Integer pageNo,
+    public ResponseEntity<?> getRoomByHotelId(@RequestParam Long id,
+                                              @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkinDate,
+                                              @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkoutDate,
+                                              @RequestParam(defaultValue = "0", required = false) Integer pageNo,
                                               @RequestParam(defaultValue = "5", required = false) Integer pageSize,
                                               @RequestParam(defaultValue = "id", required = false) String sortBy,
                                               @RequestParam(defaultValue = "asc", required = false) String sortType) {
-        return ResponseEntity.ok(roomService.getRoomByHotelId(id, pageNo, pageSize, sortBy, sortType));
+        return ResponseEntity.ok(roomService.getRoomByHotelId(id,checkinDate, checkoutDate, pageNo, pageSize, sortBy, sortType));
     }
 
     @GetMapping("/filter")

@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -110,10 +111,10 @@ public class RoomServiceImpl implements IRoomService {
     }
 
     @Override
-    public Page<RoomResponse> getRoomByHotelId(Long id, Integer pageNo, Integer pageSize, String sortBy, String sortType) {
+    public Page<RoomResponse> getRoomByHotelId(Long id, LocalDate checkinDate, LocalDate checkoutDate, Integer pageNo, Integer pageSize, String sortBy, String sortType) {
         var pageable = pageMapperImpl.customPage(pageNo, pageSize, sortBy, sortType);
         
-        return this.roomRepository.findByHotelId(id, pageable).map(roomMapper::toResponse);
+        return this.roomRepository.findByHotelId(id,checkinDate,checkoutDate, pageable).map(roomMapper::toResponse);
     }
 
     @Override

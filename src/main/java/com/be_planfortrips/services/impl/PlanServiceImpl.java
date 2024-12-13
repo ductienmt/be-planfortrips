@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -91,7 +92,9 @@ public class PlanServiceImpl implements IPlanService {
     public List<PlanResponse> getAllPlanByUserId() {
         List<Plan> plans = planRepository.findAllByUserId(tokenMapperImpl.getIdUserByToken());
 
-        return plans.stream().map(
+        return plans.stream()
+                .sorted(Comparator.comparingLong(Plan::getId).reversed())
+                .map(
                 plan -> {
                     PlanResponse planResponse = new PlanResponse();
                     planResponse.setPlan_id(Long.valueOf(plan.getId()));
@@ -260,6 +263,16 @@ public class PlanServiceImpl implements IPlanService {
         response.put("planId", planSave.getId());
         response.put("message", "Lưu kế hoạch thành công");
         return response;
+    }
+
+    @Override
+    public void checkTime(LocalDate departureDate, LocalDate returnDate) {
+        Long userId = tokenMapperImpl.getIdUserByToken();
+        List<Plan> overlappingPlans = planRepository.findOverlappingPlans(userId, departureDate, returnDate);
+
+        if (!overlappingPlans.isEmpty()) {
+            throw new AppException(ErrorType.exitedPlans);
+        }
     }
 
     @Override
