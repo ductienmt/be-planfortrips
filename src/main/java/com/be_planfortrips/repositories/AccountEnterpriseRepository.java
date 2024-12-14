@@ -26,6 +26,9 @@ public interface AccountEnterpriseRepository extends JpaRepository<AccountEnterp
     @Query("SELECT ae FROM AccountEnterprise ae WHERE ae.status = false")
     List<AccountEnterprise> findAccountEnterpriseDisable();
 
+    @Query("Select ae From AccountEnterprise ae WHERE ae.status = false and ae.createAt = ae.updateAt")
+    List<AccountEnterprise> findAccountEnterpriseNeedAccept();
+
     @Query("Select count(*) from AccountEnterprise")
     Integer countAll();
 

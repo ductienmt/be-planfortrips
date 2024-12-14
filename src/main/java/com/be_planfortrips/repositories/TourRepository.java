@@ -117,4 +117,18 @@ public interface TourRepository extends JpaRepository<Tour,Integer> {
             "ORDER BY user_count DESC " +
             "LIMIT 1", nativeQuery = true)
     Tour getTourTop1Used();
+
+    @Query(value = "SELECT * FROM tours " +
+            "JOIN routes r ON tours.route_id = r.id " +
+            "JOIN stations ON r.destination_station_id = stations.id " +
+            "JOIN cities ON stations.city_id = cities.id " +
+            "WHERE cities.city_id = :cityId", nativeQuery = true)
+    List<Tour> getTourHasCityDestination(@Param("cityId") String cityId);
+
+    @Query(value = "SELECT tours FROM tours " +
+            "JOIN checkins ON tours.checkin_id = checkins.id " +
+            "WHERE tours.checkin_id = :checkInId", nativeQuery = true)
+    List<Tour> getTourHasCheckIn(@Param("checkInId") Integer checkInId);
+
+
 }

@@ -205,6 +205,11 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     }
 
     @Override
+    public List<AccountEnterpriseResponse> getAccountEnterpriseNeedAccept() {
+        return accountEnterpriseRepository.findAccountEnterpriseNeedAccept().stream().map(accountEnterpriseMapper::toResponse).toList();
+    }
+
+    @Override
     public AccountEnterpriseResponse getAccountEnterpriseByPhoneNumber(String phoneNumber) {
         AccountEnterprise accountEnterprise = accountEnterpriseRepository.getAccountEnterpriseByPhoneNumber(phoneNumber).orElseThrow(
                 () -> new AppException(ErrorType.PhoneNumberNotExist)
