@@ -67,6 +67,7 @@ public class API_Provider {
             "/api/v1/account-enterprises/validate-contact",
             "/api/v1/schedules/getSeatsByScheduleId",
             "/api/v1/cities/getFavoriteCity",
+            "/api/v1/cities/getPopularCity",
     };
 
     public static final String[] ADMIN_API = {
@@ -201,6 +202,7 @@ public class API_Provider {
             "/api/v1/rooms/all",
             "/api/v1/rooms/update/**",
             "/api/v1/rooms/delete/**",
+            "/api/v1/rooms/create-coupon-room",
             "/api/v1/routes/create",
             "/api/v1/routes/update/**",
             "/api/v1/routes/delete/**",
@@ -233,5 +235,8 @@ public class API_Provider {
             "/api/v1/room-amenities/change-status",
             "/api/v1/room-amenities/upload-icon",
             "/api/v1/room-amenities/delete-icon",
+            "/api/v1/account-enterprises/upload",
+            "/api/v1/account-enterprises/verify-password",
+            "/api/v1/rooms/getRoomByEnterpriseId",
     };
 }

@@ -2,6 +2,7 @@ package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.AccountEnterpriseDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
+import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.services.interfaces.IAccountEnterpriseService;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,16 @@ public class AccountEnterpriseController {
 
         Page<AccountEnterpriseResponse> accountEnterprises = accountEnterpriseService.getAllAccountEnterprises(name, page, size);
         return ResponseEntity.ok(accountEnterprises);
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            accountEnterpriseService.uploadImage(file);
+            return ResponseEntity.ok("Upload ảnh thành công");
+        } catch (AppException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 
     @GetMapping("/sdt/{sdt}")
@@ -170,6 +182,23 @@ public class AccountEnterpriseController {
             return ResponseEntity.ok(Map.of("message", "Email và số điện thoại hợp lệ."));
         } catch (AppException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/verify-password")
+    public ResponseEntity<?> verifyEmail(@RequestParam("password") String pass) {
+        try {
+            this.accountEnterpriseService.verifyPassword(pass);
+
+            return ResponseEntity.ok(
+                    ApiResponse.<Void>builder()
+                            .code(HttpStatus.OK.value())
+                            .message("Xác thực mật khẩu thành công.")
+                            .build()
+            );
+        } catch (Exception e) {
+//            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message", "Xác thực mật khẩu thất bại."));
         }
     }
 

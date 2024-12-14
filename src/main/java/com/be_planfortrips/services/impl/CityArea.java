@@ -108,4 +108,9 @@ public class CityArea implements ICityService {
         }
         return cityNames;
     }
+
+    @Override
+    public List<Map<String, Object>> getCitiesPopular() {
+        return this.cityRepository.getTop3CitiesPopular();
+    }
 }

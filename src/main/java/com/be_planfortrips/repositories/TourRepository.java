@@ -121,7 +121,7 @@ public interface TourRepository extends JpaRepository<Tour,Integer> {
             "GROUP BY tours.id " +
             "ORDER BY user_count DESC " +
             "LIMIT 5", nativeQuery = true)
-    Tour getTourTop1Used();
+    List<Tour> getTourTop1Used();
 
     @Query("select t from Tour t join t.route r on t.route.id = r.id " +
             "join r.destinationStation s on r.destinationStation.id = s.id " +

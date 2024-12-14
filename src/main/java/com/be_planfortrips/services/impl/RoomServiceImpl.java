@@ -219,6 +219,24 @@ public class RoomServiceImpl implements IRoomService {
         return rooms.map(roomMapper_2::toResponse);
     }
 
+    @Override
+    public Set<Map<String, Object>> getRoomByEnterpriseId() {
+        List<Room> rooms = roomRepository.findByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken());
+
+        Set<Map<String, Object>> response = new TreeSet<>(
+                Comparator.comparingLong(map -> (long) map.get("roomId"))
+        );
+
+        for (Room room : rooms) {
+            Map<String, Object> roomMap = new HashMap<>();
+            roomMap.put("roomId", room.getId());
+            roomMap.put("roomName", room.getRoomName());
+            response.add(roomMap);
+        }
+
+        return response;
+    }
+
 
 
 }

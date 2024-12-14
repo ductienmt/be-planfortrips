@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -231,6 +232,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional
     public String uploadAvatar(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("Vui lòng chọn ảnh hợp lệ");
@@ -239,25 +241,33 @@ public class UserServiceImpl implements IUserService {
         User user = this.getUserById(tokenMapperImpl.getIdUserByToken());
 
         this.utils.isValidImage(file);
-        this.utils.checkSize(file);
 
         String avatarUrl;
         try {
+            if (user.getImage() != null) {
+                Image currentImage = user.getImage();
+                String publicId = cloudinaryService.getPublicIdFromUrl(currentImage.getUrl());
+                cloudinaryService.deleteFile(publicId);
+                imageRepository.delete(currentImage);
+            }
+
             Map<String, Object> uploadResult = this.cloudinaryService.uploadFile(file, "avatars_user");
             avatarUrl = uploadResult.get("url").toString();
+
+            Image newImage = new Image();
+            newImage.setUrl(avatarUrl);
+            this.imageRepository.saveAndFlush(newImage);
+
+            user.setImage(newImage);
+            this.userRepository.saveAndFlush(user);
+
         } catch (IOException e) {
-            throw new AppException(ErrorType.internalServerError);
+            throw new AppException(ErrorType.internalServerError, "Lỗi khi tải ảnh lên");
         }
-
-        Image image = new Image();
-        image.setUrl(avatarUrl);
-        this.imageRepository.saveAndFlush(image);
-
-        user.setImage(image);
-        this.userRepository.saveAndFlush(user);
 
         return avatarUrl;
     }
+
 
     @Override
     public Map<String, Object> getAvatar() {

@@ -360,9 +360,24 @@ public class TourService implements ITourService {
     }
 
     @Override
-    public TourClientResponse getTourTopUsed() {
-        Tour tour = tourRepository.getTourTop1Used();
-        return this.convertTourToTourClientResponse(tour);
+    public List<Map<String, Object>> getTourTopUsed() {
+        List<Tour> tours = tourRepository.getTourTop1Used();
+        List<Map<String, Object>> response = new ArrayList<>();
+        for (Tour tour : tours) {
+            Map<String, Object> tourMap = new HashMap<>();
+            tourMap.put("tourTitle", tour.getTitle());
+            tourMap.put("tourId", tour.getId());
+            tourMap.put("tourDescription", tour.getDescription());
+            tourMap.put("tourRating", tour.getRating());
+            tourMap.put("tourTags", tour.getTags().stream().map(Tag::getName).toList());
+            tourMap.put("tourImage", tour.getImages().getFirst().getUrl());
+            tourMap.put("tourDays", tour.getDay() + "N/" + tour.getNight() + "Đ");
+            tourMap.put("tourDestination", tour.getRoute().getDestinationStation().getCity().getNameCity());
+            tourMap.put("tourPeople", tour.getNumberPeople());
+            tourMap.put("tourUsed", tour.getUserUsed().toArray().length);
+            response.add(tourMap);
+        }
+        return response;
     }
 
     @Override
