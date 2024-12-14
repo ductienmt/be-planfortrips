@@ -120,20 +120,23 @@ public interface TourRepository extends JpaRepository<Tour,Integer> {
             "JOIN tours_user_used ON tours.id = tours_user_used.tour_id " +
             "GROUP BY tours.id " +
             "ORDER BY user_count DESC " +
-            "LIMIT 1", nativeQuery = true)
+            "LIMIT 5", nativeQuery = true)
     Tour getTourTop1Used();
 
-    @Query(value = "SELECT * FROM tours " +
-            "JOIN routes r ON tours.route_id = r.id " +
-            "JOIN stations ON r.destination_station_id = stations.id " +
-            "JOIN cities ON stations.city_id = cities.id " +
-            "WHERE cities.city_id = :cityId", nativeQuery = true)
+    @Query("select t from Tour t join t.route r on t.route.id = r.id " +
+            "join r.destinationStation s on r.destinationStation.id = s.id " +
+            "join s.city c on s.city.id = c.id " +
+            "where c.id = :cityId")
     List<Tour> getTourHasCityDestination(@Param("cityId") String cityId);
 
-    @Query(value = "SELECT tours FROM tours " +
-            "JOIN checkins ON tours.checkin_id = checkins.id " +
-            "WHERE tours.checkin_id = :checkInId", nativeQuery = true)
+    @Query("select t from Tour t where t.checkin.id = :checkInId")
     List<Tour> getTourHasCheckIn(@Param("checkInId") Integer checkInId);
+
+    @Query("select t from Tour t join t.route r on t.route.id = r.id " +
+            "join r.destinationStation s on r.destinationStation.id = s.id " +
+            "join s.city c on s.city.id = c.id " +
+            "where c.area.id = :areaId")
+    List<Tour> getTourHaveCityIn(@Param("areaId") String areaId);
 
 
 }
