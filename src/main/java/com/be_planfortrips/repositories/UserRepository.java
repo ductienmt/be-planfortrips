@@ -1,6 +1,6 @@
 package com.be_planfortrips.repositories;
 
-import com.be_planfortrips.dto.response.StatisticalCountYear;
+import com.be_planfortrips.dto.sql.StatisticalCount;
 import com.be_planfortrips.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -49,28 +49,33 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("Select Count(*) from User")
     Integer countAll();
 
-        @Query(value = "WITH months AS ( \n" +
-                "    SELECT 1 AS month \n" +
-                "    UNION ALL SELECT 2 \n" +
-                "    UNION ALL SELECT 3 \n" +
-                "    UNION ALL SELECT 4 \n" +
-                "    UNION ALL SELECT 5 \n" +
-                "    UNION ALL SELECT 6 \n" +
-                "    UNION ALL SELECT 7 \n" +
-                "    UNION ALL SELECT 8 \n" +
-                "    UNION ALL SELECT 9 \n" +
-                "    UNION ALL SELECT 10 \n" +
-                "    UNION ALL SELECT 11 \n" +
-                "    UNION ALL SELECT 12 \n" +
-                ") \n" +
-                "SELECT m.month, \n" +
-                "       COUNT(u.id) AS account_count \n" +
-                "FROM months m \n" +
-                "         LEFT JOIN users u ON EXTRACT(MONTH FROM u.create_at) = m.month \n" +
-                "    AND EXTRACT(YEAR FROM u.create_at) = :year \n" +
-                "GROUP BY m.month \n" +
-                "ORDER BY m.month;", nativeQuery = true)
-        List<StatisticalCountYear> countUsersByYear(@Param("year") int year);
-    }
+    @Query(value = """
+    WITH months AS ( 
+        SELECT 1 AS month 
+        UNION ALL SELECT 2 
+        UNION ALL SELECT 3 
+        UNION ALL SELECT 4 
+        UNION ALL SELECT 5 
+        UNION ALL SELECT 6 
+        UNION ALL SELECT 7 
+        UNION ALL SELECT 8 
+        UNION ALL SELECT 9 
+        UNION ALL SELECT 10 
+        UNION ALL SELECT 11 
+        UNION ALL SELECT 12 
+    ) 
+    SELECT 
+        m.month AS date,  -- Thay đổi từ 'month' thành 'date'
+        COUNT(u.id) AS count  -- Thay đổi từ 'account_count' thành 'count'
+    FROM months m 
+    LEFT JOIN users u 
+        ON EXTRACT(MONTH FROM u.create_at) = m.month 
+        AND EXTRACT(YEAR FROM u.create_at) = :year 
+    GROUP BY m.month 
+    ORDER BY m.month;
+""", nativeQuery = true)
+    List<StatisticalCount> countUsersByYear(@Param("year") int year);
+
+}
 
 

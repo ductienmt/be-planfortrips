@@ -1,6 +1,7 @@
 package com.be_planfortrips.repositories;
 
-import com.be_planfortrips.dto.response.StatisticalCountYear;
+import com.be_planfortrips.dto.sql.StatisticalCount;
+import com.be_planfortrips.dto.sql.StatisticalCountMonth;
 import com.be_planfortrips.entity.Plan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,31 +16,57 @@ public interface PlanRepository extends JpaRepository<Plan, Long>{
     @Query("Select count(*) from Plan ")
     Integer getCountPlan();
 
-    @Query(value = "SELECT \n" +
-            "    month_table.month, \n" +
-            "    COUNT(p.id) AS account_count\n" +
-            "FROM \n" +
-            "    (SELECT 1 AS month UNION ALL \n" +
-            "     SELECT 2 UNION ALL \n" +
-            "     SELECT 3 UNION ALL \n" +
-            "     SELECT 4 UNION ALL \n" +
-            "     SELECT 5 UNION ALL \n" +
-            "     SELECT 6 UNION ALL \n" +
-            "     SELECT 7 UNION ALL \n" +
-            "     SELECT 8 UNION ALL \n" +
-            "     SELECT 9 UNION ALL \n" +
-            "     SELECT 10 UNION ALL \n" +
-            "     SELECT 11 UNION ALL \n" +
-            "     SELECT 12) AS month_table\n" +
-            "LEFT JOIN \n" +
-            "    plan_details p \n" +
-            "    ON EXTRACT(MONTH FROM p.start_date) = month_table.month \n" +
-            "    AND EXTRACT(YEAR FROM p.start_date) = :year\n" +
-            "GROUP BY \n" +
-            "    month_table.month\n" +
-            "ORDER BY \n" +
-            "    month_table.month;\n", nativeQuery = true)
-    List<StatisticalCountYear> countPlansByYear(@Param("year") int year);
+    @Query(value = """
+    SELECT 
+        month_table.month AS date,  -- Thay đổi từ 'month' thành 'date'
+        COUNT(p.id) AS count  -- Thay đổi từ 'account_count' thành 'count'
+    FROM 
+        (SELECT 1 AS month UNION ALL 
+         SELECT 2 UNION ALL 
+         SELECT 3 UNION ALL 
+         SELECT 4 UNION ALL 
+         SELECT 5 UNION ALL 
+         SELECT 6 UNION ALL 
+         SELECT 7 UNION ALL 
+         SELECT 8 UNION ALL 
+         SELECT 9 UNION ALL 
+         SELECT 10 UNION ALL 
+         SELECT 11 UNION ALL 
+         SELECT 12) AS month_table
+    LEFT JOIN 
+        plan_details p 
+        ON EXTRACT(MONTH FROM p.start_date) = month_table.month 
+        AND EXTRACT(YEAR FROM p.start_date) = :year
+    GROUP BY 
+        month_table.month
+    ORDER BY 
+        month_table.month;
+""", nativeQuery = true)
+    List<StatisticalCount> countPlansByYear(@Param("year") int year);
+
+
+
+    @Query(value = """
+        WITH days AS (
+            SELECT generate_series(1, 31) AS day
+        ),
+        daily_stats AS (
+            SELECT
+                EXTRACT(DAY FROM p.create_at) AS day,
+                COUNT(p.id) AS plan_count
+            FROM plans p
+            WHERE EXTRACT(YEAR FROM p.create_at) = :year
+              AND EXTRACT(MONTH FROM p.create_at) = :month
+            GROUP BY EXTRACT(DAY FROM p.create_at)
+        )
+        SELECT d.day, COALESCE(ds.plan_count, 0) AS plan_count
+        FROM days d
+        LEFT JOIN daily_stats ds ON d.day = ds.day
+        ORDER BY d.day;
+        """, nativeQuery = true)
+    List<StatisticalCountMonth> StatisticalCountPlanByMonth(
+            @Param("year") int year, @Param("month") int month);
+
 
 
 }

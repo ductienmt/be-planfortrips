@@ -4,14 +4,14 @@ spring:
 #    url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
 #    username: postgres
 #    password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
-#        driver-class-name: org.postgresql.Driver
+#    driver-class-name: org.postgresql.Driver
 #    url: jdbc:postgresql://localhost:5432/datn
 #    username: postgres
 #    password: 123
     url: jdbc:postgresql://localhost:5432/Planfortrips
     username: admin
     password: admin
-    driver-class-name: org.postgresql.Driver
+#    driver-class-name: org.postgresql.Driver
     hikari:
       minimum-idle: 5
       maximum-pool-size: 20

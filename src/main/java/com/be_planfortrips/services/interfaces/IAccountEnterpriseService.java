@@ -36,6 +36,7 @@ public interface IAccountEnterpriseService {
 
     List<AccountEnterpriseResponse> getAccountEnterpriseDisable();
 
+
     AccountEnterpriseResponse getAccountEnterpriseByPhoneNumber(String phoneNumber);
 
 }
