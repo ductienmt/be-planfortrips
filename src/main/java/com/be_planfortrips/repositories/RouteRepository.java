@@ -18,4 +18,6 @@ public interface RouteRepository extends JpaRepository<Route,String> {
     Page<Route> getRouteByOriginStation_NameAndDestinationStation_Name(Pageable pageable,
                                                                        @Param("keywordSo") String keywordSo,
                                                                        @Param("keywordSd") String keywordSd);
+
+
 }

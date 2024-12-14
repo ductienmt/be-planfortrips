@@ -1,8 +1,6 @@
 package com.be_planfortrips.repositories;
 
-import com.be_planfortrips.dto.response.StatisticalResource;
-import com.be_planfortrips.dto.response.VehicleResponse;
-import com.be_planfortrips.entity.Hotel;
+import com.be_planfortrips.dto.sql.StatisticalResource;
 import com.be_planfortrips.entity.Vehicle;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +46,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle,String> {
             "FROM all_months am\n" +
             "         LEFT JOIN ranked_vehicles rv\n" +
             "                   ON am.month = rv.month AND rv.rank = 1\n" +
-            "ORDER BY am.month;\n", nativeQuery = true)
+            "ORDER BY am.month;", nativeQuery = true)
     List<StatisticalResource> getTop1VehicleByYear(@Param("year") int year);
 
 }

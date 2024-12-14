@@ -63,7 +63,8 @@ public enum ErrorType {
     TourIdNotFound(718,"TourId Not found",HttpStatus.NOT_FOUND),
     ScheduleIdNotFound(719, "ScheduleId Not Found",HttpStatus.NOT_FOUND),
     SeatIdNotFound(720, "SeatId Not Found",HttpStatus.NOT_FOUND),
-    PhoneNumberNotExist(721, "PhoneNumber Not Found", HttpStatus.NOT_FOUND)
+    PhoneNumberNotExist(721, "PhoneNumber Not Found", HttpStatus.NOT_FOUND),
+    EmailNotExist(722, "Email Not Found", HttpStatus.NOT_FOUND)
     ;
 
     private static String getString() {
