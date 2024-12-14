@@ -63,6 +63,8 @@ public class API_Provider {
             "/api/v1/booking-hotel-details/all",
             "/api/v1/booking-hotel-details/getById/**",
             "/api/v1/hotels/getByRoomId/**",
+            "/api/v1/account-enterprises/reset-password",
+            "/api/v1/account-enterprises/validate-contact",
     };
 
     public static final String[] ADMIN_API = {

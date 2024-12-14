@@ -34,4 +34,9 @@ public interface IAccountEnterpriseService {
     void validatePhone(String phone);
 
     List<AccountEnterpriseResponse> getAccountEnterpriseDisable();
+
+    void resetPassword(Integer id, String email, String phone);
+
+    boolean validateContact(Integer serviceType, String email, String phone);
+
 }

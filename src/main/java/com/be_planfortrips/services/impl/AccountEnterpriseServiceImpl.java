@@ -195,6 +195,40 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         return accountEnterpriseRepository.findAccountEnterpriseDisable().stream().map(accountEnterpriseMapper::toResponse).toList();
     }
 
+    @Override
+    public void resetPassword(Integer id, String email, String phone) {
+        // Kiểm tra loại dịch vụ có tồn tại
+        Optional<AccountEnterprise> accountEnterpriseOptional = accountEnterpriseRepository.findByServiceTypeAndEmailAndPhone(id, email, phone);
+
+        if (accountEnterpriseOptional.isPresent()) {
+            // Random mật khẩu mới
+            String newPassword = generateRandomString(10);
+            AccountEnterprise accountEnterprise = accountEnterpriseOptional.get();
+
+            // Mã hóa mật khẩu trước khi lưu
+            accountEnterprise.setPassword(passwordEncoder.encode(newPassword));
+
+            // Lưu tài khoản vào cơ sở dữ liệu
+            accountEnterpriseRepository.save(accountEnterprise);
+
+            // Gửi email thông báo mật khẩu mới
+            iEmailService.sendEmail(email, newPassword, "Mật khẩu mới từ Plan for Trips");
+        } else {
+            throw new AppException(ErrorType.notFound);
+        }
+    }
+
+
+    @Override
+    public boolean validateContact(Integer serviceType, String email, String phone) {
+        // Lấy danh sách doanh nghiệp theo serviceType
+        List<AccountEnterprise> enterprises = accountEnterpriseRepository.findActiveByServiceType(serviceType);
+
+        // Kiểm tra xem email và phone có tồn tại trong danh sách doanh nghiệp không
+        return enterprises.stream()
+                .anyMatch(e -> e.getEmail().equals(email) && e.getPhoneNumber().equals(phone));
+    }
+
 
     private void validateForm(AccountEnterpriseDto accountEnterpriseDto) {
         if (accountEnterpriseDto.getUsername() == null || accountEnterpriseDto.getUsername().isEmpty()) {

@@ -29,6 +29,13 @@ public interface AccountEnterpriseRepository extends JpaRepository<AccountEnterp
     @Query("Select count(*) from AccountEnterprise")
     Integer countAll();
 
+    @Query("SELECT a FROM AccountEnterprise a WHERE a.typeEnterpriseDetail.id = :id AND a.email = :email AND a.phoneNumber = :phone")
+    Optional<AccountEnterprise> findByServiceTypeAndEmailAndPhone(@Param("id") Integer id,
+                                                                  @Param("email") String email,
+                                                                  @Param("phone") String phone);
+
+    @Query("SELECT a FROM AccountEnterprise a WHERE a.typeEnterpriseDetail.id = :serviceType AND a.status = true")
+    List<AccountEnterprise> findActiveByServiceType(@Param("serviceType") Integer serviceType);
 
 
 
