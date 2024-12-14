@@ -55,7 +55,6 @@ public class AccountEnterpriseController {
     }
 
 
-
     @GetMapping("/accept")
     public ResponseEntity<List<AccountEnterpriseResponse>> getEnterpriseNeedAccept() {
         List<AccountEnterpriseResponse> accountEnterpriseResponses = accountEnterpriseService.getAccountEnterpriseNeedAccept();
