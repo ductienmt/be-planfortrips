@@ -29,7 +29,7 @@ public class AccountEnterpriseController {
     IAccountEnterpriseService accountEnterpriseService;
 
     @GetMapping("/all")
-    public ResponseEntity<Page<AccountEnterpriseResponse>> getAllAccountEnterprises(
+    public ResponseEntity<?> getAllAccountEnterprises(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {

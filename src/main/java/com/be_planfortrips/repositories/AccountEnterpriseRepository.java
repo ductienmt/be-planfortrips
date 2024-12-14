@@ -32,7 +32,6 @@ public interface AccountEnterpriseRepository extends JpaRepository<AccountEnterp
     @Query("Select count(*) from AccountEnterprise")
     Integer countAll();
 
-    @Query(value = "SELECT * FROM account_enterprises e WHERE unaccent(e.enterprise_name) LIKE unaccent(CONCAT('%', :name, '%'))", nativeQuery = true)
     Page<AccountEnterprise> findByEnterpriseNameStartingWithIgnoreCase(@Param("name") String name, Pageable pageable);
 
     Optional<AccountEnterprise> getAccountEnterpriseByPhoneNumber(String phoneNumber);
