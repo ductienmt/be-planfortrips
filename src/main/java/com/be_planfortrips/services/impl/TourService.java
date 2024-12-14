@@ -367,6 +367,20 @@ public class TourService implements ITourService {
         return this.convertTourToTourClientResponse(tour);
     }
 
+    @Override
+    public List<TourClientResponse> getTourHasDestination(String cityDesId) {
+        List<Tour> res = tourRepository.getTourHasCityDestination(cityDesId);
+        return res.stream().
+                map(this::convertTourToTourClientResponse).toList();
+    }
+
+    @Override
+    public List<TourClientResponse> getTourHasCheckIn(Integer checkInId) {
+        List<Tour> res = tourRepository.getTourHasCheckIn(checkInId);
+        return res.stream().
+                map(this::convertTourToTourClientResponse).toList();
+    }
+
 
     public TourClientResponse convertTourToTourClientResponse(Tour tour) {
         TourClientResponse clientResponse = new TourClientResponse();

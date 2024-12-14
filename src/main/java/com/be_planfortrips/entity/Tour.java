@@ -19,8 +19,9 @@ public class Tour extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String title;
-    @Column(columnDefinition = "text")
-    String description;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "route_id")

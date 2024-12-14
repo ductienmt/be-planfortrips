@@ -1,4 +1,4 @@
-package com.be_planfortrips.dto.response;
+package com.be_planfortrips.dto.sql;
 
 public interface StatisticalResource {
 

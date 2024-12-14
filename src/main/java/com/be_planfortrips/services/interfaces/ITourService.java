@@ -24,4 +24,8 @@ public interface ITourService {
     List<TourClientResponse> getTourByDestination(String cityDesId, String cityOriginId);
 
     TourClientResponse getTourTopUsed();
+
+    List<TourClientResponse> getTourHasDestination(String cityDesId);
+
+    List<TourClientResponse> getTourHasCheckIn(Integer checkInId);
 }
