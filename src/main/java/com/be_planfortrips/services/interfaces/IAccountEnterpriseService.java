@@ -36,6 +36,11 @@ public interface IAccountEnterpriseService {
 
     List<AccountEnterpriseResponse> getAccountEnterpriseDisable();
 
+    void resetPassword(Integer id, String email, String phone);
+
+    boolean validateContact(Integer serviceType, String email, String phone);
+
+
     List<AccountEnterpriseResponse> getAccountEnterpriseNeedAccept();
 
 

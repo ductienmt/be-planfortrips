@@ -304,4 +304,13 @@ public class UserController {
             return buildApiResponse(HttpStatus.METHOD_FAILURE, "Đổi mật khẩu thất bại.");
         }
     }
+
+    @GetMapping("getUserByEmail")
+    public ResponseEntity<?> getUserByEmail(@RequestParam("email") String email) {
+        AccountUserResponse user = userService.getUserByEmail(email);
+        if (user == null) {
+            throw new AppException(ErrorType.notFound);
+        }
+        return buildApiResponse(HttpStatus.OK, "Xác thực thành công.");
+    }
 }

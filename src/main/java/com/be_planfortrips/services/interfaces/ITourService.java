@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ITourService {
     TourResponse createTour(TourDTO TourDTO) throws Exception;
@@ -25,7 +26,9 @@ public interface ITourService {
 
     TourClientResponse getTourTopUsed();
 
-    List<TourClientResponse> getTourHasDestination(String cityDesId);
+    List<Map<String, Object>> getTourHasDestination(String cityDesId);
 
-    List<TourClientResponse> getTourHasCheckIn(Integer checkInId);
+    List<Map<String, Object>> getTourHasCheckIn(Integer checkInId);
+
+    List<Map<String, Object>> getTourHaveCityIn(String areaId);
 }

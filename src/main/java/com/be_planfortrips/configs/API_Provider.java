@@ -63,13 +63,15 @@ public class API_Provider {
             "/api/v1/booking-hotel-details/all",
             "/api/v1/booking-hotel-details/getById/**",
             "/api/v1/hotels/getByRoomId/**",
+            "/api/v1/account-enterprises/reset-password",
+            "/api/v1/account-enterprises/validate-contact",
             "/api/v1/schedules/getSeatsByScheduleId",
+            "/api/v1/cities/getFavoriteCity",
     };
 
     public static final String[] ADMIN_API = {
             "/api/v1/account-enterprises/change-status",
             "/api/v1/account-enterprises/all",
-            "/api/v1/account-enterprise/sdt/**",
             "/api/v1/account-enterprises/delete/**",
             "/api/v1/account-enterprises/getById/**",
             "/api/v1/areas/create",

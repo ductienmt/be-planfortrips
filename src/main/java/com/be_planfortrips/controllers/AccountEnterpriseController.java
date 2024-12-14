@@ -55,7 +55,6 @@ public class AccountEnterpriseController {
     }
 
 
-
     @GetMapping("/accept")
     public ResponseEntity<List<AccountEnterpriseResponse>> getEnterpriseNeedAccept() {
         List<AccountEnterpriseResponse> accountEnterpriseResponses = accountEnterpriseService.getAccountEnterpriseNeedAccept();
@@ -70,7 +69,7 @@ public class AccountEnterpriseController {
 
     @PostMapping("/create")
     public ResponseEntity<AccountEnterpriseResponse> createAccountEnterprise(
-            @RequestBody @Valid  AccountEnterpriseDto accountEnterpriseDto) {
+            @RequestBody @Valid AccountEnterpriseDto accountEnterpriseDto) {
         AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.createAccountEnterprise(accountEnterpriseDto);
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.CREATED);
     }
@@ -88,7 +87,7 @@ public class AccountEnterpriseController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-      @GetMapping("/detail")
+    @GetMapping("/detail")
     public ResponseEntity<AccountEnterpriseResponse> getAccountEnterpriseDetail() {
         AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.getAccountEnterpriseDetail();
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.OK);
@@ -97,7 +96,7 @@ public class AccountEnterpriseController {
     @PatchMapping("/stage/{id}")
     public ResponseEntity<Boolean> toggleStage(
             @PathVariable Long id
-    )  {
+    ) {
         return ResponseEntity.ok(accountEnterpriseService.toggleStage(id));
     }
 
@@ -113,6 +112,7 @@ public class AccountEnterpriseController {
             ));
         }
     }
+
     @PostMapping("validate-email")
     public ResponseEntity<?> validateEmail(@RequestParam String email) {
         try {
@@ -125,10 +125,11 @@ public class AccountEnterpriseController {
             ));
         }
     }
+
     @PostMapping("validate-phone")
     public ResponseEntity<?> validatePhone(@RequestParam String phone) {
         try {
-            if(!Utils.isValidPhoneNumber(phone)){
+            if (!Utils.isValidPhoneNumber(phone)) {
                 throw new AppException(ErrorType.phoneNotValid);
             }
             accountEnterpriseService.validatePhone(phone);
@@ -138,6 +139,37 @@ public class AccountEnterpriseController {
 //                    "error", e.getErrorType().name(),
                     "message", e.getMessage()
             ));
+        }
+    }
+
+    @PatchMapping("reset-password")
+    public ResponseEntity<?> resetPassword(@RequestParam Integer serviceType,
+                                           @RequestParam String email,
+                                           @RequestParam String phone) {
+        try {
+
+            accountEnterpriseService.resetPassword(serviceType, email, phone);
+            return ResponseEntity.ok(Map.of("message", "Làm mới mật kẩu thanh công."));
+
+        } catch (AppException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+
+    }
+
+    @GetMapping("/validate-contact")
+    public ResponseEntity<?> validateContact(
+            @RequestParam Integer serviceType,
+            @RequestParam String email,
+            @RequestParam String phone) {
+        try {
+            boolean exists = accountEnterpriseService.validateContact(serviceType, email, phone);
+            if (!exists) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Email hoặc số điện thoại không tồn tại trong loại doanh nghiệp."));
+            }
+            return ResponseEntity.ok(Map.of("message", "Email và số điện thoại hợp lệ."));
+        } catch (AppException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 

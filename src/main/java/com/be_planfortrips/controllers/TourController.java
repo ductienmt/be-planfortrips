@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -165,7 +166,7 @@ public class TourController {
     public ResponseEntity<?> getTourHasDestination(
             @PathVariable String cityId
     ) {
-        List<TourClientResponse> tourClientResponses = iTourService.getTourHasDestination(cityId);
+        List<Map<String, Object>> tourClientResponses = iTourService.getTourHasDestination(cityId);
         return ResponseEntity.ok(tourClientResponses);
     }
 
@@ -173,9 +174,18 @@ public class TourController {
     public ResponseEntity<?> getTourHasCheckIn(
             @PathVariable Integer checkInId
     ) {
-        List<TourClientResponse> tourClientResponses = iTourService.getTourHasCheckIn(checkInId);
+        List<Map<String, Object>> tourClientResponses = iTourService.getTourHasCheckIn(checkInId);
         return ResponseEntity.ok(tourClientResponses);
     }
+
+    @GetMapping("/area/{areaId}")
+    public ResponseEntity<?> getTourHaveCityIn(
+            @PathVariable String areaId
+    ) {
+        List<Map<String, Object>> tourClientResponses = iTourService.getTourHaveCityIn(areaId);
+        return ResponseEntity.ok(tourClientResponses);
+    }
+
 
 
     @GetMapping("/top1")
