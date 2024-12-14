@@ -146,7 +146,7 @@ public class TourController {
 
 
 
-    @GetMapping("/client/")
+    @GetMapping("/client")
     public ResponseEntity<?> getAllTourClient() {
         List<TourClientResponse> responses = iTourService.getAllTourClient();
         return ResponseEntity.ok(responses);
@@ -161,7 +161,6 @@ public class TourController {
         return ResponseEntity.ok(res);
     }
 
-    @GetMapping("/")
 
     @GetMapping("/top1")
     public ResponseEntity<TourClientResponse> getTourTop1Used() {

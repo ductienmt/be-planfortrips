@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ public interface IRoomService {
 
     RoomResponse updateRoomById(Long roomId, RoomDto roomDto);
 
-    Page<RoomResponse> getRoomByHotelId(Long id, Integer pageNo, Integer pageSize, String sortBy, String sortType);
+    Page<RoomResponse> getRoomByHotelId(Long id, LocalDate checkinDate, LocalDate checkoutDate, Integer pageNo, Integer pageSize, String sortBy, String sortType);
 
     List<RoomResponse> getRoomAvailable(LocalDateTime checkIn, LocalDateTime checkOut, String destination);
 

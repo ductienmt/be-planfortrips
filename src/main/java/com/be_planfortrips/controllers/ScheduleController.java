@@ -170,4 +170,20 @@ public class ScheduleController {
         }
     }
 
+    @GetMapping("getSeatsByScheduleId")
+    public ResponseEntity<?> getSeatsByScheduleId(
+            @RequestParam("scheduleId") Integer scheduleId) {
+        try {
+            Map<String, Object> response = scheduleService.getSeatsByScheduleId(scheduleId);
+
+            return ResponseEntity.ok(ApiResponse.<Map<String, Object>>builder()
+                    .code(HttpStatus.OK.value())
+                    .data(response)
+                    .message("")
+                    .build());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new AppException(ErrorType.internalServerError);
+        }
+    }
 }
