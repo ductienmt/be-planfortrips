@@ -217,6 +217,14 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         return accountEnterpriseMapper.toResponse(accountEnterprise);
     }
 
+    @Override
+    public AccountEnterpriseResponse getAccountEnterpriseByEmail(String email) {
+        AccountEnterprise accountEnterprise = accountEnterpriseRepository.getAccountEnterpriseByEmail(email).orElseThrow(
+                () -> new AppException(ErrorType.EmailNotExist)
+        );
+        return accountEnterpriseMapper.toResponse(accountEnterprise);
+    }
+
 
     private void validateForm(AccountEnterpriseDto accountEnterpriseDto) {
         if (accountEnterpriseDto.getUsername() == null || accountEnterpriseDto.getUsername().isEmpty()) {

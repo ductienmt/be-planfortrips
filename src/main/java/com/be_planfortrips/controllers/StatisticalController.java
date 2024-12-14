@@ -31,6 +31,7 @@ public class StatisticalController {
 
     StatisticalService statisticalService;
     VehicleRepository vehicleRepository;
+    private final HotelRepository hotelRepository;
 
     @GetMapping("/user")
     public ResponseEntity<Integer> getCountUser() {
@@ -44,6 +45,15 @@ public class StatisticalController {
         List<StatisticalCount> res = userRepository.countUsersByYear(year);
         return ResponseEntity.ok(res);
     }
+
+    @GetMapping("/user/{year}/{month}")
+    public ResponseEntity<List<StatisticalCount>> StatisticalUserByMonth(
+            @PathVariable("year") Integer year, @PathVariable("month") Integer month
+    ){
+        List<StatisticalCount> res = userRepository.countUsersByMonth(year, month);
+        return ResponseEntity.ok(res);
+    }
+
     @GetMapping("/admin")
     public ResponseEntity<Integer> getCountAdmin() {
         return ResponseEntity.ok(adminRepository.countAll());
@@ -76,6 +86,15 @@ public class StatisticalController {
         return ResponseEntity.ok(res);
     }
 
+    @GetMapping("/plan/{year}/{month}")
+    public ResponseEntity<List<StatisticalCount>> StatisticalPlanByMonth(
+            @PathVariable("year") Integer year,
+            @PathVariable("month") Integer month
+    ) {
+        List<StatisticalCount> res = planRepository.StatisticalCountPlanByMonth(year, month);
+        return ResponseEntity.ok(res);
+    }
+
     @GetMapping("/enterprise/{year}/{month}")
     public ResponseEntity<List<StatisticalCount>> StatisticalEtpByMonth(
             @PathVariable("year") Integer year, @PathVariable("month") Integer month
@@ -91,6 +110,7 @@ public class StatisticalController {
         return ResponseEntity.ok(res);
     }
 
+
     @GetMapping("/vehicle/{year}")
     public ResponseEntity<List<StatisticalResource>> StatisticalVehicleByYear(
             @PathVariable("year") Integer year
@@ -98,5 +118,14 @@ public class StatisticalController {
         List<StatisticalResource> res = vehicleRepository.getTop1VehicleByYear(year);
         return ResponseEntity.ok(res);
     }
+
+    @GetMapping("/hotel/{year}")
+    public ResponseEntity<List<StatisticalResource>> StatisticalHotelByYear(
+            @PathVariable("year") Integer year
+    ) {
+        List<StatisticalResource> res = hotelRepository.getTop1HotelByYear(year);
+        return ResponseEntity.ok(res);
+    }
+
 
 }

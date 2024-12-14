@@ -53,26 +53,29 @@ public interface PlanRepository extends JpaRepository<Plan, Long>{
 
 
 
+
+
     @Query(value = """
-        WITH days AS (
-            SELECT generate_series(1, 31) AS day
-        ),
-        daily_stats AS (
-            SELECT
-                EXTRACT(DAY FROM p.create_at) AS day,
-                COUNT(p.id) AS plan_count
-            FROM plans p
-            WHERE EXTRACT(YEAR FROM p.create_at) = :year
-              AND EXTRACT(MONTH FROM p.create_at) = :month
-            GROUP BY EXTRACT(DAY FROM p.create_at)
-        )
-        SELECT d.day, COALESCE(ds.plan_count, 0) AS plan_count
-        FROM days d
-        LEFT JOIN daily_stats ds ON d.day = ds.day
-        ORDER BY d.day;
+            WITH days AS (
+                           SELECT generate_series(1, 31) AS date  -- This will generate a series of days
+                       ),
+                            daily_stats AS (
+                                SELECT
+                                    EXTRACT(DAY FROM p.start_date) AS date,
+                                    COUNT(p.id) AS plan_count
+                                FROM plan p
+                                WHERE EXTRACT(YEAR FROM p.start_date) = :year
+                                  AND EXTRACT(MONTH FROM p.start_date) = :month
+                                GROUP BY EXTRACT(DAY FROM p.start_date)
+                            )
+                       SELECT d.date, COALESCE(ds.plan_count, 0) AS count  -- Corrected to d.date instead of d.day
+                       FROM days d
+                                LEFT JOIN daily_stats ds ON d.date = ds.date  -- Use d.date instead of d.day
+                       ORDER BY d.date;                
         """, nativeQuery = true)
-    List<StatisticalCountMonth> StatisticalCountPlanByMonth(
+    List<StatisticalCount> StatisticalCountPlanByMonth(
             @Param("year") int year, @Param("month") int month);
+
 
 
 

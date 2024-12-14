@@ -46,6 +46,14 @@ public class AccountEnterpriseController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<AccountEnterpriseResponse> getEtpByEmail(
+            @PathVariable("email") String email
+    ) {
+        AccountEnterpriseResponse response = accountEnterpriseService.getAccountEnterpriseByEmail(email);
+        return ResponseEntity.ok(response);
+    }
+
 
 
     @GetMapping("/accept")

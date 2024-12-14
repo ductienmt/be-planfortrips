@@ -41,4 +41,6 @@ public interface IAccountEnterpriseService {
 
     AccountEnterpriseResponse getAccountEnterpriseByPhoneNumber(String phoneNumber);
 
+    AccountEnterpriseResponse getAccountEnterpriseByEmail(String email);
+
 }

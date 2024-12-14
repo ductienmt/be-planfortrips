@@ -37,6 +37,8 @@ public interface AccountEnterpriseRepository extends JpaRepository<AccountEnterp
 
     Optional<AccountEnterprise> getAccountEnterpriseByPhoneNumber(String phoneNumber);
 
+    Optional<AccountEnterprise> getAccountEnterpriseByEmail(String email);
+
     @Query(value = """
     WITH months AS (
         SELECT 1 AS month
