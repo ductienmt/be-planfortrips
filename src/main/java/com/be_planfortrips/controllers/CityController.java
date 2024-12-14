@@ -70,4 +70,14 @@ public class CityController {
         }
     }
 
+    @GetMapping("getFavoriteCity")
+    public ResponseEntity<?> getFavoriteCity(){
+        try {
+            return ResponseEntity.ok(iCityService.getFavoriteCity());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
