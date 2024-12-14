@@ -4,6 +4,7 @@ import com.be_planfortrips.dto.sql.StatisticalCount;
 import com.be_planfortrips.dto.sql.StatisticalCountMonth;
 import com.be_planfortrips.entity.AccountEnterprise;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,13 @@ public interface AccountEnterpriseRepository extends JpaRepository<AccountEnterp
     @Query("Select count(*) from AccountEnterprise")
     Integer countAll();
 
+    @Query("SELECT a FROM AccountEnterprise a WHERE a.typeEnterpriseDetail.id = :id AND a.email = :email AND a.phoneNumber = :phone")
+    Optional<AccountEnterprise> findByServiceTypeAndEmailAndPhone(@Param("id") Integer id,
+                                                                  @Param("email") String email,
+                                                                  @Param("phone") String phone);
+
+    @Query("SELECT a FROM AccountEnterprise a WHERE a.typeEnterpriseDetail.id = :serviceType AND a.status = true")
+    List<AccountEnterprise> findActiveByServiceType(@Param("serviceType") Integer serviceType);
     @Query(value = "SELECT * FROM account_enterprises e WHERE unaccent(e.enterprise_name) LIKE unaccent(CONCAT('%', :name, '%'))", nativeQuery = true)
     Page<AccountEnterprise> findByEnterpriseNameStartingWithIgnoreCase(@Param("name") String name, Pageable pageable);
 

@@ -1,10 +1,14 @@
 package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.AccountEnterpriseDto;
+import com.be_planfortrips.dto.TypeEnterpriseDetailDto;
+import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
 import com.be_planfortrips.entity.AccountEnterprise;
+import com.be_planfortrips.entity.User;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.mappers.TokenMapper;
 import com.be_planfortrips.mappers.impl.AccountEnterpriseMapper;
 import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
@@ -24,6 +28,7 @@ import java.text.Normalizer;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.PageRequest;
 
 
@@ -61,11 +66,6 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
         return normalized.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
-
-
-
-
-
 
     @Override
     public AccountEnterpriseResponse getAccountEnterpriseById(Long id) {
@@ -202,6 +202,40 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     @Override
     public List<AccountEnterpriseResponse> getAccountEnterpriseDisable() {
         return accountEnterpriseRepository.findAccountEnterpriseDisable().stream().map(accountEnterpriseMapper::toResponse).toList();
+    }
+
+    @Override
+    public void resetPassword(Integer id, String email, String phone) {
+        // Kiểm tra loại dịch vụ có tồn tại
+        Optional<AccountEnterprise> accountEnterpriseOptional = accountEnterpriseRepository.findByServiceTypeAndEmailAndPhone(id, email, phone);
+
+        if (accountEnterpriseOptional.isPresent()) {
+            // Random mật khẩu mới
+            String newPassword = generateRandomString(10);
+            AccountEnterprise accountEnterprise = accountEnterpriseOptional.get();
+
+            // Mã hóa mật khẩu trước khi lưu
+            accountEnterprise.setPassword(passwordEncoder.encode(newPassword));
+
+            // Lưu tài khoản vào cơ sở dữ liệu
+            accountEnterpriseRepository.save(accountEnterprise);
+
+            // Gửi email thông báo mật khẩu mới
+            iEmailService.sendEmail(email, newPassword, "Mật khẩu mới từ Plan for Trips");
+        } else {
+            throw new AppException(ErrorType.notFound);
+        }
+    }
+
+
+    @Override
+    public boolean validateContact(Integer serviceType, String email, String phone) {
+        // Lấy danh sách doanh nghiệp theo serviceType
+        List<AccountEnterprise> enterprises = accountEnterpriseRepository.findActiveByServiceType(serviceType);
+
+        // Kiểm tra xem email và phone có tồn tại trong danh sách doanh nghiệp không
+        return enterprises.stream()
+                .anyMatch(e -> e.getEmail().equals(email) && e.getPhoneNumber().equals(phone));
     }
 
     @Override
