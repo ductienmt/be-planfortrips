@@ -44,4 +44,10 @@ public class Checkin extends BaseEntity {
     @OneToMany(mappedBy = "checkin", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JsonManagedReference
     List<CheckinImage> checkinImages;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "tour_checkins",
+            joinColumns = @JoinColumn(name = "checkin_id"),
+            inverseJoinColumns = @JoinColumn(name = "tour_id"))
+    @JsonManagedReference
+    List<Tour> tour;
 }
