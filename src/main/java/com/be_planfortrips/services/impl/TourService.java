@@ -397,7 +397,7 @@ public class TourService implements ITourService {
             tourMap.put("tourDescription", tour.getDescription());
             tourMap.put("tourRating", tour.getRating());
             tourMap.put("tourTags", tour.getTags().stream().map(Tag::getName).toList());
-            tourMap.put("tourImage", tour.getImages().getFirst().getUrl());
+            tourMap.put("tourImage", tour.getImages().isEmpty() ? null : tour.getImages().getFirst().getUrl());
             tourMap.put("tourDays", tour.getDay() + "N/" + tour.getNight() + "Đ");
             tourMap.put("tourDestination", tour.getRoute().getDestinationStation().getCity().getNameCity());
             tourMap.put("tourPeople", tour.getNumberPeople());
@@ -446,7 +446,7 @@ public class TourService implements ITourService {
             tourMap.put("tourDescription", tour.getDescription());
             tourMap.put("tourRating", tour.getRating());
             tourMap.put("tourTags", tour.getTags().stream().map(Tag::getName).toList());
-            tourMap.put("tourImage", tour.getImages().getFirst().getUrl());
+            tourMap.put("tourImage", tour.getImages().isEmpty() ? null : tour.getImages().getFirst().getUrl());
             tourMap.put("tourDays", tour.getDay() + "N/" + tour.getNight() + "Đ");
             tourMap.put("tourDestination", tour.getRoute().getDestinationStation().getCity().getNameCity());
             tourMap.put("tourPeople", tour.getNumberPeople());
