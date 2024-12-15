@@ -53,6 +53,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList((env.equals("production")) ? "https://plan-for-trips.netlify.app/": "http://localhost:5050"));
+        configuration.setAllowedOrigins(Arrays.asList((env.equals("production")) ? "https://plan-for-trips.netlify.app/": "http://localhost:5050"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));

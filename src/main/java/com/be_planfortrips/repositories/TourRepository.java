@@ -115,7 +115,7 @@ public interface TourRepository extends JpaRepository<Tour,Integer> {
             "WHERE cDes.id = :cityDesId AND cOrigin.id = :cityOriginId")
     List<Tour> getTourByCityId(@Param("cityDesId") String cityDesId, @Param("cityOriginId") String cityOriginId);
 
-    @Query(value = "SELECT tours.*, COUNT(tours_user_used.user_used_id) AS user_count " +
+     @Query(value = "SELECT tours.*, COUNT(tours_user_used.user_used_id) AS user_count " +
             "FROM tours " +
             "JOIN tours_user_used ON tours.id = tours_user_used.tour_id " +
             "GROUP BY tours.id " +
@@ -129,8 +129,8 @@ public interface TourRepository extends JpaRepository<Tour,Integer> {
             "where c.id = :cityId")
     List<Tour> getTourHasCityDestination(@Param("cityId") String cityId);
 
-    @Query("select t from Tour t where t.checkin.id = :checkInId")
-    List<Tour> getTourHasCheckIn(@Param("checkInId") Integer checkInId);
+//    @Query("select t from Tour t where t.checkin.id = :checkInId")
+//    List<Tour> getTourHasCheckIn(@Param("checkInId") Integer checkInId);
 
     @Query("select t from Tour t join t.route r on t.route.id = r.id " +
             "join r.destinationStation s on r.destinationStation.id = s.id " +

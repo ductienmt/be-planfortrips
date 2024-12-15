@@ -49,7 +49,7 @@ public class Tour extends BaseEntity{
             inverseJoinColumns = @JoinColumn(name = "checkin_id"))
     @JsonManagedReference
     List<Checkin> checkin;
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinTable(name = "tour_tag",
             joinColumns = @JoinColumn(name = "tour_id"),
             inverseJoinColumns =@JoinColumn(name = "tag_id") )

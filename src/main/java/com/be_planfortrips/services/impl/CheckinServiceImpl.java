@@ -76,7 +76,7 @@ public class CheckinServiceImpl implements ICheckinService {
 
     @Override
     public Map<String, Object> getAllCheckin(Integer page) {
-        int pageSize = 10;
+        int pageSize = 100;
         if (page == null || page < 1) {
             throw new IllegalArgumentException("Số trang phải lớn hơn hoặc bằng 1");
         }

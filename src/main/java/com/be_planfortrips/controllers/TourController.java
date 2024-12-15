@@ -170,13 +170,13 @@ public class TourController {
         return ResponseEntity.ok(tourClientResponses);
     }
 
-    @GetMapping("/checkIn/{checkInId}")
-    public ResponseEntity<?> getTourHasCheckIn(
-            @PathVariable Integer checkInId
-    ) {
-        List<Map<String, Object>> tourClientResponses = iTourService.getTourHasCheckIn(checkInId);
-        return ResponseEntity.ok(tourClientResponses);
-    }
+//    @GetMapping("/checkIn/{checkInId}")
+//    public ResponseEntity<?> getTourHasCheckIn(
+//            @PathVariable Integer checkInId
+//    ) {
+//        List<Map<String, Object>> tourClientResponses = iTourService.getTourHasCheckIn(checkInId);
+//        return ResponseEntity.ok(tourClientResponses);
+//    }
 
     @GetMapping("/area/{areaId}")
     public ResponseEntity<?> getTourHaveCityIn(
