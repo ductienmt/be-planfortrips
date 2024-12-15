@@ -9,6 +9,7 @@ import com.be_planfortrips.dto.response.HotelResponses.AvailableHotels;
 import com.be_planfortrips.dto.response.HotelResponses.ListAvailableResponses;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.mappers.impl.PageMapperImpl;
 import com.be_planfortrips.services.interfaces.IHotelService;
 import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
@@ -42,6 +43,8 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class HotelController {
     IHotelService iHotelService;
+    private final PageMapperImpl pageMapperImpl;
+
     @PostMapping("/create")
     public ResponseEntity<?> createHotel(@Valid @RequestBody HotelDto hotelDto,
                                          BindingResult result){
@@ -94,7 +97,8 @@ public class HotelController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("delete/{id}")
+
+    @PostMapping("delete/{id}")
     public ResponseEntity<Void> deleteHotelById(@PathVariable Long id) {
         iHotelService.deleteHotelById(id);
         return ResponseEntity.noContent().build();
@@ -215,4 +219,28 @@ public class HotelController {
         }
     }
 
+    @PatchMapping("changeStatus")
+    public ResponseEntity<?> changeStatus(@RequestParam Long id){
+        try {
+            iHotelService.changeStatus(id);
+            return ResponseEntity.ok("Thay đổi trạng thái thành công");
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("searchEnterprise")
+    public ResponseEntity<?> searchEnterprise(@RequestParam(defaultValue = "", required = false) String keyword,
+                                              @RequestParam(defaultValue = "0", required = false) int pageNo,
+                                              @RequestParam(defaultValue = "10", required = false) int pageSize,
+                                              @RequestParam(defaultValue = "id", required = false) String sortBy,
+                                              @RequestParam(defaultValue = "asc", required = false) String sortType){
+
+        try {
+            var pageRequest = pageMapperImpl.customPage(pageNo, pageSize, sortBy, sortType);
+            return ResponseEntity.ok(iHotelService.searchEnterprise(keyword, pageRequest));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

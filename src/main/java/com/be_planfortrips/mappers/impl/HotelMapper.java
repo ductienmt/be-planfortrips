@@ -30,6 +30,8 @@ public class HotelMapper implements MapperInterface<HotelResponse,Hotel,HotelDto
         if (typeMap == null) {
             typeMap = modelMapper.createTypeMap(HotelDto.class, Hotel.class);
             typeMap.addMappings(mapper -> mapper.skip(Hotel::setId));
+            typeMap.addMappings(mapper -> mapper.skip(Hotel::setRooms));
+            typeMap.addMappings(mapper -> mapper.skip(Hotel::setHotelAmenities));
         }
         Hotel Hotel = modelMapper.map(hotelDto, Hotel.class);
         return Hotel;
@@ -40,7 +42,11 @@ public class HotelMapper implements MapperInterface<HotelResponse,Hotel,HotelDto
         HotelResponse hotelResponse = modelMapper.map(hotel, HotelResponse.class);
         hotelResponse.setRooms(hotel.getRooms());
         hotelResponse.setEnterpriseId(hotel.getAccountEnterprise().getAccountEnterpriseId());
-        hotelResponse.setHotelAmenities(hotel.getHotelAmenities().stream().map(hotelAmenitiesMapper::toResponse).collect(Collectors.toList()));
+        if (hotel.getHotelAmenities() != null) {
+            hotelResponse.setHotelAmenities(hotel.getHotelAmenities().stream().map(hotelAmenitiesMapper::toResponse).collect(Collectors.toList()));
+        } else {
+            hotelResponse.setHotelAmenities(Collections.emptyList());
+        }
         return hotelResponse;
     }
     @Override

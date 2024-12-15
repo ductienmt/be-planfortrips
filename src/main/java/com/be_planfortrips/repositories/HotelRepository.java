@@ -18,7 +18,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     boolean existsByPhoneNumber(String phoneNumber);
 
     @Query("select h from Hotel h " +
-            " where (:keyword is null or :keyword = '' or h.name like %:keyword% or h.address like %:keyword% " +
+            " where (:keyword is null or :keyword = '' or h.name ilike %:keyword% or h.address ilike %:keyword%  " +
             "and (:rating is null or h.rating <= :rating))")
     Page<Hotel> searchHotels(Pageable pageable,@Param("keyword") String keyword,@Param("rating") Integer rating);
     List<Hotel> searchByNameContains(String name);
@@ -90,4 +90,12 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "         LEFT JOIN ranked_rooms rr ON am.month = rr.month AND rr.rank = 1\n" +
             "ORDER BY am.month;\n", nativeQuery = true)
     List<StatisticalResource> getTop1HotelByYear(@Param("year") int year);
+
+    @Query("select h from Hotel h where h.accountEnterprise.accountEnterpriseId = :id " +
+            "and (:keyword is null or :keyword = '' or h.name ilike %:keyword% " +
+            "or h.address ilike %:keyword% or h.phoneNumber ilike %:keyword% " +
+            "or h.description ilike %:keyword%)")
+    Page<Hotel> searchEnterprise(@Param("keyword") String keyword, @Param("id") Long id, Pageable pageable);
+
+
 }

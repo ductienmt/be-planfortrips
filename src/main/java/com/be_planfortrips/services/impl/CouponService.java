@@ -226,6 +226,58 @@ public class CouponService implements ICouponService {
         throw new AppException(ErrorType.notFound, "Enterprise not found");
     }
 
+    @Override
+    public Page<Map<String, Object>> searchEnterprise(String keyword, String status, String discountType, Pageable pageable) {
+        Long id = tokenMapperImpl.getIdEnterpriseByToken();
+        Boolean isActive;
+        if (status == null) {
+            isActive = null;
+        } else {
+            isActive = Boolean.valueOf(status);
+        }
+
+        DiscountType type;
+        if (discountType == null || discountType.isBlank()) {
+            type = null;
+        } else {
+            try {
+                type = DiscountType.valueOf(discountType.toUpperCase().trim());
+            } catch (IllegalArgumentException e) {
+                throw new AppException(ErrorType.inputFieldInvalid, "Invalid discount type: " + discountType);
+            }
+        }
+
+
+        if (id != null) {
+            Page<CouponResponse> couponResponses = couponRepository
+                    .searchEnterprise(keyword, isActive, type, id, pageable)
+                    .map(couponMapper::toResponse);
+
+            Page<Map<String, Object>> response = couponResponses.map(coupon -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", coupon.getId());
+                map.put("code", coupon.getCode());
+                map.put("discountType", coupon.getDiscountType());
+                map.put("discountValue", coupon.getDiscountValue());
+                map.put("useLimit", coupon.getUseLimit());
+                map.put("usedCount", coupon.getUseCount());
+                map.put("startDate", coupon.getStartDate());
+                map.put("endDate", coupon.getEndDate());
+                map.put("isActive", coupon.getIsActive());
+
+                List<String> roomCodes = couponRoomRepository
+                        .findRoomCodesByCouponId(coupon.getId().longValue());
+                if (!roomCodes.isEmpty()) {
+                    map.put("roomCode", roomCodes);
+                }
+
+                return map;
+            });
+
+            return response;
+        }
+        throw new AppException(ErrorType.notFound, "Enterprise not found");
+    }
 
 
 }
