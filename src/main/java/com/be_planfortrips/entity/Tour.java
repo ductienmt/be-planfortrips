@@ -1,5 +1,6 @@
 package com.be_planfortrips.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -33,7 +34,6 @@ public class Tour extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "hotel_id")
     Hotel hotel;
-
     @ManyToOne
     @JoinColumn(name = "car_company_id")
     CarCompany carCompany;
@@ -41,9 +41,12 @@ public class Tour extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "admin_id")
     Admin admin;
-    @ManyToOne
-    @JoinColumn(name = "checkin_id")
-    Checkin checkin;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinTable(name = "tour_checkins",
+            joinColumns = @JoinColumn(name = "tour_id"),
+            inverseJoinColumns = @JoinColumn(name = "checkin_id"))
+    @JsonManagedReference
+    List<Checkin> checkin;
     @ManyToMany
     @JoinTable(name = "tour_tag",
             joinColumns = @JoinColumn(name = "tour_id"),

@@ -36,7 +36,7 @@ public class TourResponse {
     CarCompany carCompany;
     @JsonProperty
     String note;
-    Checkin checkin;
+    List<Checkin> checkin;
     @JsonProperty("admin_username")
     String adminUsername;
     List<Image> images;

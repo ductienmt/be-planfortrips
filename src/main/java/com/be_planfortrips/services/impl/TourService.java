@@ -60,10 +60,13 @@ public class TourService implements ITourService {
                 .orElseThrow(() -> {
                     throw new AppException(ErrorType.notFound);
                 });
-        Checkin checkinExisting = checkinRepository.findById(TourDTO.getCheckinId())
-                .orElseThrow(() -> {
-                    throw new AppException(ErrorType.notFound);
-                });
+        List<Checkin> checkinExisting = new ArrayList<>();
+        for(Long checkinId : TourDTO.getCheckinId()){
+            Checkin checkin = checkinRepository.findById(checkinId).orElseThrow(
+                    ()->{throw new AppException(ErrorType.notFound);}
+            );
+            checkinExisting.add(checkin);
+        }
         Route route =  routeRepository.findById(TourDTO.getRouteId())
                 .orElseThrow(()-> {throw new AppException(ErrorType.notFound);});
         List<Tag> tags = TourDTO.getTagNames()!= null
@@ -103,10 +106,13 @@ public class TourService implements ITourService {
                 .orElseThrow(() -> {
                     throw new AppException(ErrorType.notFound);
                 });
-        Checkin checkinExisting = checkinRepository.findById(TourDTO.getCheckinId())
-                .orElseThrow(() -> {
-                    throw new AppException(ErrorType.notFound);
-                });
+        List<Checkin> checkinExisting = new ArrayList<>();
+        for(Long checkinId : TourDTO.getCheckinId()){
+            Checkin checkin = checkinRepository.findById(checkinId).orElseThrow(
+                    ()->{throw new AppException(ErrorType.notFound);}
+            );
+            checkinExisting.add(checkin);
+        }
         Route route =  routeRepository.findById(TourDTO.getRouteId())
                 .orElseThrow(()-> {throw new AppException(ErrorType.notFound);});
         List<Tag> tags = TourDTO.getTagNames()!= null
