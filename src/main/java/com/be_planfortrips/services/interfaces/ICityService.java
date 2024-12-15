@@ -10,6 +10,8 @@ public interface ICityService {
     List<City> getCityByAreaId(String areaId);
     List<Map<String, Object>> getCitiesByAreaId(String id);
     List<Map<String, Object>> getAllCity();
+    List<Map<String, Object>> getFavoriteCity();
     void uploadImage(MultipartFile file, String city_id);
     List<String> findCityByName(String name);
+    List<Map<String, Object>> getCitiesPopular();
 }

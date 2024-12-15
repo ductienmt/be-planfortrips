@@ -69,6 +69,11 @@ public class CityArea implements ICityService {
     }
 
     @Override
+    public List<Map<String, Object>> getFavoriteCity() {
+        return cityRepository.getFavoriteCity();
+    }
+
+    @Override
     public void uploadImage(MultipartFile file, String city_id) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("Vui lòng chọn ảnh hợp lệ");
@@ -102,5 +107,10 @@ public class CityArea implements ICityService {
             cityNames.add(city.getNameCity());
         }
         return cityNames;
+    }
+
+    @Override
+    public List<Map<String, Object>> getCitiesPopular() {
+        return this.cityRepository.getTop3CitiesPopular();
     }
 }

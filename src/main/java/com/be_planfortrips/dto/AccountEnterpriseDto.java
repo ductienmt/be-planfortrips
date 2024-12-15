@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AccountEnterpriseDto {
-    @Size(min = 5, max = 50, message = "Username must be between 5 and 50 characters")
+//    @Size(min = 5, max = 50, message = "Username must be between 5 and 50 characters")
     String username;
     @Email(message = "Email should be valid")
     String email;

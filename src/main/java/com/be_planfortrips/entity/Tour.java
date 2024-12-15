@@ -20,7 +20,9 @@ public class Tour extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String title;
-    String description;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "route_id")
@@ -55,4 +57,7 @@ public class Tour extends BaseEntity{
 
     @OneToMany
     List<Image> images;
+
+    @ManyToMany
+    List<User> userUsed;
 }

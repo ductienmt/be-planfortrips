@@ -2,15 +2,15 @@ package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.CouponDto;
 import com.be_planfortrips.dto.response.CouponResponse;
-import com.be_planfortrips.entity.AccountEnterprise;
-import com.be_planfortrips.entity.Coupon;
-import com.be_planfortrips.entity.DiscountType;
+import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.CouponMapper;
 import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.CouponRepository;
+import com.be_planfortrips.repositories.CouponRoomRepository;
+import com.be_planfortrips.repositories.RoomRepository;
 import com.be_planfortrips.services.interfaces.ICouponService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -36,6 +34,8 @@ public class CouponService implements ICouponService {
     CouponMapper couponMapper;
     AccountEnterpriseRepository enterpriseRepository;
     private final TokenMapperImpl tokenMapperImpl;
+    private final RoomRepository roomRepository;
+    private final CouponRoomRepository couponRoomRepository;
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void deactivateExpiredCoupons() {
@@ -82,7 +82,35 @@ public class CouponService implements ICouponService {
 
     @Override
     public CouponResponse createCouponRoom(CouponDto CouponDto, Long roomId) throws Exception {
-        return null;
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new Exception("Room is not found"));
+        if (couponRepository.existsByCode(CouponDto.getCode())) {
+            throw new Exception("Mã giảm giá đã tồn tại");
+        }
+        List<String> allowedDiscountTypes = Arrays.asList("PERCENT", "FIXED_AMOUNT");
+        if (!allowedDiscountTypes.contains(CouponDto.getDiscountType())) {
+            throw new Exception("Thể loại giảm giá không hợp lệ");
+        }
+        Coupon coupon = couponMapper.toEntity(CouponDto);
+        if (coupon.getDiscountType().equals(DiscountType.PERCENT)) {
+            BigDecimal discountValue = coupon.getDiscountValue();
+            int percent = discountValue.intValue();
+            if (percent < 0 || percent > 100) {
+                throw new AppException(ErrorType.percentIsUnprocessed);
+            }
+        }
+        coupon.setActive(CouponDto.getIsActive());
+        if (CouponDto.getEnterpriseUsername() != null) {
+            AccountEnterprise accountEnterprise = enterpriseRepository.findByUsername(CouponDto.getEnterpriseUsername());
+            if (accountEnterprise != null) {
+                coupon.setAccountEnterprise(accountEnterprise);
+            }
+        }
+        couponRepository.save(coupon);
+        CouponRoom couponRoom = new CouponRoom();
+        couponRoom.setCoupon(coupon);
+        couponRoom.setRoom(room);
+        couponRoomRepository.save(couponRoom);
+        return couponMapper.toResponse(coupon);
     }
 
     @Override
@@ -140,7 +168,15 @@ public class CouponService implements ICouponService {
     @Transactional
     public void deleteCouponById(Integer id) {
         Optional<Coupon> coupon = couponRepository.findById(id);
-        coupon.ifPresent(couponRepository::delete);
+        if (!coupon.isPresent()) {
+            throw new AppException(ErrorType.notFound, "Coupon not found");
+        }
+        if (coupon.get().getUseCount() > 0) {
+            coupon.get().setActive(false);
+            couponRepository.save(coupon.get());
+        } else  {
+            couponRepository.delete(coupon.get());
+        }
     }
 
     @Override
@@ -149,14 +185,47 @@ public class CouponService implements ICouponService {
     }
 
     @Override
-    public Page<CouponResponse> getByEnterpriseId(Pageable pageable, String status) {
+    public Page<Map<String, Object>> getByEnterpriseId(Pageable pageable, String status) {
         Long id = tokenMapperImpl.getIdEnterpriseByToken();
+        Boolean isActive;
+        if (status == null) {
+            isActive = null;
+        } else {
+            isActive = Boolean.valueOf(status);
+        }
+
 
         if (id != null) {
-            return couponRepository.getCouponByEnterpriseIdAndStatus(pageable, id, Boolean.valueOf(status)).map(couponMapper::toResponse);
+            Page<CouponResponse> couponResponses = couponRepository
+                    .getCouponByEnterpriseIdAndStatus(pageable, id, Boolean.valueOf(status))
+                    .map(couponMapper::toResponse);
+
+            Page<Map<String, Object>> response = couponResponses.map(coupon -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", coupon.getId());
+                map.put("code", coupon.getCode());
+                map.put("discountType", coupon.getDiscountType());
+                map.put("discountValue", coupon.getDiscountValue());
+                map.put("useLimit", coupon.getUseLimit());
+                map.put("usedCount", coupon.getUseCount());
+                map.put("startDate", coupon.getStartDate());
+                map.put("endDate", coupon.getEndDate());
+                map.put("isActive", coupon.getIsActive());
+
+                List<String> roomCodes = couponRoomRepository
+                        .findRoomCodesByCouponId(coupon.getId().longValue());
+                if (!roomCodes.isEmpty()) {
+                    map.put("roomCode", roomCodes);
+                }
+
+                return map;
+            });
+
+            return response;
         }
         throw new AppException(ErrorType.notFound, "Enterprise not found");
     }
+
 
 
 }

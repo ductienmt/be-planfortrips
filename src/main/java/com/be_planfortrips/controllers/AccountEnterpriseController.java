@@ -2,6 +2,7 @@ package com.be_planfortrips.controllers;
 
 import com.be_planfortrips.dto.AccountEnterpriseDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
+import com.be_planfortrips.dto.response.ApiResponse;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.services.interfaces.IAccountEnterpriseService;
@@ -10,31 +11,65 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-    @RequestMapping("${api.prefix}/account-enterprises")
+@RequestMapping("${api.prefix}/account-enterprises")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AccountEnterpriseController {
 
     IAccountEnterpriseService accountEnterpriseService;
 
-    @GetMapping("all")
-    public ResponseEntity<List<AccountEnterpriseResponse>> getAllAccountEnterprises() {
-        List<AccountEnterpriseResponse> accountEnterprises = accountEnterpriseService.getAllAccountEnterprises(1, 30);
-        return new ResponseEntity<>(accountEnterprises, HttpStatus.OK);
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllAccountEnterprises(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        Page<AccountEnterpriseResponse> accountEnterprises = accountEnterpriseService.getAllAccountEnterprises(name, page, size);
+        return ResponseEntity.ok(accountEnterprises);
     }
+
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            accountEnterpriseService.uploadImage(file);
+            return ResponseEntity.ok("Upload ảnh thành công");
+        } catch (AppException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/sdt/{sdt}")
+    public ResponseEntity<AccountEnterpriseResponse> getEtpByPhoneNumber(
+            @PathVariable String sdt
+    ) {
+        AccountEnterpriseResponse response = accountEnterpriseService.getAccountEnterpriseByPhoneNumber(sdt);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<AccountEnterpriseResponse> getEtpByEmail(
+            @PathVariable("email") String email
+    ) {
+        AccountEnterpriseResponse response = accountEnterpriseService.getAccountEnterpriseByEmail(email);
+        return ResponseEntity.ok(response);
+    }
+
 
     @GetMapping("/accept")
     public ResponseEntity<List<AccountEnterpriseResponse>> getEnterpriseNeedAccept() {
-        List<AccountEnterpriseResponse> accountEnterpriseResponses = accountEnterpriseService.getAccountEnterpriseDisable();
+        List<AccountEnterpriseResponse> accountEnterpriseResponses = accountEnterpriseService.getAccountEnterpriseNeedAccept();
         return ResponseEntity.ok(accountEnterpriseResponses);
     }
 
@@ -46,7 +81,7 @@ public class AccountEnterpriseController {
 
     @PostMapping("/create")
     public ResponseEntity<AccountEnterpriseResponse> createAccountEnterprise(
-            @RequestBody @Valid  AccountEnterpriseDto accountEnterpriseDto) {
+            @RequestBody @Valid AccountEnterpriseDto accountEnterpriseDto) {
         AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.createAccountEnterprise(accountEnterpriseDto);
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.CREATED);
     }
@@ -64,7 +99,7 @@ public class AccountEnterpriseController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-      @GetMapping("/detail")
+    @GetMapping("/detail")
     public ResponseEntity<AccountEnterpriseResponse> getAccountEnterpriseDetail() {
         AccountEnterpriseResponse accountEnterpriseResponse = accountEnterpriseService.getAccountEnterpriseDetail();
         return new ResponseEntity<>(accountEnterpriseResponse, HttpStatus.OK);
@@ -73,7 +108,7 @@ public class AccountEnterpriseController {
     @PatchMapping("/stage/{id}")
     public ResponseEntity<Boolean> toggleStage(
             @PathVariable Long id
-    )  {
+    ) {
         return ResponseEntity.ok(accountEnterpriseService.toggleStage(id));
     }
 
@@ -89,6 +124,7 @@ public class AccountEnterpriseController {
             ));
         }
     }
+
     @PostMapping("validate-email")
     public ResponseEntity<?> validateEmail(@RequestParam String email) {
         try {
@@ -101,10 +137,11 @@ public class AccountEnterpriseController {
             ));
         }
     }
+
     @PostMapping("validate-phone")
     public ResponseEntity<?> validatePhone(@RequestParam String phone) {
         try {
-            if(!Utils.isValidPhoneNumber(phone)){
+            if (!Utils.isValidPhoneNumber(phone)) {
                 throw new AppException(ErrorType.phoneNotValid);
             }
             accountEnterpriseService.validatePhone(phone);
@@ -114,6 +151,54 @@ public class AccountEnterpriseController {
 //                    "error", e.getErrorType().name(),
                     "message", e.getMessage()
             ));
+        }
+    }
+
+    @PatchMapping("reset-password")
+    public ResponseEntity<?> resetPassword(@RequestParam Integer serviceType,
+                                           @RequestParam String email,
+                                           @RequestParam String phone) {
+        try {
+
+            accountEnterpriseService.resetPassword(serviceType, email, phone);
+            return ResponseEntity.ok(Map.of("message", "Làm mới mật kẩu thanh công."));
+
+        } catch (AppException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+
+    }
+
+    @GetMapping("/validate-contact")
+    public ResponseEntity<?> validateContact(
+            @RequestParam Integer serviceType,
+            @RequestParam String email,
+            @RequestParam String phone) {
+        try {
+            boolean exists = accountEnterpriseService.validateContact(serviceType, email, phone);
+            if (!exists) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Email hoặc số điện thoại không tồn tại trong loại doanh nghiệp."));
+            }
+            return ResponseEntity.ok(Map.of("message", "Email và số điện thoại hợp lệ."));
+        } catch (AppException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/verify-password")
+    public ResponseEntity<?> verifyEmail(@RequestParam("password") String pass) {
+        try {
+            this.accountEnterpriseService.verifyPassword(pass);
+
+            return ResponseEntity.ok(
+                    ApiResponse.<Void>builder()
+                            .code(HttpStatus.OK.value())
+                            .message("Xác thực mật khẩu thành công.")
+                            .build()
+            );
+        } catch (Exception e) {
+//            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message", "Xác thực mật khẩu thất bại."));
         }
     }
 

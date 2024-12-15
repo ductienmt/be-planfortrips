@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -42,8 +43,8 @@ public class RoomServiceImpl implements IRoomService {
     PageMapperImpl pageMapperImpl;
     private final HotelRepository hotelRepository;
     private final BookingHotelDetailRepository bookingHotelDetailRepository;
-    private final ImageRepository imageRepository;
     private final RoomImageRepository roomImageRepository;
+    ImageRepository imageRepository;
 
     @Override
     public Set<RoomResponse> getAllRoom() {
@@ -110,10 +111,10 @@ public class RoomServiceImpl implements IRoomService {
     }
 
     @Override
-    public Page<RoomResponse> getRoomByHotelId(Long id, Integer pageNo, Integer pageSize, String sortBy, String sortType) {
+    public Page<RoomResponse> getRoomByHotelId(Long id, LocalDate checkinDate, LocalDate checkoutDate, Integer pageNo, Integer pageSize, String sortBy, String sortType) {
         var pageable = pageMapperImpl.customPage(pageNo, pageSize, sortBy, sortType);
         
-        return this.roomRepository.findByHotelId(id, pageable).map(roomMapper::toResponse);
+        return this.roomRepository.findByHotelId(id,checkinDate,checkoutDate, pageable).map(roomMapper::toResponse);
     }
 
     @Override
@@ -154,6 +155,7 @@ public class RoomServiceImpl implements IRoomService {
             // Create Image object and set URL
             Image image = Image.builder().build();
             image.setUrl(result.get("url").toString());
+
             imageRepository.save(image);
 
             // Create RoomImage object and link it to the room
@@ -165,6 +167,7 @@ public class RoomServiceImpl implements IRoomService {
             // Add the new RoomImage to the list of images
             roomImages.add(roomImage);
             roomImageRepository.save(roomImage);
+            room.setImages(roomImages);
         }
 
         // Save the Room with updated images
@@ -214,6 +217,24 @@ public class RoomServiceImpl implements IRoomService {
         Page<Room> rooms = roomRepository.filterRoom(hotelId, isAvailable, typeOfRoom, pageable);
 
         return rooms.map(roomMapper_2::toResponse);
+    }
+
+    @Override
+    public Set<Map<String, Object>> getRoomByEnterpriseId() {
+        List<Room> rooms = roomRepository.findByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken());
+
+        Set<Map<String, Object>> response = new TreeSet<>(
+                Comparator.comparingLong(map -> (long) map.get("roomId"))
+        );
+
+        for (Room room : rooms) {
+            Map<String, Object> roomMap = new HashMap<>();
+            roomMap.put("roomId", room.getId());
+            roomMap.put("roomName", room.getRoomName());
+            response.add(roomMap);
+        }
+
+        return response;
     }
 
 

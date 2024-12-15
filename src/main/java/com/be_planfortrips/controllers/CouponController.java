@@ -20,6 +20,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("${api.prefix}/coupons")
@@ -103,7 +104,7 @@ public class CouponController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("delete/{id}")
+    @PostMapping("delete/{id}")
     public ResponseEntity<?> deleteCouponById(@PathVariable Integer id) throws Exception {
         iCouponService.deleteCouponById(id);
         return ResponseEntity.noContent().build();
@@ -130,11 +131,14 @@ public class CouponController {
     }
 
     @GetMapping("getByEnterpriseId")
-    public ResponseEntity<?> getCouponByEnterpriseId(@RequestParam(defaultValue = "0", required = false) Integer pageNo, @RequestParam(defaultValue = "10", required = false) Integer pageSize, @RequestParam(defaultValue = "true", required = false) String status,
-                                                     @RequestParam(defaultValue = "id", required = false) String sortBy, @RequestParam(defaultValue = "ASC", required = false) String sortType){
+    public ResponseEntity<?> getCouponByEnterpriseId(@RequestParam(defaultValue = "0", required = false) Integer pageNo,
+                                                     @RequestParam(defaultValue = "10", required = false) Integer pageSize,
+                                                     @RequestParam(defaultValue = "", required = false) String status,
+                                                     @RequestParam(defaultValue = "id", required = false) String sortBy,
+                                                     @RequestParam(defaultValue = "ASC", required = false) String sortType){
         try {
             var pageable = pageMapperImpl.customPage(pageNo, pageSize, sortBy, sortType);
-            Page<CouponResponse> response = iCouponService.getByEnterpriseId(pageable, status);
+            Page<Map<String, Object>> response = iCouponService.getByEnterpriseId(pageable, status);
             return ResponseEntity.ok(response);
         }catch (Exception e){
             e.printStackTrace();

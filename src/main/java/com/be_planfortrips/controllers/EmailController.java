@@ -30,11 +30,6 @@ public class EmailController {
     @PostMapping("/send")
     public ResponseEntity<String> sendOTP(@RequestParam String email, @RequestParam String content) {
         try {
-             AccountUserResponse user = userService.getUserByEmail(email);
-             if (user == null) {
-                 throw new AppException(ErrorType.notFound);
-             }
-
             String otp = otpService.generateOTP(email);
             emailService.sendOTPEmail(email, otp, content);
 

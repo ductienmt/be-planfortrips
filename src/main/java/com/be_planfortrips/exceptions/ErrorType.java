@@ -20,6 +20,7 @@ public enum ErrorType {
     phoneNotValid(803, "Số điện thoại không hợp lệ", HttpStatus.BAD_REQUEST),
     typeEnterpriseDetailNotFound(804, "TypeEnterpriseDetail không tồn tại", HttpStatus.NOT_FOUND),
     inputFieldInvalid(805, "Trường nhập không hợp lệ", HttpStatus.BAD_REQUEST),
+    exitedPlans(806, "Bạn đã có kế hoạch trong khoảng thời gian này, không thể tạo thêm.", HttpStatus.BAD_REQUEST),
 
 
     notVerified(400, "OTP không hợp lệ hoặc đã hết hạn", HttpStatus.BAD_REQUEST),
@@ -61,7 +62,9 @@ public enum ErrorType {
     TicketOrBookingHotelIsRequired(717,"Vé xe hoặc vé xe cần phải có",HttpStatus.BAD_REQUEST),
     TourIdNotFound(718,"TourId Not found",HttpStatus.NOT_FOUND),
     ScheduleIdNotFound(719, "ScheduleId Not Found",HttpStatus.NOT_FOUND),
-    SeatIdNotFound(720, "SeatId Not Found",HttpStatus.NOT_FOUND)
+    SeatIdNotFound(720, "SeatId Not Found",HttpStatus.NOT_FOUND),
+    PhoneNumberNotExist(721, "PhoneNumber Not Found", HttpStatus.NOT_FOUND),
+    EmailNotExist(722, "Email Not Found", HttpStatus.NOT_FOUND)
     ;
 
     private static String getString() {

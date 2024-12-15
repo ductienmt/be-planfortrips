@@ -20,4 +20,7 @@ public class TourClientResponse {
     Admin admin;
     List<Tag> tags;
 
+    List<Long> listUserUsed;
+
+
 }

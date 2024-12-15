@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -136,9 +137,17 @@ public class TourController {
         }
     }
 
+    @GetMapping("/available/{tourId}")
+    public ResponseEntity<?> getTourAvailable(
+            @PathVariable Integer tourId
+    ) {
+        TourDetailResponse tourDetailResponse = iTourService.getTourDetail(tourId);
+        return ResponseEntity.ok(tourDetailResponse);
+    }
 
 
-    @GetMapping("/client/")
+
+    @GetMapping("/client")
     public ResponseEntity<?> getAllTourClient() {
         List<TourClientResponse> responses = iTourService.getAllTourClient();
         return ResponseEntity.ok(responses);
@@ -151,6 +160,38 @@ public class TourController {
     ) {
         List<TourClientResponse> res = iTourService.getTourByDestination(cityDesId, cityOriginId);
         return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/destination/{cityId}")
+    public ResponseEntity<?> getTourHasDestination(
+            @PathVariable String cityId
+    ) {
+        List<Map<String, Object>> tourClientResponses = iTourService.getTourHasDestination(cityId);
+        return ResponseEntity.ok(tourClientResponses);
+    }
+
+    @GetMapping("/checkIn/{checkInId}")
+    public ResponseEntity<?> getTourHasCheckIn(
+            @PathVariable Integer checkInId
+    ) {
+        List<Map<String, Object>> tourClientResponses = iTourService.getTourHasCheckIn(checkInId);
+        return ResponseEntity.ok(tourClientResponses);
+    }
+
+    @GetMapping("/area/{areaId}")
+    public ResponseEntity<?> getTourHaveCityIn(
+            @PathVariable String areaId
+    ) {
+        List<Map<String, Object>> tourClientResponses = iTourService.getTourHaveCityIn(areaId);
+        return ResponseEntity.ok(tourClientResponses);
+    }
+
+
+
+    @GetMapping("/top1")
+    public ResponseEntity<?> getTourTop1Used() {
+        List<Map<String, Object>> response = iTourService.getTourTopUsed();
+        return ResponseEntity.ok(response);
     }
 
 

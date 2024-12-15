@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface IPlanDetailService {
     List<PlanDetail> getAllPlanDetailByPlanId(Long planId);
+
 }

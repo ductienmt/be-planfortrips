@@ -24,7 +24,9 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
     Coupon findByCodeAndStatus(@Param("code") String code,@Param("status") Boolean status);
 
     @Query("select c from Coupon c " +
-            "where (:id is null or c.accountEnterprise.accountEnterpriseId = :id) and c.isActive = :status")
+            "where (:id is null or c.accountEnterprise.accountEnterpriseId = :id) " +
+            "and (:status is null or c.isActive = :status)")
     Page<Coupon> getCouponByEnterpriseIdAndStatus(Pageable pageable, @Param("id") Long id, @Param("status") Boolean status);
+
 }
 

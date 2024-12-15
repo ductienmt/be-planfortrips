@@ -20,10 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -45,6 +42,7 @@ public class TourService implements ITourService {
     CloudinaryService cloudinaryService;
     private final ScheduleSeatRepository scheduleSeatRepository;
     RoomAmenitiesMapper roomAmenitiesMapper;
+    private final AreaRepository areaRepository;
 
     @Override
     @Transactional
@@ -275,6 +273,7 @@ public class TourService implements ITourService {
                     .departureTime(sDes.getDepartureTime()).priceForOneTicket(BigDecimal.valueOf(tour.getTotalPrice()))
                     .routeId(tourDataSql.getRoute1Id())
                     .priceForOneTicket(sDes.getPrice_for_one_seat())
+                    .code(sDes.getVehicleCode().getCode())
                     .build();
             tourDataByDate.setScheduleDes(scheduleDes);
 
@@ -327,6 +326,11 @@ public class TourService implements ITourService {
                 roomResponse.setTypeOfRoom(room.getTypeOfRoom());
                 roomResponse.setRating(room.getRating());
                 roomResponse.setAvailable(true);
+                roomResponse.setImages(
+                        room.getImages().stream()
+                                .map(roomImage -> roomImage.getImage().getUrl())
+                                .collect(Collectors.toList())
+                );
                 roomResponse.setRoomAmenities(room.getRoomAmenities().stream().map(roomAmenitiesMapper::toResponse).toList());
 
                 // Thời gian CheckIn phong nho? hon 1h so voi thoi` gian den
@@ -361,6 +365,97 @@ public class TourService implements ITourService {
                 map(this::convertTourToTourClientResponse).toList();
     }
 
+    @Override
+    public List<Map<String, Object>> getTourTopUsed() {
+        List<Tour> tours = tourRepository.getTourTop1Used();
+        List<Map<String, Object>> response = new ArrayList<>();
+        for (Tour tour : tours) {
+            Map<String, Object> tourMap = new HashMap<>();
+            tourMap.put("tourTitle", tour.getTitle());
+            tourMap.put("tourId", tour.getId());
+            tourMap.put("tourDescription", tour.getDescription());
+            tourMap.put("tourRating", tour.getRating());
+            tourMap.put("tourTags", tour.getTags().stream().map(Tag::getName).toList());
+            tourMap.put("tourImage", tour.getImages().getFirst().getUrl());
+            tourMap.put("tourDays", tour.getDay() + "N/" + tour.getNight() + "Đ");
+            tourMap.put("tourDestination", tour.getRoute().getDestinationStation().getCity().getNameCity());
+            tourMap.put("tourPeople", tour.getNumberPeople());
+            tourMap.put("tourUsed", tour.getUserUsed().toArray().length);
+            response.add(tourMap);
+        }
+        return response;
+    }
+
+    @Override
+    public List<Map<String, Object>> getTourHasDestination(String cityDesId) {
+        List<Tour> res = tourRepository.getTourHasCityDestination(cityDesId);
+        List<Map<String, Object>> response = new ArrayList<>();
+        for (Tour tour : res) {
+            Map<String, Object> tourMap = new HashMap<>();
+            tourMap.put("tourTitle", tour.getTitle());
+            tourMap.put("tourId", tour.getId());
+            tourMap.put("tourDescription", tour.getDescription());
+            tourMap.put("tourRating", tour.getRating());
+            tourMap.put("tourTags", tour.getTags().stream().map(Tag::getName).toList());
+            tourMap.put("tourImage", tour.getImages().getFirst().getUrl());
+            tourMap.put("tourDays", tour.getDay() + "N/" + tour.getNight() + "Đ");
+            tourMap.put("tourDestination", tour.getRoute().getDestinationStation().getCity().getNameCity());
+            tourMap.put("tourPeople", tour.getNumberPeople());
+            tourMap.put("tourUsed", tour.getUserUsed().toArray().length);
+            response.add(tourMap);
+        }
+        return response;
+    }
+
+    @Override
+    public List<Map<String, Object>> getTourHasCheckIn(Integer checkInId) {
+        List<Tour> res = tourRepository.getTourHasCheckIn(checkInId);
+        List<Map<String, Object>> response = new ArrayList<>();
+        for (Tour tour : res) {
+            Map<String, Object> tourMap = new HashMap<>();
+            tourMap.put("tourTitle", tour.getTitle());
+            tourMap.put("tourId", tour.getId());
+            tourMap.put("tourDescription", tour.getDescription());
+            tourMap.put("tourRating", tour.getRating());
+            tourMap.put("tourTags", tour.getTags().stream().map(Tag::getName).toList());
+            tourMap.put("tourImage", tour.getImages().getFirst().getUrl());
+            tourMap.put("tourDays", tour.getDay() + "N/" + tour.getNight() + "Đ");
+            tourMap.put("tourDestination", tour.getRoute().getDestinationStation().getCity().getNameCity());
+            tourMap.put("tourPeople", tour.getNumberPeople());
+            tourMap.put("tourUsed", tour.getUserUsed().toArray().length);
+            response.add(tourMap);
+        }
+        return response;
+    }
+
+    @Override
+    public List<Map<String, Object>> getTourHaveCityIn(String areaId) {
+        if (areaId == null) {
+            throw new AppException(ErrorType.inputFieldInvalid);
+        }
+        if (areaRepository.findById(areaId).isEmpty()) {
+            throw new AppException(ErrorType.notFound);
+        }
+        List<Tour> tours = tourRepository.getTourHaveCityIn(areaId);
+        List<Map<String, Object>> response = new ArrayList<>();
+        for (Tour tour : tours) {
+            Map<String, Object> tourMap = new HashMap<>();
+            tourMap.put("tourTitle", tour.getTitle());
+            tourMap.put("tourId", tour.getId());
+            tourMap.put("tourDescription", tour.getDescription());
+            tourMap.put("tourRating", tour.getRating());
+            tourMap.put("tourTags", tour.getTags().stream().map(Tag::getName).toList());
+            tourMap.put("tourImage", tour.getImages().getFirst().getUrl());
+            tourMap.put("tourDays", tour.getDay() + "N/" + tour.getNight() + "Đ");
+            tourMap.put("tourDestination", tour.getRoute().getDestinationStation().getCity().getNameCity());
+            tourMap.put("tourPeople", tour.getNumberPeople());
+            tourMap.put("tourUsed", tour.getUserUsed().toArray().length);
+            response.add(tourMap);
+        }
+
+        return response;
+    }
+
 
     public TourClientResponse convertTourToTourClientResponse(Tour tour) {
         TourClientResponse clientResponse = new TourClientResponse();
@@ -373,6 +468,11 @@ public class TourService implements ITourService {
         clientResponse.setTimeCreate(tour.getCreateAt());
         clientResponse.setTimeUpdate(tour.getUpdateAt());
         clientResponse.setTags(tour.getTags());
+        clientResponse.setListUserUsed(
+                tour.getUserUsed().stream()
+                        .map(user -> user.getId())  // Lấy ID của mỗi user
+                        .collect(Collectors.toList())  // Thu thập kết quả vào một danh sách
+        );
         if (!tour.getImages().isEmpty()) {
             clientResponse.setUrlImage(tour.getImages().getFirst().getUrl());
         }

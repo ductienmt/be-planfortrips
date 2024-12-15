@@ -228,6 +228,17 @@ public class ScheduleServiceImpl implements IScheduleService {
         return this.scheduleRepository.getSchedulesByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken()).stream().map(this.scheduleMapper::toResponse).toList();
     }
 
+    @Override
+    public Map<String, Object> getSeatsByScheduleId(Integer scheduleId) {
+        List<Map<String, Object>> seats = scheduleRepository.getSeatsByScheduleId(scheduleId);
+        if (seats.isEmpty()) {
+            throw new AppException(ErrorType.notFound);
+        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("seats", seats);
+        return response;
+    }
+
     private Map<String, Object> fetchSchedules(LocalDateTime time, String type, String originalLocation, String destination) {
         List<ScheduleResponse> schedules = new ArrayList<>();
         if (type.equals("departure")) {
