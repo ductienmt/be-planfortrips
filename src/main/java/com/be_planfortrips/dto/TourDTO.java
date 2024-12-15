@@ -31,7 +31,7 @@ public class TourDTO {
     @JsonProperty("car_company_id")
     Integer carCompanyId;
     @JsonProperty("checkin_id")
-    Long checkinId;
+    List<Long> checkinId;
     @JsonProperty("admin_username")
     String adminUsername;
 }
