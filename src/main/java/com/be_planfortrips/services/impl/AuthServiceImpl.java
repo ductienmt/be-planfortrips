@@ -130,6 +130,9 @@ public class AuthServiceImpl implements IAuthService {
         if (loginDto == null) {
             throw new RuntimeException("Vui lòng nhập thông tin đăng nhập");
         }
+        if (type == null) {
+            throw new RuntimeException("Vui lòng chọn loại dịch vụ");
+        }
         AccountEnterprise enterprise = enterpriseRepository.findByUsername(loginDto.getUserName());
         if (enterprise == null) {
             throw new RuntimeException("Tài khoản không tồn tại trong hệ thống");

@@ -238,5 +238,8 @@ public class API_Provider {
             "/api/v1/account-enterprises/upload",
             "/api/v1/account-enterprises/verify-password",
             "/api/v1/rooms/getRoomByEnterpriseId",
+            "/api/v1/coupons/searchEnterprise",
+            "/api/v1/hotels/changeStatus",
+            "/api/v1/hotels/searchEnterprise",
     };
 }
