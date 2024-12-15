@@ -13,4 +13,5 @@ public interface ICityService {
     List<Map<String, Object>> getFavoriteCity();
     void uploadImage(MultipartFile file, String city_id);
     List<String> findCityByName(String name);
+    List<Map<String, Object>> getCitiesPopular();
 }

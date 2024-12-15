@@ -189,8 +189,8 @@ public class TourController {
 
 
     @GetMapping("/top1")
-    public ResponseEntity<TourClientResponse> getTourTop1Used() {
-        TourClientResponse response = iTourService.getTourTopUsed();
+    public ResponseEntity<?> getTourTop1Used() {
+        List<Map<String, Object>> response = iTourService.getTourTopUsed();
         return ResponseEntity.ok(response);
     }
 

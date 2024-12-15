@@ -120,6 +120,11 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getRoomByHotelId(id,checkinDate, checkoutDate, pageNo, pageSize, sortBy, sortType));
     }
 
+    @GetMapping("/getRoomByEnterpriseId")
+    public ResponseEntity<?> getRoomByEnterpriseId() {
+        return ResponseEntity.ok(roomService.getRoomByEnterpriseId());
+    }
+
     @GetMapping("/filter")
     public ResponseEntity<?> filterRoom(
             @RequestParam Integer hotelId, @RequestParam(required = false) Integer status, @RequestParam(required = false) String roomType,

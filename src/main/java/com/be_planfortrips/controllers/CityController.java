@@ -80,4 +80,14 @@ public class CityController {
         }
     }
 
+    @GetMapping("getPopularCity")
+    public ResponseEntity<?> getPopularCity(){
+        try {
+            return ResponseEntity.ok(iCityService.getCitiesPopular());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

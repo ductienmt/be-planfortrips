@@ -35,6 +35,7 @@ public interface IRoomService {
     Page<RoomResponseEnterprise> getRoomByStatus(Long hotelId, Integer status, Integer pageNo, Integer pageSize, String sortBy, String sortType);
 
     Page<RoomResponseEnterprise> filterRoom(Long hotelId, Integer status, String roomType, Integer pageNo, Integer pageSize, String sortBy, String sortType);
+    Set<Map<String, Object>> getRoomByEnterpriseId();
 
 
 

@@ -50,4 +50,51 @@ public interface CityRepository extends JpaRepository<City, String> {
             "ORDER BY total_count DESC\n" +
             "LIMIT 10;\n")
     List<Map<String, Object>> getFavoriteCity();
+
+    @Query(nativeQuery = true, value = "WITH CityTourCount AS (\n" +
+            "    SELECT\n" +
+            "        cities.id AS city_id,\n" +
+            "        cities.name_city AS city_name,\n" +
+            "        cities.image_id AS city_image_id,\n" +
+            "        COUNT(DISTINCT tickets.user_id) AS people_count\n" +
+            "    FROM\n" +
+            "        tickets\n" +
+            "            JOIN schedules ON tickets.schedule_id = schedules.id\n" +
+            "            JOIN routes ON schedules.route_id = routes.id\n" +
+            "            JOIN stations ON routes.destination_station_id = stations.id\n" +
+            "            JOIN cities ON stations.city_id = cities.id\n" +
+            "    WHERE tickets.status = 'Complete'\n" +
+            "    GROUP BY cities.id\n" +
+            "),\n" +
+            "     CityHotelCount AS (\n" +
+            "         SELECT\n" +
+            "             cities.id AS city_id,\n" +
+            "             cities.name_city AS city_name,\n" +
+            "             cities.image_id AS city_image_id,\n" +
+            "             COUNT(DISTINCT booking_hotels.user_id) AS people_count\n" +
+            "         FROM\n" +
+            "             booking_hotels\n" +
+            "                 JOIN booking_hotels_details ON booking_hotels.id = booking_hotels_details.booking_id\n" +
+            "                 JOIN rooms ON booking_hotels_details.room_id = rooms.id\n" +
+            "                 JOIN hotels ON rooms.hotel_id = hotels.id\n" +
+            "                 JOIN account_enterprises ON hotels.enterprise_id = account_enterprises.id\n" +
+            "                 JOIN cities ON account_enterprises.city_id = cities.id\n" +
+            "         WHERE booking_hotels.status = 'Complete'\n" +
+            "         GROUP BY cities.id\n" +
+            "     )\n" +
+            "SELECT\n" +
+            "    combined.city_id,\n" +
+            "    combined.city_name,\n" +
+            "    i.url AS city_image_url,\n" +
+            "    COALESCE(SUM(combined.people_count), 0) AS total_people_count\n" +
+            "FROM (\n" +
+            "         SELECT city_id, city_name, city_image_id, people_count FROM CityTourCount\n" +
+            "         UNION ALL\n" +
+            "         SELECT city_id, city_name, city_image_id, people_count FROM CityHotelCount\n" +
+            "     ) AS combined\n" +
+            "         JOIN images i ON i.id = combined.city_image_id\n" +
+            "GROUP BY combined.city_id, combined.city_name, i.url\n" +
+            "ORDER BY total_people_count DESC\n" +
+            "LIMIT 3;")
+    List<Map<String, Object>> getTop3CitiesPopular();
 }

@@ -64,6 +64,9 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             Pageable pageable
     );
 
+    @Query("SELECT r FROM Room r WHERE r.hotel.accountEnterprise.accountEnterpriseId = :enterpriseId")
+    List<Room> findByEnterpriseId(@Param("enterpriseId") Long etpId);
+
 
     @Override
     boolean existsById(Long roomId);

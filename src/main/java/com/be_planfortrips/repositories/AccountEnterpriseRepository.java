@@ -40,8 +40,7 @@ public interface AccountEnterpriseRepository extends JpaRepository<AccountEnterp
 
     @Query("SELECT a FROM AccountEnterprise a WHERE a.typeEnterpriseDetail.id = :serviceType AND a.status = true")
     List<AccountEnterprise> findActiveByServiceType(@Param("serviceType") Integer serviceType);
-    @Query(value = "SELECT * FROM account_enterprises e WHERE unaccent(e.enterprise_name) LIKE unaccent(CONCAT('%', :name, '%'))", nativeQuery = true)
-    Page<AccountEnterprise> findByEnterpriseNameStartingWithIgnoreCase(@Param("name") String name, Pageable pageable);
+    Page<AccountEnterprise> findByEnterpriseNameContainingIgnoreCase(String name, Pageable pageable);
 
     Optional<AccountEnterprise> getAccountEnterpriseByPhoneNumber(String phoneNumber);
 

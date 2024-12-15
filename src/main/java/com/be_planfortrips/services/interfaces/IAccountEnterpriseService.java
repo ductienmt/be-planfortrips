@@ -3,6 +3,7 @@ package com.be_planfortrips.services.interfaces;
 import com.be_planfortrips.dto.AccountEnterpriseDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -40,12 +41,14 @@ public interface IAccountEnterpriseService {
 
     boolean validateContact(Integer serviceType, String email, String phone);
 
-
     List<AccountEnterpriseResponse> getAccountEnterpriseNeedAccept();
-
 
     AccountEnterpriseResponse getAccountEnterpriseByPhoneNumber(String phoneNumber);
 
     AccountEnterpriseResponse getAccountEnterpriseByEmail(String email);
+
+    void uploadImage(MultipartFile file);
+
+    void verifyPassword(String password);
 
 }

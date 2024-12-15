@@ -1,17 +1,15 @@
 package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.AccountEnterpriseDto;
-import com.be_planfortrips.dto.TypeEnterpriseDetailDto;
-import com.be_planfortrips.dto.UserDto;
 import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
 import com.be_planfortrips.entity.AccountEnterprise;
-import com.be_planfortrips.entity.User;
+import com.be_planfortrips.entity.Image;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
-import com.be_planfortrips.mappers.TokenMapper;
 import com.be_planfortrips.mappers.impl.AccountEnterpriseMapper;
 import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
+import com.be_planfortrips.repositories.ImageRepository;
 import com.be_planfortrips.repositories.RoleRepository;
 import com.be_planfortrips.services.interfaces.IAccountEnterpriseService;
 import com.be_planfortrips.services.interfaces.IEmailService;
@@ -23,13 +21,17 @@ import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.Normalizer;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
+
 import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RequiredArgsConstructor
@@ -45,15 +47,17 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     RoleRepository roleRepository;
     TypeEnterpriseDetailServiceImpl typeEnterpriseDetailService;
     TokenMapperImpl tokenMapper;
+    private final TokenMapperImpl tokenMapperImpl;
+    private final CloudinaryService cloudinaryService;
+    private final ImageRepository imageRepository;
 
     @Override
     public Page<AccountEnterpriseResponse> getAllAccountEnterprises(String name, int page, int size) {
 
         Page<AccountEnterprise> accountEnterprisesPage;
         if (name != null && !name.isEmpty()) {
-            Pageable pageable = PageRequest.of(page, size, Sort.by("create_At").descending());
-            String normalizedSearchTerm = normalizeString(name.toLowerCase());  // Chuẩn hóa và chuyển về chữ thường
-            accountEnterprisesPage = accountEnterpriseRepository.findByEnterpriseNameStartingWithIgnoreCase(normalizedSearchTerm, pageable);
+            Pageable pageable = PageRequest.of(page, size, Sort.by("createAt").descending());
+            accountEnterprisesPage = accountEnterpriseRepository.findByEnterpriseNameContainingIgnoreCase(name, pageable);
         } else {
             Pageable pageable = PageRequest.of(page, size, Sort.by("createAt").descending());
             accountEnterprisesPage = accountEnterpriseRepository.findAll(pageable);
@@ -71,7 +75,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
     public AccountEnterpriseResponse getAccountEnterpriseById(Long id) {
         Optional<AccountEnterprise> accountEnterprise = accountEnterpriseRepository.findById(id);
         System.out.println(accountEnterprise.isEmpty());
-        return accountEnterpriseMapper.toResponse(null);
+        return accountEnterpriseMapper.toResponse(accountEnterprise.get());
     }
 
     @Override
@@ -257,6 +261,55 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
                 () -> new AppException(ErrorType.EmailNotExist)
         );
         return accountEnterpriseMapper.toResponse(accountEnterprise);
+    }
+
+    @Override
+    @Transactional
+    public void uploadImage(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Vui lòng chọn ảnh hợp lệ");
+        }
+
+        Optional<AccountEnterprise> userOptional = accountEnterpriseRepository.findById(tokenMapperImpl.getIdEnterpriseByToken());
+        if (userOptional.isEmpty()) {
+            throw new AppException(ErrorType.notFound, "Người dùng không tồn tại");
+        }
+
+        AccountEnterprise user = userOptional.get();
+
+        Utils.checkSize(file);
+
+        String avatarUrl;
+        try {
+            // Nếu user đã có ảnh, xóa ảnh cũ khỏi Cloudinary và csdl
+            if (user.getImage() != null) {
+                Image currentImage = user.getImage();
+                String publicId = cloudinaryService.getPublicIdFromUrl(currentImage.getUrl());
+                cloudinaryService.deleteFile(publicId);
+                imageRepository.delete(currentImage);
+            }
+
+            Map<String, Object> uploadResult = cloudinaryService.uploadFile(file, "avatars_enterprise");
+            avatarUrl = uploadResult.get("url").toString();
+
+            Image newImage = new Image();
+            newImage.setUrl(avatarUrl);
+            imageRepository.saveAndFlush(newImage);
+
+            user.setImage(newImage);
+            accountEnterpriseRepository.saveAndFlush(user);
+
+        } catch (IOException e) {
+            throw new AppException(ErrorType.internalServerError, "Lỗi khi tải ảnh lên");
+        }
+    }
+
+    @Override
+    public void verifyPassword(String password) {
+        Optional<AccountEnterprise> user = this.accountEnterpriseRepository.findById(tokenMapperImpl.getIdEnterpriseByToken());
+        if (!passwordEncoder.matches(password, user.get().getPassword())) {
+            throw new AppException(ErrorType.notMatchPassword);
+        }
     }
 
 

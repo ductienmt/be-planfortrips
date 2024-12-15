@@ -20,6 +20,7 @@ public class AccountEnterpriseResponse {
     String email;
     String address;
     String taxCode;
+    String representative;
     String typeEnterpriseDetailName;
     LocalDateTime createAt;
     String cityName;

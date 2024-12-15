@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Map;
+
 public interface ICouponService {
     CouponResponse createCoupon(CouponDto CouponDto) throws Exception;
     CouponResponse createCouponRoom(CouponDto CouponDto, Long roomId) throws Exception;
@@ -14,6 +16,6 @@ public interface ICouponService {
     CouponResponse getByCouponId(Integer id) throws Exception;
     void deleteCouponById(Integer id);
     CouponResponse getByCouponCode(String code, String status);
-    Page<CouponResponse> getByEnterpriseId(Pageable pageable, String status);
+    Page<Map<String, Object>> getByEnterpriseId(Pageable pageable, String status);
 }
 
