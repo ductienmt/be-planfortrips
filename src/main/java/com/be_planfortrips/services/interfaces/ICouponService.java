@@ -17,5 +17,6 @@ public interface ICouponService {
     void deleteCouponById(Integer id);
     CouponResponse getByCouponCode(String code, String status);
     Page<Map<String, Object>> getByEnterpriseId(Pageable pageable, String status);
+    Page<Map<String, Object>> searchEnterprise(String keyword, String status, String discountType, Pageable pageable);
 }
 

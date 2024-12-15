@@ -40,6 +40,9 @@ public class Hotel extends BaseEntity{
     @Column(name = "rating")
     int rating;
 
+    @Column(name = "status")
+    boolean status;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "hotel_images",
             joinColumns = @JoinColumn(name = "hotel_id"),
@@ -65,4 +68,8 @@ public class Hotel extends BaseEntity{
 //            inverseJoinColumns = @JoinColumn(name = "user_id")
 //    )
 //    List<User> usersUsed;
+
+    public boolean getStatus() {
+        return this.status;
+    }
 }

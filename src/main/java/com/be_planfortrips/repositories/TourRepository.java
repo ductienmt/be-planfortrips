@@ -129,8 +129,11 @@ public interface TourRepository extends JpaRepository<Tour,Integer> {
             "where c.id = :cityId")
     List<Tour> getTourHasCityDestination(@Param("cityId") String cityId);
 
-//    @Query("select t from Tour t where t.checkin.id = :checkInId")
-//    List<Tour> getTourHasCheckIn(@Param("checkInId") Integer checkInId);
+    @Query(value = "select * from tours\n" +
+            "join tour_checkins on tours.id = tour_checkins.tour_id\n" +
+            "and tour_checkins.checkin_id = 553", nativeQuery = true)
+    List<Tour> getTourHasCheckIn(@Param("checkInId") Integer checkInId);
+
 
     @Query("select t from Tour t join t.route r on t.route.id = r.id " +
             "join r.destinationStation s on r.destinationStation.id = s.id " +

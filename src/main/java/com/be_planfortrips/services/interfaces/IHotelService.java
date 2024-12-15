@@ -6,6 +6,7 @@ import com.be_planfortrips.dto.response.HotelResponses.AvailableHotels;
 import com.be_planfortrips.dto.response.RoomResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
@@ -30,5 +31,7 @@ public interface IHotelService {
     List<HotelResponse> getByRouteId(String routeId);
     Page<HotelResponse> findHotelAvailable(PageRequest request, String keyword, LocalDateTime dateTime, Long days);
     List<Map<String, Object>> getHotelsSamePrice(double price, String destination);
+    void changeStatus(Long id);
+    Page<Map<String, Object>> searchEnterprise(String keyword, Pageable pageable);
 }
 

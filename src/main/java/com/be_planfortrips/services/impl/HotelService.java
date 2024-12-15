@@ -1,6 +1,7 @@
 package com.be_planfortrips.services.impl;
 
 import com.be_planfortrips.dto.HotelDto;
+import com.be_planfortrips.dto.response.BookingCustomer;
 import com.be_planfortrips.dto.response.HotelResponses.AvailableHotels;
 import com.be_planfortrips.dto.response.RoomResponse;
 import com.be_planfortrips.entity.*;
@@ -21,7 +22,9 @@ import lombok.experimental.FieldDefaults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,6 +58,7 @@ public class HotelService implements IHotelService {
     CloudinaryService cloudinaryService;
     RouteRepository routeRepository;
     private final TokenMapperImpl tokenMapperImpl;
+    private final BookingHotelServiceImpl bookingHotelServiceImpl;
 
     @Override
     @Transactional
@@ -114,7 +118,16 @@ public class HotelService implements IHotelService {
     @Transactional
     public void deleteHotelById(Long id) {
         Optional<Hotel> orderOptional = hotelRepository.findById(id);
-        orderOptional.ifPresent(hotelRepository::delete);
+        if (orderOptional.isEmpty()) {
+            throw new AppException(ErrorType.notFound);
+        }
+        List<BookingCustomer> bookingCustomers = bookingHotelServiceImpl.findCustomersByEnterpriseId("all");
+        if (bookingCustomers.isEmpty()){
+            orderOptional.ifPresent(hotelRepository::delete);
+        }
+        Hotel hotel = orderOptional.get();
+        hotel.setStatus(false);
+        hotelRepository.save(hotel);
     }
 
     @Override
@@ -248,7 +261,8 @@ public class HotelService implements IHotelService {
             hotelResponse.put("hotelPhoneNumber", hotel.getPhoneNumber());
             hotelResponse.put("rating", hotel.getRating());
             hotelResponse.put("hotelImages", hotel.getImages());
-            hotelResponse.put("hotelStatus", null);
+            hotelResponse.put("hotelDescription", hotel.getDescription());
+            hotelResponse.put("hotelStatus", hotel.getStatus());
             listHotelResponse.add(hotelResponse);
         }
         return listHotelResponse;
@@ -325,4 +339,36 @@ public class HotelService implements IHotelService {
 
         return new ArrayList<>(hotelMap.values());
     }
+
+    @Override
+    public void changeStatus(Long id) {
+        Hotel hotel = hotelRepository.findById(id).orElseThrow(
+                () -> new AppException(ErrorType.notFound));
+        hotel.setStatus(!hotel.getStatus());
+        hotelRepository.save(hotel);
+    }
+
+    @Override
+    public Page<Map<String, Object>> searchEnterprise(String keyword, Pageable pageable) {
+        Long enterpriseId = tokenMapperImpl.getIdEnterpriseByToken();
+
+        Page<Hotel> hotels = hotelRepository.searchEnterprise(keyword, enterpriseId, pageable);
+
+        List<Map<String, Object>> listHotelResponse = new ArrayList<>();
+        for (Hotel hotel : hotels) {
+            Map<String, Object> hotelResponse = new HashMap<>();
+            hotelResponse.put("hotelId", hotel.getId());
+            hotelResponse.put("hotelName", hotel.getName());
+            hotelResponse.put("hotelAddress", hotel.getAddress());
+            hotelResponse.put("hotelPhoneNumber", hotel.getPhoneNumber());
+            hotelResponse.put("rating", hotel.getRating());
+            hotelResponse.put("hotelImages", hotel.getImages());
+            hotelResponse.put("hotelDescription", hotel.getDescription());
+            hotelResponse.put("hotelStatus", hotel.getStatus());
+            listHotelResponse.add(hotelResponse);
+        }
+
+        return new PageImpl<>(listHotelResponse, pageable, hotels.getTotalElements());
+    }
+
 }
