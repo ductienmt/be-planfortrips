@@ -56,9 +56,8 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
 
         Page<AccountEnterprise> accountEnterprisesPage;
         if (name != null && !name.isEmpty()) {
-            Pageable pageable = PageRequest.of(page, size, Sort.by("create_At").descending());
-            String normalizedSearchTerm = normalizeString(name.toLowerCase());  // Chuẩn hóa và chuyển về chữ thường
-            accountEnterprisesPage = accountEnterpriseRepository.findByEnterpriseNameStartingWithIgnoreCase(normalizedSearchTerm, pageable);
+            Pageable pageable = PageRequest.of(page, size, Sort.by("createAt").descending());
+            accountEnterprisesPage = accountEnterpriseRepository.findByEnterpriseNameContainingIgnoreCase(name, pageable);
         } else {
             Pageable pageable = PageRequest.of(page, size, Sort.by("createAt").descending());
             accountEnterprisesPage = accountEnterpriseRepository.findAll(pageable);
