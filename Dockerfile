@@ -11,7 +11,7 @@ WORKDIR /app
 RUN mvn clean package -DskipTests
 
 # Stage 2: Run the application
-FROM openjdk:21.0.1-jdk-slim
+FROM eclipse-temurin:21-jre-slim
 
 # Copy the JAR file from the previous stage
 COPY --from=build /app/target/*.jar app.jar
