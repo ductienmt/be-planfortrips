@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -40,8 +41,9 @@ public class ScheduleServiceImpl implements IScheduleService {
 
     @Override
     public List<ScheduleResponse> getAllSchedule() {
-        return scheduleRepository.findAll().
-                stream().map(scheduleMapper::toResponse).toList();
+        try (Stream<Schedule> schedules = scheduleRepository.findAllSchedulesAsStream()) {
+            return schedules.map(scheduleMapper::toResponse).toList();
+        }
     }
 
     @Override
