@@ -1,12 +1,12 @@
 spring:
   datasource:
     # dữ liệu demo thì dùng cái này nha, t insert kha khá dữ liệu
-    url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
+#    url: jdbc:postgresql://autorack.proxy.rlwy.net:22714/railway
+#    username: postgres
+#    password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
+    url: jdbc:postgresql://localhost:5432/datn
     username: postgres
-    password: TmLNwENGlfiUstybmRzfRUQimmPJiyJq
-    #    url: jdbc:postgresql://localhost:5432/datn
-    #    username: postgres
-    #    password: 123
+    password: 123
     #    url: jdbc:postgresql://localhost:5432/Planfortrips
     #    username: admin
     #    password: admin
