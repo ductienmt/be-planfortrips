@@ -15,6 +15,7 @@ import java.util.Map;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class PlanResponseDetail {
     Long hotel_id;
+    Long etp_hotel_id;
     String hotel_name;
     List<Map<String, Object>> rooms;
 
