@@ -37,4 +37,7 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
     Page<Coupon> searchEnterprise(@Param("keyword") String keyword, @Param("status") Boolean status,
                                   @Param("discountType") DiscountType discountType, @Param("enterpriseId") Long id,
                                   Pageable pageable);
+
+    @Query("select count(c) from Coupon c where c.accountEnterprise.accountEnterpriseId = :enterpriseId")
+    Integer countByEnterpriseId(@Param("enterpriseId") Long enterpriseId);
 }

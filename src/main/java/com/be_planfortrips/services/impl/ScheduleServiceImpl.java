@@ -226,8 +226,24 @@ public class ScheduleServiceImpl implements IScheduleService {
     }
 
     @Override
-    public List<ScheduleResponse> getScheduleByEnterpriseId() {
-        return this.scheduleRepository.getSchedulesByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken()).stream().map(this.scheduleMapper::toResponse).toList();
+    public List<Map<String, Object>> getScheduleByEnterpriseId() {
+        List<Schedule> schedules = scheduleRepository.getSchedulesByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken());
+        schedules.sort(Comparator.comparing(Schedule::getDepartureTime));
+
+        List<Map<String, Object>> response = new ArrayList<>();
+        for (Schedule schedule : schedules) {
+            Map<String, Object> scheduleMap = new HashMap<>();
+            scheduleMap.put("scheduleId", schedule.getId());
+            scheduleMap.put("vehicleCode", schedule.getVehicleCode().getCode());
+            scheduleMap.put("routeId", schedule.getRoute().getId());
+            scheduleMap.put("departureTime", schedule.getDepartureTime());
+            scheduleMap.put("arrivalTime", schedule.getDepartureTime());
+            scheduleMap.put("priceForOneTicket", schedule.getPrice_for_one_seat());
+            scheduleMap.put("departureStation", schedule.getRoute().getDestinationStation().getName());
+            scheduleMap.put("arrivalStation", schedule.getRoute().getOriginStation().getName());
+            response.add(scheduleMap);
+        }
+        return response;
     }
 
     @Override

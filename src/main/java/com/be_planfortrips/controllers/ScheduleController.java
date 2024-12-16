@@ -160,7 +160,7 @@ public class ScheduleController {
     @GetMapping("getByEnterpriseId")
     public ResponseEntity<?> getByEnterpriseId(){
         try {
-            return ResponseEntity.ok(ApiResponse.<List<ScheduleResponse>>builder()
+            return ResponseEntity.ok(ApiResponse.<List<Map<String, Object>>>builder()
                     .code(HttpStatus.OK.value())
                     .data(scheduleService.getScheduleByEnterpriseId())
                     .message("")
