@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
     @Query("select s from Schedule s " +
@@ -101,4 +102,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
             "WHERE\n" +
             "    ss.schedule_id = :scheduleId;")
     List<Map<String, Object>> getSeatsByScheduleId(@Param("scheduleId") Integer scheduleId);
+    @Query("SELECT s FROM Schedule s")
+    Stream<Schedule> findAllSchedulesAsStream();
+
 }
