@@ -95,22 +95,22 @@ public class PlanServiceImpl implements IPlanService {
         return plans.stream()
                 .sorted(Comparator.comparingLong(Plan::getId).reversed())
                 .map(
-                plan -> {
-                    PlanResponse planResponse = new PlanResponse();
-                    planResponse.setPlan_id(Long.valueOf(plan.getId()));
-                    planResponse.setPlan_name(plan.getPlanName());
-                    planResponse.setBudget(plan.getBudget());
-                    planResponse.setNumberPeople(plan.getNumberPeople());
-                    planResponse.setStatus(plan.getStatus());
-                    planResponse.setStart_date(plan.getStartDate());
-                    planResponse.setEnd_date(plan.getEndDate());
-                    planResponse.setDestination(plan.getDestination());
-                    planResponse.setOrigin_location(plan.getOriginLocation());
-                    planResponse.setTotal_price(plan.getTotalPrice());
-                    planResponse.setDiscount_price(plan.getDiscountPrice());
-                    planResponse.setFinal_price(plan.getFinalPrice());
-                    return planResponse;
-                }).collect(Collectors.toList());
+                        plan -> {
+                            PlanResponse planResponse = new PlanResponse();
+                            planResponse.setPlan_id(Long.valueOf(plan.getId()));
+                            planResponse.setPlan_name(plan.getPlanName());
+                            planResponse.setBudget(plan.getBudget());
+                            planResponse.setNumberPeople(plan.getNumberPeople());
+                            planResponse.setStatus(plan.getStatus());
+                            planResponse.setStart_date(plan.getStartDate());
+                            planResponse.setEnd_date(plan.getEndDate());
+                            planResponse.setDestination(plan.getDestination());
+                            planResponse.setOrigin_location(plan.getOriginLocation());
+                            planResponse.setTotal_price(plan.getTotalPrice());
+                            planResponse.setDiscount_price(plan.getDiscountPrice());
+                            planResponse.setFinal_price(plan.getFinalPrice());
+                            return planResponse;
+                        }).collect(Collectors.toList());
     }
 
     @Override
@@ -118,67 +118,65 @@ public class PlanServiceImpl implements IPlanService {
         List<PlanDetail> planDetails = planDetailService.getAllPlanDetailByPlanId(id);
         PlanResponseDetail planResponseDetail = new PlanResponseDetail();
         List<CheckinResponse> checkinList = new ArrayList<>();
-        planDetails.stream().map(
-                planDetail -> {
-                    String nameType = planDetail.getTypeEde().getName().trim();
-                    if (nameType.equals("Khách sạn") || nameType.equals("Homestay") || nameType.equals("Resort")) {
-                        BookingHotel bookingHotel = null;
-                        try {
-                            bookingHotel = bookingHotelRepository.findById(Long.valueOf(planDetail.getTicketId())).orElseThrow(() -> new AppException(ErrorType.notFound, "Lỗi lấy thông tin booking hotel"));
-                        } catch (Exception e) {
-                            log.error("Lỗi lấy thông tin booking hotel: {}", e.getMessage());
-                        }
-                        planResponseDetail.setHotel_id(bookingHotel.getBookingHotelId());
-                        try {
-                            planResponseDetail.setHotel_name(hotelService.getByHotelId(bookingHotel.getBookingHotelId()).getName());
-                        } catch (Exception e) {
-                            log.error("Lỗi set info hotel: {}", e.getMessage());
-                            throw new RuntimeException("Lỗi lấy thông tin plan");
-                        }
-                        List<Map<String, Object>> rooms = new ArrayList<>();
-                        for (BookingHotelDetail bookingHotelDetail : bookingHotel.getBookingHotelDetails()) {
-                            Map<String, Object> room = new HashMap<>();
-                            room.put("room_id", bookingHotelDetail.getRoom().getId());
-                            room.put("room_name", bookingHotelDetail.getRoom().getRoomName());
-                            room.put("room_price", bookingHotelDetail.getRoom().getPrice());
-                            room.put("status", bookingHotelDetail.getStatus());
-                            rooms.add(room);
-                        }
+
+        for (PlanDetail planDetail : planDetails) {
+            String nameType = planDetail.getTypeEde().getName().trim();
+            try {
+                if (nameType.equals("Khách sạn") || nameType.equals("Homestay") || nameType.equals("Resort")) {
+                    BookingHotel bookingHotel = bookingHotelRepository.findById(Long.valueOf(planDetail.getTicketId()))
+                            .orElseThrow(() -> new AppException(ErrorType.notFound, "Lỗi lấy thông tin booking hotel"));
+                    planResponseDetail.setHotel_id(bookingHotel.getBookingHotelId());
+                    planResponseDetail.setHotel_name(hotelService.getByHotelId(bookingHotel.getBookingHotelId()).getName());
+
+                    List<Map<String, Object>> rooms = new ArrayList<>();
+                    for (BookingHotelDetail bookingHotelDetail : bookingHotel.getBookingHotelDetails()) {
+                        Map<String, Object> room = new HashMap<>();
+                        room.put("room_id", bookingHotelDetail.getRoom().getId());
+                        room.put("room_name", bookingHotelDetail.getRoom().getRoomName());
+                        room.put("room_price", bookingHotelDetail.getRoom().getPrice());
+                        room.put("status", bookingHotelDetail.getStatus());
+                        rooms.add(room);
                     }
-                    if (nameType.equals("Xe khách")) {
-                        Ticket ticket = null;
-                        try {
-                            ticket = ticketRepository.findById(planDetail.getTicketId()).orElseThrow(() -> new AppException(ErrorType.notFound, "Lỗi lấy thông tin ticket"));
-                        } catch (Exception e) {
-                            log.error("Lỗi lấy thông tin ticket: {}", e.getMessage());
-                        }
+                    planResponseDetail.setRooms(rooms);
+                } else if (nameType.equals("Xe khách")) {
+                    Ticket ticket = ticketRepository.findById(planDetail.getTicketId())
+                            .orElseThrow(() -> new AppException(ErrorType.notFound, "Lỗi lấy thông tin ticket"));
+                    planResponseDetail.setStatus_transport(ticket.getStatus());
+                    planResponseDetail.setTransport_price(ticket.getTotalPrice());
 
-                        planResponseDetail.setStatus_transport(ticket.getStatus());
-                        planResponseDetail.setTransport_price(ticket.getTotalPrice());
+                    Schedule schedule = scheduleRepository.findById(ticket.getSchedule().getId())
+                            .orElseThrow(() -> new AppException(ErrorType.notFound, "Lỗi lấy thông tin schedule"));
 
-                        Schedule schedule = scheduleRepository.findById(ticket.getSchedule().getId()).orElseThrow(() -> new AppException(ErrorType.notFound, "Lỗi lấy thông tin schedule"));
+                    Map<String, Object> schedule_transport = new HashMap<>();
+                    schedule_transport.put("schedule_id", schedule.getId());
+                    schedule_transport.put("schedule_departure_time", schedule.getDepartureTime());
+                    schedule_transport.put("schedule_arrival_time", schedule.getArrivalTime());
+                    schedule_transport.put("schedule_price_for_one_seat", schedule.getPrice_for_one_seat());
+                    schedule_transport.put("schedule_seat", ticket.getSeats());
 
-                        Map<String, Object> schedule_transport = new HashMap<>();
-                        schedule_transport.put("schedule_id", schedule.getId());
-                        schedule_transport.put("schedule_departure_time", schedule.getDepartureTime());
-                        schedule_transport.put("schedule_arrival_time", schedule.getArrivalTime());
-                        schedule_transport.put("schedule_price_for_one_seat", schedule.getPrice_for_one_seat());
-                        schedule_transport.put("schedule_seat", ticket.getSeats());
+                    planResponseDetail.setSchedule_transport(schedule_transport);
 
-                        Map<String, Object> routes = new HashMap<>();
-                        routes.put("originalLocation", schedule.getRoute().getOriginStation());
-                        routes.put("destination", schedule.getRoute().getDestinationStation());
+                    Map<String, Object> routes = new HashMap<>();
+                    routes.put("originalLocation", schedule.getRoute().getOriginStation());
+                    routes.put("destination", schedule.getRoute().getDestinationStation());
 
-                        Map<String, Object> vehicle = new HashMap<>();
-                        vehicle.put("vehicle_name", schedule.getVehicleCode().getCarCompany().getName());
-                        vehicle.put("vehicle_type", schedule.getVehicleCode().getTypeVehicle());
-                        vehicle.put("vehicle_license_plate", schedule.getVehicleCode().getPlateNumber());
-                        vehicle.put("vehicle_driver_name", schedule.getVehicleCode().getDriverName());
-                        vehicle.put("vehicle_driver_phone", schedule.getVehicleCode().getDriverPhone());
-                    }
-                    return planDetail;
+                    planResponseDetail.setRoutes(routes);
+
+                    Map<String, Object> vehicle = new HashMap<>();
+                    vehicle.put("vehicle_name", schedule.getVehicleCode().getCarCompany().getName());
+                    vehicle.put("vehicle_type", schedule.getVehicleCode().getTypeVehicle());
+                    vehicle.put("vehicle_license_plate", schedule.getVehicleCode().getPlateNumber());
+                    vehicle.put("vehicle_driver_name", schedule.getVehicleCode().getDriverName());
+                    vehicle.put("vehicle_driver_phone", schedule.getVehicleCode().getDriverPhone());
+                    vehicle.put("car_company_id", schedule.getVehicleCode().getCarCompany().getId());
+
+                    planResponseDetail.setVehicle(vehicle);
                 }
-        ).collect(Collectors.toList());
+            } catch (Exception e) {
+                log.error("Error processing plan detail: {}", e.getMessage());
+                throw new RuntimeException("Error processing plan detail", e);
+            }
+        }
         return planResponseDetail;
     }
 

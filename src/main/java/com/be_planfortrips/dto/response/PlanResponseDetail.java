@@ -21,7 +21,6 @@ public class PlanResponseDetail {
     BigDecimal transport_price;
     Status status_transport;
     Map<String, Object> schedule_transport;
-//    List<String> seats;
 
     Map<String, Object> routes;
 
