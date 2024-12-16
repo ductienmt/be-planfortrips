@@ -18,4 +18,5 @@ public class FeedbackResponse {
     String userName;
     String typeEnterpriseName;
     String createdAt;
+
 }

@@ -2,10 +2,7 @@ package com.be_planfortrips.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Getter
-@Setter
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PlanDto {
     String planName;
@@ -32,4 +29,6 @@ public class PlanDto {
     BigDecimal discountPrice;
     BigDecimal finalPrice;
     List<PlanDetailDto> planDetails;
+
+
 }

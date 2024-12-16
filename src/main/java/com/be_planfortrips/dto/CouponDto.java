@@ -3,11 +3,13 @@ package com.be_planfortrips.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
+@Builder
 public class CouponDto {
     @JsonProperty("code")
     @NotBlank(message = "code is required")
