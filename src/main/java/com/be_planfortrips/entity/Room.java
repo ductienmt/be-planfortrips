@@ -50,9 +50,11 @@ public class Room {
     boolean isAvailable;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @JsonManagedReference
     List<RoomImage> images;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JsonManagedReference
     List<CouponRoom> couponRooms;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
