@@ -1,8 +1,5 @@
 # Stage 1: Build the application
-FROM eclipse-temurin:21-jdk AS build
-
-# Cài đặt Maven
-RUN apt-get update && apt-get install -y maven
+FROM maven:3.8.5-eclipse-temurin-17 AS build
 
 # Copy project files
 WORKDIR /app
@@ -12,7 +9,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # Stage 2: Run the application
-FROM eclipse-temurin:21-jre-slim
+FROM eclipse-temurin:17-jre-slim
 
 # Copy JAR file from the build stage
 COPY --from=build /app/target/*.jar app.jar
