@@ -1,21 +1,23 @@
-# Use OpenJDK 21 image
-FROM openjdk:21-jdk-slim
+# Stage 1: Build the application
+FROM maven:3.8.5-openjdk-21 AS build
 
-# Set the working directory in the container
+# Copy the project files to the container
+COPY . /app
+
+# Set the working directory
 WORKDIR /app
 
-# Copy the Maven build file
-COPY pom.xml .
-COPY src ./src
-
-# Install Maven
-RUN apt-get update && apt-get install -y maven
-
-# Build the application
+# Run Maven to build the project
 RUN mvn clean package -DskipTests
 
-# Get the JAR file name
-RUN ls target
+# Stage 2: Run the application
+FROM openjdk:21.0.1-jdk-slim
 
-# Use the specific JAR file name
-ENTRYPOINT ["java", "-jar", "target/your-project-name-0.0.1-SNAPSHOT.jar"]
+# Copy the JAR file from the previous stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose the port
+EXPOSE 8080
+
+# Set the entry point to run the JAR file
+ENTRYPOINT ["java", "-jar", "app.jar"]

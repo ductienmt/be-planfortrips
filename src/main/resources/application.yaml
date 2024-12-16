@@ -64,3 +64,5 @@ google:
 plan_for_trip:
   env: development
 #  env: production
+server:
+  port: 8080
