@@ -41,7 +41,8 @@ public class RoomMapper implements MapperInterface<RoomResponse, Room, RoomDto> 
         roomResponse.setImages(room.getImages().stream()
                 .map(ri -> ri.getImage().getUrl())
                 .toList());
-        roomResponse.setHotelName(room.getHotel().getName());
+//        roomResponse.setHotelName(room.getHotel().getName());
+        if (room.getHotel() != null) roomResponse.setHotelName(room.getHotel().getName());
         roomResponse.setRoomAmenities(room.getRoomAmenities().stream().map(roomAmenitiesMapper::toResponse).toList());
         return roomResponse;
     }

@@ -49,4 +49,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle,String> {
             "ORDER BY am.month;", nativeQuery = true)
     List<StatisticalResource> getTop1VehicleByYear(@Param("year") int year);
 
+    @Query("select count(v) from Vehicle v where v.carCompany.enterprise.accountEnterpriseId = :enterpriseId")
+    Integer countByEnterpriseId(@Param("enterpriseId") Long enterpriseId);
+
 }
