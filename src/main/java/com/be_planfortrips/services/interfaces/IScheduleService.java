@@ -32,7 +32,7 @@ public interface IScheduleService {
 
     List<Map<String, Object>> getScheduleSamePrice(double price, String originalLocation, String destination, LocalDate departureDate);
 
-    List<Map<String, Object>> getScheduleByEnterpriseId();
+    List<Map<String, Object>> getScheduleByEnterpriseId(String filter);
 
     Map<String, Object> getSeatsByScheduleId(Integer scheduleId);
 }

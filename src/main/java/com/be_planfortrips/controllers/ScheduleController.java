@@ -158,11 +158,11 @@ public class ScheduleController {
     }
 
     @GetMapping("getByEnterpriseId")
-    public ResponseEntity<?> getByEnterpriseId(){
+    public ResponseEntity<?> getByEnterpriseId(@RequestParam(required = false, defaultValue = "all") String filter) {
         try {
             return ResponseEntity.ok(ApiResponse.<List<Map<String, Object>>>builder()
                     .code(HttpStatus.OK.value())
-                    .data(scheduleService.getScheduleByEnterpriseId())
+                    .data(scheduleService.getScheduleByEnterpriseId(filter))
                     .message("")
                     .build());
         } catch (Exception e){
