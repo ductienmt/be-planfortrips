@@ -140,6 +140,7 @@ public class CouponService implements ICouponService {
             }
         }
         existingCoupon.setId(id);
+        existingCoupon.setActive(couponDto.getIsActive());
         couponRepository.saveAndFlush(existingCoupon);
         return couponMapper.toResponse(existingCoupon);
     }
