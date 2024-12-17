@@ -166,7 +166,14 @@ public class AccountEnterpriseController {
         } catch (AppException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
+    }
 
+    @PostMapping("/change-password")
+    public ResponseEntity<?> ChangePassWord(
+            @RequestParam("newPassWord") String newPassWord
+    ) {
+        Boolean isChange = accountEnterpriseService.changePassWord(newPassWord);
+        return ResponseEntity.ok(isChange);
     }
 
     @GetMapping("/validate-contact")

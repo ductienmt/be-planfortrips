@@ -29,4 +29,8 @@ public class PlanResponse {
     String destination;
     String origin_location;
     Integer numberPeople;
+    Boolean isFbHotel;
+    Boolean isFbVehicle;
+
+
 }

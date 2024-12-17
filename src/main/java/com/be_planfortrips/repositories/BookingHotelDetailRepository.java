@@ -5,6 +5,7 @@ import com.be_planfortrips.entity.BookingHotelDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -36,4 +37,6 @@ public interface BookingHotelDetailRepository extends JpaRepository<BookingHotel
             "ORDER BY\n" +
             "    months.month;\n",nativeQuery = true)
     List<StatisticalBookingHotelDetail> StatisticalBookingHotelByYear(Integer year);
+
+    List<BookingHotelDetail> findByCreateAtBetween(LocalDateTime startTime, LocalDateTime endTime);
 }

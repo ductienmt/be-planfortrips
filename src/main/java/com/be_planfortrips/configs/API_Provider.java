@@ -73,6 +73,7 @@ public class API_Provider {
     };
 
     public static final String[] ADMIN_API = {
+            "api/v1/pdf/**",
             "/api/v1/account-enterprises/change-status",
             "/api/v1/account-enterprises/all",
             "/api/v1/account-enterprises/delete/**",
@@ -247,5 +248,7 @@ public class API_Provider {
             "/api/v1/transportation-dashboard/**",
             "/api/v1/vehicles/search",
             "/api/v1/vehicles/getSeatsByVehicleId/**",
+            "/api/v1/routes/getRouteRelevance",
+            "/api/v1/tickets/getUsers",
     };
 }

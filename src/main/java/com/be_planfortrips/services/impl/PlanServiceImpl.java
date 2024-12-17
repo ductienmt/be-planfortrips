@@ -109,6 +109,8 @@ public class PlanServiceImpl implements IPlanService {
                             planResponse.setTotal_price(plan.getTotalPrice());
                             planResponse.setDiscount_price(plan.getDiscountPrice());
                             planResponse.setFinal_price(plan.getFinalPrice());
+                            planResponse.setIsFbHotel(plan.getIsFbHotel());
+                            planResponse.setIsFbVehicle(plan.getIsFbVehicle());
                             return planResponse;
                         }).collect(Collectors.toList());
     }
@@ -126,8 +128,9 @@ public class PlanServiceImpl implements IPlanService {
                     BookingHotel bookingHotel = bookingHotelRepository.findById(Long.valueOf(planDetail.getTicketId()))
                             .orElseThrow(() -> new AppException(ErrorType.notFound, "Lỗi lấy thông tin booking hotel"));
                     planResponseDetail.setHotel_id(bookingHotel.getBookingHotelId());
-                    planResponseDetail.setHotel_name(hotelService.getByHotelId(bookingHotel.getBookingHotelId()).getName());
-
+                    HotelResponse hotel = hotelService.getByHotelId(bookingHotel.getBookingHotelId());
+                    planResponseDetail.setHotel_name(hotel.getName());
+                    planResponseDetail.setEtp_hotel_id(hotel.getEnterpriseId());
                     List<Map<String, Object>> rooms = new ArrayList<>();
                     for (BookingHotelDetail bookingHotelDetail : bookingHotel.getBookingHotelDetails()) {
                         Map<String, Object> room = new HashMap<>();
@@ -169,6 +172,8 @@ public class PlanServiceImpl implements IPlanService {
                     vehicle.put("vehicle_driver_name", schedule.getVehicleCode().getDriverName());
                     vehicle.put("vehicle_driver_phone", schedule.getVehicleCode().getDriverPhone());
                     vehicle.put("car_company_id", schedule.getVehicleCode().getCarCompany().getId());
+                    vehicle.put("etp_company_id", schedule.getVehicleCode().getCarCompany().getEnterprise().getAccountEnterpriseId());
+                    vehicle.put(("car_company_name"), schedule.getVehicleCode().getCarCompany().getName());
 
                     planResponseDetail.setVehicle(vehicle);
                 }

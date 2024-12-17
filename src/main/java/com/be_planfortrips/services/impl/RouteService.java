@@ -6,6 +6,7 @@ import com.be_planfortrips.entity.Route;
 import com.be_planfortrips.entity.Station;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.CityRepository;
 import com.be_planfortrips.repositories.RouteRepository;
 import com.be_planfortrips.repositories.StationRepository;
@@ -18,9 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
 @RequiredArgsConstructor
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
@@ -28,6 +28,7 @@ public class RouteService implements IRouteService {
     RouteRepository routeRepository;
     StationRepository stationRepository;
     private final CityRepository cityRepository;
+    private final TokenMapperImpl tokenMapperImpl;
 
     @Override
     @Transactional
@@ -135,4 +136,33 @@ public class RouteService implements IRouteService {
         Optional<Route> optionalRoute = routeRepository.findById(id);
         optionalRoute.ifPresent(routeRepository::delete);
     }
+
+    @Override
+    public List<RouteResponse> getRoutesByEnterpriseId() {
+        List<Map<String, Object>> routes = routeRepository.getRouteRelevance(tokenMapperImpl.getIdEnterpriseByToken());
+        List<RouteResponse> routeResponses = new ArrayList<>();
+        for (Map<String, Object> route : routes) {
+            String routeId = (String) route.get("route_id");
+            String originCityId = (String) route.get("origin_city_id");
+            String destinationCityId = (String) route.get("destination_city_id");
+
+            Optional<Route> routeOptional = routeRepository.findById(routeId);
+
+            // Fetch Station entities by city_id
+            Station originStation = routeOptional.get().getOriginStation();
+            if (originStation == null) throw new IllegalArgumentException("Origin station not found for city_id: " + originCityId);
+
+            Station destinationStation = routeOptional.get().getDestinationStation();
+            if (destinationStation == null) throw new IllegalArgumentException("Destination station not found for city_id: " + destinationCityId);
+
+            RouteResponse routeResponse = RouteResponse.builder()
+                    .id(routeId)
+                    .originStation(originStation)
+                    .destinationStation(destinationStation)
+                    .build();
+            routeResponses.add(routeResponse);
+        }
+        return routeResponses;
+    }
+
 }

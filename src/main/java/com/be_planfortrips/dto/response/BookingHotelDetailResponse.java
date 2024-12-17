@@ -27,6 +27,7 @@ public class BookingHotelDetailResponse {
     BigDecimal price;
     Long userId;
     Long roomId;
+    String paymentName;
 
 
 }

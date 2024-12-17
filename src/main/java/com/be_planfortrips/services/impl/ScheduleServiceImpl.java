@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -56,8 +57,19 @@ public class ScheduleServiceImpl implements IScheduleService {
 
     @Override
     public ScheduleResponse createSchedule(ScheduleDto scheduleDto) {
+        Schedule hasConflict = scheduleRepository.findScheduleByVehicleCodeAndTime(
+                scheduleDto.getVehicleCode(),
+                scheduleDto.getDepartureTime(),
+                scheduleDto.getArrivalTime()
+        );
+
+        if (hasConflict != null) {
+            throw new AppException(ErrorType.vihiclExistedInSchedule);
+        }
+
         Schedule schedule = scheduleMapper.toEntity(scheduleDto);
         Schedule savedSchedule = scheduleRepository.save(schedule);
+
         List<Seat> seats = seatRepository.findByVehicleCode(scheduleDto.getVehicleCode());
 
         if (seats.isEmpty()) {
@@ -72,8 +84,10 @@ public class ScheduleServiceImpl implements IScheduleService {
             scheduleSeat.setStatus(StatusSeat.Empty);
             scheduleSeatRepository.save(scheduleSeat);
         }
+
         return scheduleMapper.toResponse(savedSchedule);
     }
+
 
     @Override
     public ScheduleResponse updateSchedule(ScheduleDto scheduleDto, Integer scheduleId) {

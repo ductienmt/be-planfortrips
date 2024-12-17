@@ -122,4 +122,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
 
     @Query("SELECT COUNT(s) FROM Schedule s WHERE s.vehicleCode.code = :vehicleCode")
     long countSchedulesByVehicleCode(@Param("vehicleCode") String vehicleCode);
+
+    @Query("select s from Schedule s where s.vehicleCode.code = :vehicleCode and s.departureTime between :departureTime and :arrivalTime")
+    Schedule findScheduleByVehicleCodeAndTime(@Param("vehicleCode") String vehicleCode, @Param("departureTime") LocalDateTime departureTime, @Param("arrivalTime") LocalDateTime arrivalTime);
+
 }

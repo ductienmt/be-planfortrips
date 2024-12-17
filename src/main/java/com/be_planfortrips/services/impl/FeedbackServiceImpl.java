@@ -4,6 +4,7 @@ import com.be_planfortrips.dto.FeedbackDto;
 import com.be_planfortrips.dto.response.FeedbackResponse;
 import com.be_planfortrips.entity.AccountEnterprise;
 import com.be_planfortrips.entity.Feedback;
+import com.be_planfortrips.entity.Plan;
 import com.be_planfortrips.entity.User;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
@@ -11,6 +12,7 @@ import com.be_planfortrips.mappers.impl.FeedbackMapper;
 import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.AccountEnterpriseRepository;
 import com.be_planfortrips.repositories.FeedbackRepository;
+import com.be_planfortrips.repositories.PlanRepository;
 import com.be_planfortrips.repositories.UserRepository;
 import com.be_planfortrips.services.interfaces.IFeedbackService;
 import lombok.AccessLevel;
@@ -31,6 +33,7 @@ public class FeedbackServiceImpl implements IFeedbackService {
     FeedbackMapper feedbackMapper;
     UserRepository userRepository;
     TokenMapperImpl tokenMapper;
+    PlanRepository planRepository;
 
 
     @Override
@@ -52,11 +55,27 @@ public class FeedbackServiceImpl implements IFeedbackService {
     public FeedbackResponse createFeedback(FeedbackDto feedbackDto) {
         Feedback feedback = feedbackMapper.toEntity(feedbackDto);
         AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(feedbackDto.getAccountEnterpriseId())
-                .orElseThrow(()-> {throw new AppException(ErrorType.notFound);});
-        User user = userRepository.findById(feedbackDto.getUserId())
-                .orElseThrow(()->{throw new AppException(ErrorType.notFound);});
+                .orElseThrow(()-> new AppException(ErrorType.notFound));
+        User user = userRepository.findByUsername(feedbackDto.getUsername());
         feedback.setUser(user);
         feedback.setAccountEnterprise(accountEnterprise);
+        Plan plan = planRepository.findById(feedbackDto.getPlanId()).orElseThrow(
+                () -> new AppException(ErrorType.notFound)
+        );
+
+        System.out.println(accountEnterprise.getTypeEnterpriseDetail().getId());
+        //Nha` xe
+        if (accountEnterprise.getTypeEnterpriseDetail().getId() == 1) {
+            plan.setIsFbVehicle(true);
+        }
+
+        // noi o?
+        if (accountEnterprise.getTypeEnterpriseDetail().getId() >= 3) {
+               plan.setIsFbHotel(true);
+        }
+
+        planRepository.save(plan);
+
         feedbackRepository.save(feedback);
         return feedbackMapper.toResponse(feedback);
     }
