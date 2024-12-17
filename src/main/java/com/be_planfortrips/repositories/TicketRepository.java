@@ -119,5 +119,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
             "  AND cc.enterprise_id = :enterpriseId;")
     Integer countTicketBookAdvance(@Param("enterpriseId") Long enterpriseId);
 
+
+    List<Ticket> findByCreateAtBetween(LocalDateTime startTime, LocalDateTime endTime);
 }
 

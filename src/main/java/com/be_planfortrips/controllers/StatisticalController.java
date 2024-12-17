@@ -1,15 +1,17 @@
 package com.be_planfortrips.controllers;
 
-import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
-import com.be_planfortrips.dto.response.AccountUserResponse;
-import com.be_planfortrips.dto.response.UserResponse;
+import com.be_planfortrips.dto.response.*;
 import com.be_planfortrips.dto.sql.StatisticalCount;
 import com.be_planfortrips.dto.sql.StatisticalCountMonth;
 import com.be_planfortrips.dto.sql.StatisticalResource;
 import com.be_planfortrips.dto.sql.StatisticalBookingHotelDetail;
 import com.be_planfortrips.entity.AccountEnterprise;
+import com.be_planfortrips.entity.BookingHotelDetail;
+import com.be_planfortrips.entity.Ticket;
 import com.be_planfortrips.entity.User;
 import com.be_planfortrips.mappers.impl.AccountEnterpriseMapper;
+import com.be_planfortrips.mappers.impl.BookingHotelDetailMapper;
+import com.be_planfortrips.mappers.impl.TicketMapper;
 import com.be_planfortrips.repositories.*;
 import com.be_planfortrips.services.StatisticalService;
 import lombok.AccessLevel;
@@ -43,6 +45,12 @@ public class StatisticalController {
     private final HotelRepository hotelRepository;
 
     AccountEnterpriseMapper accountEnterpriseMapper;
+    TicketRepository ticketRepository;
+    BookingHotelDetailRepository bookingHotelDetailRepository;
+
+    BookingHotelDetailMapper bookingHotelDetailMapper;
+
+    TicketMapper ticketMapper;
 
 
 
@@ -171,8 +179,27 @@ public class StatisticalController {
         List<AccountEnterpriseResponse> response = accountEnterprises.stream()
                 .map(accountEnterpriseMapper::toResponse)
                 .collect(Collectors.toList());
-
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/pdf/ticket/{startTime}/{endTime}")
+    public ResponseEntity<List<TicketResponse>> getDataExcelTicket(
+            @PathVariable LocalDateTime startTime,
+            @PathVariable LocalDateTime endTime
+    ) {
+        List<Ticket> tickets = ticketRepository.findByCreateAtBetween(startTime, endTime);
+
+        return ResponseEntity.ok(tickets.stream().map(ticketMapper::toResponse).toList());
+    }
+
+    @GetMapping("/pdf/bookingHotelDetail/{startTime}/{endTime}")
+    public ResponseEntity<List<BookingHotelDetailResponse>> getDataExcelBhd(
+            @PathVariable LocalDateTime startTime,
+            @PathVariable LocalDateTime endTime
+    ) {
+        List<BookingHotelDetail> bookingHotelDetails =
+                bookingHotelDetailRepository.findByCreateAtBetween(startTime, endTime);
+        return ResponseEntity.ok(bookingHotelDetails.stream().map(bookingHotelDetailMapper::toResponse).toList());
     }
 
 
