@@ -224,8 +224,15 @@ public class ScheduleServiceImpl implements IScheduleService {
     }
 
     @Override
-    public List<Map<String, Object>> getScheduleByEnterpriseId() {
-        List<Schedule> schedules = scheduleRepository.getSchedulesByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken());
+    public List<Map<String, Object>> getScheduleByEnterpriseId(String filter) {
+        List<Schedule> schedules = new ArrayList<>();
+        if (filter.equals("complete")) {
+            schedules = scheduleRepository.getScheduleComplete(tokenMapperImpl.getIdEnterpriseByToken());
+        } else if (filter.equals("uncomplete")) {
+            schedules = scheduleRepository.getScheduleUnComplete(tokenMapperImpl.getIdEnterpriseByToken());
+        } else if (filter.equals("all")) {
+            schedules = scheduleRepository.getSchedulesByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken());
+        }
         schedules.sort(Comparator.comparing(Schedule::getDepartureTime));
 
         List<Map<String, Object>> response = new ArrayList<>();

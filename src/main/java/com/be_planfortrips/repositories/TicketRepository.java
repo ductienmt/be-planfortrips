@@ -119,5 +119,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
             "  AND cc.enterprise_id = :enterpriseId;")
     Integer countTicketBookAdvance(@Param("enterpriseId") Long enterpriseId);
 
+    @Query("SELECT COUNT(t) FROM Ticket t JOIN Schedule s ON t.schedule.id = s.id WHERE s.vehicleCode.code = :vehicleCode")
+    long countTicketsByVehicleCode(@Param("vehicleCode") String vehicleCode);
+
 }
 

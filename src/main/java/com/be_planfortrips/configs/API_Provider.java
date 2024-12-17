@@ -243,5 +243,7 @@ public class API_Provider {
             "/api/v1/hotels/searchEnterprise",
             "/api/v1/accommodation-dashboard/**",
             "/api/v1/transportation-dashboard/**",
+            "/api/v1/vehicles/search",
+            "/api/v1/vehicles/getSeatsByVehicleId/**",
     };
 }
