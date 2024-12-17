@@ -8,6 +8,7 @@ import com.be_planfortrips.entity.Role;
 import com.be_planfortrips.entity.User;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
+import com.be_planfortrips.repositories.ImageRepository;
 import com.be_planfortrips.repositories.RoleRepository;
 import com.be_planfortrips.repositories.UserRepository;
 import com.be_planfortrips.security.jwt.JwtProvider;
@@ -47,6 +48,7 @@ public class Oauth2ServiceImpl implements IAuth2Service {
     WebClient webClient;
 
     JwtProvider jwtProvider;
+    ImageRepository imageRepository;
 
     @Override
     public String getGoogleUrl() {
@@ -74,7 +76,6 @@ public class Oauth2ServiceImpl implements IAuth2Service {
                             .build())
                     .retrieve()
                     .bodyToMono(UserGoogleInfo.class).block();
-            System.out.println(userGoogleInfo);
             assert userGoogleInfo != null;
             return getUserGoogle(userGoogleInfo);
         } catch (Exception e) {
@@ -101,19 +102,16 @@ public class Oauth2ServiceImpl implements IAuth2Service {
         Role role = roleRepository.findByName("ROLE_USER").orElseThrow(
                 () -> new AppException(ErrorType.roleNameNotFound)
         );
-//        Image mediaFile = Image.
-//                .(UUID.randomUUID().toString())
-//                .mediaFilePath(userGoogleInfo.picture())
-//                .build();
-//        UserProfile userProfile = UserProfile.builder()
-//                .profileEmail(userGoogleInfo.email())
-//                .profileFullName(userGoogleInfo.name())
-//                .mediaFile(mediaFile)
-//                .build();
+        Image image = new Image();
+        image.setUrl(userGoogleInfo.picture());
+        imageRepository.save(image);
         User userGoogle = User.builder()
                 .role(role)
                 .fullName(userGoogleInfo.name())
                 .googleId(userGoogleInfo.sub())
+                .image(image)
+                .userName(userGoogleInfo.email().split("@")[0])
+                .isActive(true)
                 .build();
 
         // Sau đó, cập nhật đối tượng user cho userProfile nếu cần thiết
