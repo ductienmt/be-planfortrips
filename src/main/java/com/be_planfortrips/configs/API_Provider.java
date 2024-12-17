@@ -249,5 +249,6 @@ public class API_Provider {
             "/api/v1/vehicles/search",
             "/api/v1/vehicles/getSeatsByVehicleId/**",
             "/api/v1/routes/getRouteRelevance",
+            "/api/v1/tickets/getUsers",
     };
 }

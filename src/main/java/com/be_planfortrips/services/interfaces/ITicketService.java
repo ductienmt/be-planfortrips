@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ITicketService {
     TicketResponse createTicket(TicketDTO TicketDto) throws Exception;
@@ -15,5 +16,6 @@ public interface ITicketService {
     void deleteTicketById(Integer id);
     List<TicketResponse> findByUserId(Long id);
     List<TicketResponse> findByScheduleId(Integer id);
+    List<Map<String, Object>> getUsers(Integer status);
 }
 

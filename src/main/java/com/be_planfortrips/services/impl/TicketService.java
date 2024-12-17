@@ -6,6 +6,7 @@ import com.be_planfortrips.entity.*;
 import com.be_planfortrips.exceptions.AppException;
 import com.be_planfortrips.exceptions.ErrorType;
 import com.be_planfortrips.mappers.impl.TicketMapper;
+import com.be_planfortrips.mappers.impl.TokenMapperImpl;
 import com.be_planfortrips.repositories.*;
 import com.be_planfortrips.services.interfaces.ITicketService;
 import lombok.AccessLevel;
@@ -34,6 +35,7 @@ public class TicketService implements ITicketService {
     ScheduleRepository scheduleRepository;
     CouponRepository couponRepository;
     ScheduleSeatRepository scheduleSeatRepository;
+    private final TokenMapperImpl tokenMapperImpl;
 
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
@@ -190,6 +192,21 @@ public class TicketService implements ITicketService {
         return ticketRepository.findBySchedule_Id(existingUser.getId()).stream()
                 .map(ticket -> ticketMapper.toResponse(ticket))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Map<String, Object>> getUsers(Integer status) {
+        String statusStr = "";
+
+        if (status == 0) {
+            statusStr = "Pending";
+        } else if (status == 1) {
+            statusStr = "Complete";
+        } else if (status == 2) {
+            statusStr = "Cancelled";
+        }
+        List<Map<String, Object>> customers = ticketRepository.getUsers(tokenMapperImpl.getIdEnterpriseByToken(), statusStr);
+        return customers;
     }
 
     private Coupon getCoupon(String codeCoupon) throws Exception {
