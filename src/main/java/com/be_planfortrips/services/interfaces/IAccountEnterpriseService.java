@@ -51,4 +51,6 @@ public interface IAccountEnterpriseService {
 
     void verifyPassword(String password);
 
+    boolean changePassWord(String newPassWord);
+
 }
