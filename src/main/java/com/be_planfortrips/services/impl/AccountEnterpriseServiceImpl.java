@@ -312,6 +312,16 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         }
     }
 
+    @Override
+    public boolean changePassWord(String newPassWord) {
+        AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(tokenMapper.getIdEnterpriseByToken())
+                .orElseThrow(() -> new AppException(ErrorType.notFound));
+        accountEnterprise.setPassword(passwordEncoder.encode(newPassWord));
+        System.out.println(newPassWord);
+        accountEnterpriseRepository.save(accountEnterprise);
+        return true;
+    }
+
 
     private void validateForm(AccountEnterpriseDto accountEnterpriseDto) {
         if (accountEnterpriseDto.getUsername() == null || accountEnterpriseDto.getUsername().isEmpty()) {

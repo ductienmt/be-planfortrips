@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -131,6 +133,12 @@ public class TicketController {
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    // status = 0: chua xac nhan, 1: da xac nhan, 2: da huy
+    @GetMapping("getUsers")
+    public ResponseEntity<?> getUsers(@RequestParam(required = false, defaultValue = "0") Integer status) {
+        return ResponseEntity.ok(iTicketService.getUsers(status));
     }
 
 }
