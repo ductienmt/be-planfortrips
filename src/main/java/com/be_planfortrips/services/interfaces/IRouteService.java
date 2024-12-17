@@ -5,6 +5,7 @@ import com.be_planfortrips.dto.response.RouteResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Map;
 
 public interface IRouteService {
@@ -14,4 +15,5 @@ public interface IRouteService {
     RouteResponse getByRouteId(String id) throws Exception;
     Map<String, Object> getCityByRouteId(String id);
     void deleteRouteById(String id);
+    List<RouteResponse> getRoutesByEnterpriseId();
 }

@@ -1,5 +1,6 @@
 package com.be_planfortrips.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,20 +24,22 @@ public class ScheduleDto {
     @NotBlank(message = "Vehicle code cannot be blank")
     String vehicleCode;
 
-    @NotBlank(message = "Driver name cannot be blank")
-    @Size(min = 2, max = 50, message = "Driver name must be between 2 and 50 characters")
-    String driverName;
-
-    @Pattern(regexp = "^\\+?\\d{10,15}$", message = "Phone number is invalid")
-    String driverPhone;
+//    @NotBlank(message = "Driver name cannot be blank")
+//    @Size(min = 2, max = 50, message = "Driver name must be between 2 and 50 characters")
+//    String driverName;
+//
+//    @Pattern(regexp = "^\\+?\\d{10,15}$", message = "Phone number is invalid")
+//    String driverPhone;
 
     @NotNull(message = "Price cannot be null")
     @Positive(message = "Price must be greater than zero")
     BigDecimal priceForOneSeat;
 
     @NotNull(message = "Departure time cannot be null")
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime departureTime;
 
     @NotNull(message = "Arrival time cannot be null")
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime arrivalTime;
 }
