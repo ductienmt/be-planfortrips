@@ -240,6 +240,7 @@ public class API_Provider {
             "/api/v1/room-amenities/delete-icon",
             "/api/v1/account-enterprises/upload",
             "/api/v1/account-enterprises/verify-password",
+            "/api/v1/account-enterprises/change-password",
             "/api/v1/rooms/getRoomByEnterpriseId",
             "/api/v1/coupons/searchEnterprise",
             "/api/v1/hotels/changeStatus",
@@ -250,5 +251,6 @@ public class API_Provider {
             "/api/v1/vehicles/getSeatsByVehicleId/**",
             "/api/v1/routes/getRouteRelevance",
             "/api/v1/tickets/getUsers",
+            "/api/v1/routes/getAll",
     };
 }

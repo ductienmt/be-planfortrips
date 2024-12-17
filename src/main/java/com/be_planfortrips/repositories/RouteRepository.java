@@ -54,8 +54,8 @@ public interface RouteRepository extends JpaRepository<Route,String> {
             "         SELECT route_id, origin_city_id, destination_city_id, relevance FROM reversed_routes\n" +
             "     ) combined_routes\n" +
             "ORDER BY\n" +
-            "    relevance ASC,\n" +
-            "    route_id ASC;")
+            "    relevance DESC,\n" +
+            "    route_id DESC;")
     List<Map<String, Object>> getRouteRelevance(@Param("enterprise_id") Long enterpriseId);
 
 

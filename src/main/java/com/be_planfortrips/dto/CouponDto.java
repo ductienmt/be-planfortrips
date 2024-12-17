@@ -25,7 +25,6 @@ public class CouponDto {
     @Min(value = 1, message = "Use limit must be greater than 1")
     Integer useLimit;
     @JsonProperty("use_count")
-
 //    @Min(value = 1, message = "Use count must be greater than 1")
     Integer useCount;
 

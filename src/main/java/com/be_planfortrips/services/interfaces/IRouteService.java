@@ -4,6 +4,7 @@ import com.be_planfortrips.dto.RouteDTO;
 import com.be_planfortrips.dto.response.RouteResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
@@ -15,5 +16,6 @@ public interface IRouteService {
     RouteResponse getByRouteId(String id) throws Exception;
     Map<String, Object> getCityByRouteId(String id);
     void deleteRouteById(String id);
-    List<RouteResponse> getRoutesByEnterpriseId();
+    Page<Map<String, Object>> getRoutesByEnterpriseId(Pageable pageable);
+    List<Map<String, Object>> getAllRoutes();
 }

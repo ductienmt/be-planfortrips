@@ -149,10 +149,10 @@ public class CouponService implements ICouponService {
 // <<<<<<< ductien
 //         return couponRepository.getCouponByEnterpriseId(request, id).map(couponMapper::toResponse);
 // =======
-        if(id == null){
-           return couponRepository.getCouponForAdmin(request).map(couponMapper::toResponse);
+        if (id == null) {
+            return couponRepository.getCouponForAdmin(request).map(couponMapper::toResponse);
         }
-        return couponRepository.getCouponByEnterpriseId(request,id).map(couponMapper::toResponse);
+        return couponRepository.getCouponByEnterpriseId(request, id).map(couponMapper::toResponse);
     }
 
     @Override
@@ -174,7 +174,7 @@ public class CouponService implements ICouponService {
         if (coupon.get().getUseCount() > 0) {
             coupon.get().setActive(false);
             couponRepository.save(coupon.get());
-        } else  {
+        } else {
             couponRepository.delete(coupon.get());
         }
     }
@@ -187,18 +187,27 @@ public class CouponService implements ICouponService {
     @Override
     public Page<Map<String, Object>> getByEnterpriseId(Pageable pageable, String status) {
         Long id = tokenMapperImpl.getIdEnterpriseByToken();
+        System.out.println(id);
         Boolean isActive;
-        if (status == null) {
+        if (status == null || status.isEmpty()) {
             isActive = null;
         } else {
             isActive = Boolean.valueOf(status);
         }
 
-
         if (id != null) {
-            Page<CouponResponse> couponResponses = couponRepository
-                    .getCouponByEnterpriseIdAndStatus(pageable, id, Boolean.valueOf(status))
-                    .map(couponMapper::toResponse);
+            Page<CouponResponse> couponResponses;
+            if (status != null) {
+
+                couponResponses = couponRepository
+                        .getCouponByEnterpriseIdAndStatus(pageable, id, isActive)
+                        .map(couponMapper::toResponse);
+            } else {
+
+                couponResponses = couponRepository
+                        .getCouponByEnterpriseId(pageable, id)
+                        .map(couponMapper::toResponse);
+            }
 
             Page<Map<String, Object>> response = couponResponses.map(coupon -> {
                 Map<String, Object> map = new HashMap<>();
@@ -207,7 +216,11 @@ public class CouponService implements ICouponService {
                 map.put("discountType", coupon.getDiscountType());
                 map.put("discountValue", coupon.getDiscountValue());
                 map.put("useLimit", coupon.getUseLimit());
-                map.put("usedCount", coupon.getUseCount());
+                if (coupon.getUseCount() == null) {
+                    map.put("usedCount", 0);
+                } else {
+                    map.put("usedCount", coupon.getUseCount());
+                }
                 map.put("startDate", coupon.getStartDate());
                 map.put("endDate", coupon.getEndDate());
                 map.put("isActive", coupon.getIsActive());
@@ -230,7 +243,7 @@ public class CouponService implements ICouponService {
     public Page<Map<String, Object>> searchEnterprise(String keyword, String status, String discountType, Pageable pageable) {
         Long id = tokenMapperImpl.getIdEnterpriseByToken();
         Boolean isActive;
-        if (status == null) {
+        if (status == null || status.isEmpty()) {
             isActive = null;
         } else {
             isActive = Boolean.valueOf(status);
@@ -247,11 +260,17 @@ public class CouponService implements ICouponService {
             }
         }
 
-
         if (id != null) {
-            Page<CouponResponse> couponResponses = couponRepository
-                    .searchEnterprise(keyword, isActive, type, id, pageable)
-                    .map(couponMapper::toResponse);
+            Page<CouponResponse> couponResponses;
+            if (status != null) {
+                couponResponses = couponRepository
+                        .searchEnterprise(keyword, isActive, type, id, pageable)
+                        .map(couponMapper::toResponse);
+            } else {
+                couponResponses = couponRepository
+                        .searchEnterprise(keyword, isActive, type, id, pageable)
+                        .map(couponMapper::toResponse);
+            }
 
             Page<Map<String, Object>> response = couponResponses.map(coupon -> {
                 Map<String, Object> map = new HashMap<>();
