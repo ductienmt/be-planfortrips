@@ -197,6 +197,9 @@ public class HotelController {
         try {
             PageRequest request = PageRequest.of(page,limit,Sort.by("name").descending());
             int totalPage = 0;
+            if(keyword.isEmpty()){
+                keyword = null;
+            }
             LocalDateTime dateTime = date.atStartOfDay();
             Page<HotelResponse> hotelResponses = iHotelService.findHotelAvailable(request,keyword, dateTime, days);
             totalPage = hotelResponses.getTotalPages();

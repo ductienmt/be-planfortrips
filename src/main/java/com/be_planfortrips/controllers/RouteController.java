@@ -108,9 +108,20 @@ public class RouteController {
     }
 
     @GetMapping("getRouteRelevance")
-    public ResponseEntity<?> searchEnterprise() {
+    public ResponseEntity<?> searchEnterprise(@RequestParam(required = false, defaultValue = "0") int page,
+                                             @RequestParam(required = false, defaultValue = "10") int limit) {
         try {
-            return ResponseEntity.ok(this.iRouteService.getRoutesByEnterpriseId());
+            PageRequest request = PageRequest.of(page, limit);
+            return ResponseEntity.ok(this.iRouteService.getRoutesByEnterpriseId(request));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("getAll")
+    public ResponseEntity<?> getAllRoutes() {
+        try {
+            return ResponseEntity.ok(this.iRouteService.getAllRoutes());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

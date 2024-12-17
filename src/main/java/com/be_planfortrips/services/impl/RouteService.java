@@ -15,7 +15,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -137,32 +139,99 @@ public class RouteService implements IRouteService {
         optionalRoute.ifPresent(routeRepository::delete);
     }
 
+//    @Override
+//    public List<Map<String, Object>> getRoutesByEnterpriseId() {
+//        List<Map<String, Object>> routes = routeRepository.getRouteRelevance(tokenMapperImpl.getIdEnterpriseByToken());
+//        List<Map<String, Object>> routeResponses = new ArrayList<>();
+//        for (Map<String, Object> route : routes) {
+//            String routeId = (String) route.get("route_id");
+//            String originCityId = (String) route.get("origin_city_id");
+//            String destinationCityId = (String) route.get("destination_city_id");
+//
+//            Optional<Route> routeOptional = routeRepository.findById(routeId);
+//            Map<String, Object> routeResponse = new HashMap<>();
+//
+//            // Fetch Station entities by city_id
+//            Station originStation = routeOptional.get().getOriginStation();
+//            if (originStation == null) throw new IllegalArgumentException("Origin station not found for city_id: " + originCityId);
+//
+//            Station destinationStation = routeOptional.get().getDestinationStation();
+//            if (destinationStation == null) throw new IllegalArgumentException("Destination station not found for city_id: " + destinationCityId);
+//
+//            routeResponse.put("route_id", routeId);
+//            routeResponse.put("origin_station_id", originStation);
+//            routeResponse.put("destination_station_id", destinationStation);
+//            routeResponse.put("relevance", route.get("relevance"));
+//            routeResponses.add(routeResponse);
+//        }
+//        routeResponses.sort(Comparator.comparingInt(routeResponse -> (Integer) routeResponse.get("relevance")));
+//        return routeResponses;
+//    }
+
     @Override
-    public List<RouteResponse> getRoutesByEnterpriseId() {
+    public Page<Map<String, Object>> getRoutesByEnterpriseId(Pageable pageable) {
         List<Map<String, Object>> routes = routeRepository.getRouteRelevance(tokenMapperImpl.getIdEnterpriseByToken());
-        List<RouteResponse> routeResponses = new ArrayList<>();
+
+        if (routes == null || routes.isEmpty()) {
+            return Page.empty();
+        }
+
+        List<Map<String, Object>> routeResponses = new ArrayList<>();
         for (Map<String, Object> route : routes) {
             String routeId = (String) route.get("route_id");
             String originCityId = (String) route.get("origin_city_id");
             String destinationCityId = (String) route.get("destination_city_id");
 
             Optional<Route> routeOptional = routeRepository.findById(routeId);
+            if (routeOptional.isEmpty()) {
+                throw new IllegalArgumentException("Route not found for ID: " + routeId);
+            }
 
-            // Fetch Station entities by city_id
-            Station originStation = routeOptional.get().getOriginStation();
-            if (originStation == null) throw new IllegalArgumentException("Origin station not found for city_id: " + originCityId);
+            Route routeEntity = routeOptional.get();
+            Station originStation = routeEntity.getOriginStation();
+            Station destinationStation = routeEntity.getDestinationStation();
 
-            Station destinationStation = routeOptional.get().getDestinationStation();
-            if (destinationStation == null) throw new IllegalArgumentException("Destination station not found for city_id: " + destinationCityId);
+            if (originStation == null || destinationStation == null) {
+                throw new IllegalArgumentException("Station not found for route: " + routeId);
+            }
 
-            RouteResponse routeResponse = RouteResponse.builder()
-                    .id(routeId)
-                    .originStation(originStation)
-                    .destinationStation(destinationStation)
-                    .build();
+            Map<String, Object> routeResponse = new HashMap<>();
+            routeResponse.put("route_id", routeId);
+            routeResponse.put("origin_station_id", originStation);
+            routeResponse.put("destination_station_id", destinationStation);
+            routeResponse.put("relevance", route.get("relevance"));
+
+            routeResponses.add(routeResponse);
+        }
+
+        // Sắp xếp theo relevance, tăng dần
+        routeResponses.sort(Comparator.comparingInt(routeResponse -> (Integer) routeResponse.get("relevance")));
+
+//        return routeResponses;
+        // Phân trang dữ liệu
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), routeResponses.size());
+        List<Map<String, Object>> pagedRoutes = routeResponses.subList(start, end);
+
+        // Trả về đối tượng Page với dữ liệu đã phân trang
+        return new PageImpl<>(pagedRoutes, pageable, routeResponses.size());
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllRoutes() {
+        List<Route> routes = routeRepository.findAll();
+        List<Map<String, Object>> routeResponses = new ArrayList<>();
+        for (Route route : routes) {
+            Map<String, Object> routeResponse = new HashMap<>();
+            routeResponse.put("route_id", route.getId());
+            routeResponse.put("departureStation", route.getOriginStation().getName());
+            routeResponse.put("departureCity", route.getDestinationStation().getCity().getNameCity());
+            routeResponse.put("arrivalStation", route.getDestinationStation().getName());
+            routeResponse.put("arrivalCity", route.getDestinationStation().getCity().getNameCity());
             routeResponses.add(routeResponse);
         }
         return routeResponses;
     }
+
 
 }
