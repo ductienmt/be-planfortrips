@@ -1,9 +1,15 @@
 package com.be_planfortrips.controllers;
 
+import com.be_planfortrips.dto.response.AccountEnterpriseResponse;
+import com.be_planfortrips.dto.response.AccountUserResponse;
+import com.be_planfortrips.dto.response.UserResponse;
 import com.be_planfortrips.dto.sql.StatisticalCount;
 import com.be_planfortrips.dto.sql.StatisticalCountMonth;
 import com.be_planfortrips.dto.sql.StatisticalResource;
 import com.be_planfortrips.dto.sql.StatisticalBookingHotelDetail;
+import com.be_planfortrips.entity.AccountEnterprise;
+import com.be_planfortrips.entity.User;
+import com.be_planfortrips.mappers.impl.AccountEnterpriseMapper;
 import com.be_planfortrips.repositories.*;
 import com.be_planfortrips.services.StatisticalService;
 import lombok.AccessLevel;
@@ -15,7 +21,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${api.prefix}/statistical")
@@ -32,6 +41,10 @@ public class StatisticalController {
     StatisticalService statisticalService;
     VehicleRepository vehicleRepository;
     private final HotelRepository hotelRepository;
+
+    AccountEnterpriseMapper accountEnterpriseMapper;
+
+
 
     @GetMapping("/user")
     public ResponseEntity<Integer> getCountUser() {
@@ -125,6 +138,41 @@ public class StatisticalController {
     ) {
         List<StatisticalResource> res = hotelRepository.getTop1HotelByYear(year);
         return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/pdf/user")
+    public ResponseEntity<List<UserResponse>> getDataExcelUser() {
+        List<User> users = userRepository.findAll();
+
+        // Chuyển danh sách User sang danh sách UserResponse
+        List<UserResponse> userResponses = users.stream()
+                .map(user -> UserResponse.builder()
+                        .id(user.getId())
+                        .email(user.getEmail())
+                        .address(user.getAddress())
+                        .phoneNumber(user.getPhoneNumber())
+                        .gender(user.getGender())
+                        .isActive(user.isActive())
+                        .birthdate(user.getBirthdate())
+                        .build())
+                .toList();
+
+        return ResponseEntity.ok(userResponses);
+    }
+
+    @GetMapping("/pdf/enterppirse/{startTime}/{endTime}")
+    public ResponseEntity<List<AccountEnterpriseResponse>> getDataExcelEnterprise(
+            @PathVariable LocalDateTime startTime, @PathVariable LocalDateTime endTime) {
+
+        // Lấy dữ liệu từ repository với khoảng thời gian được truyền vào
+        List<AccountEnterprise> accountEnterprises = accountEnterpriseRepository.findByCreateAtBetween(startTime, endTime);
+
+        // Chuyển đổi sang response object (AccountUserResponse)
+        List<AccountEnterpriseResponse> response = accountEnterprises.stream()
+                .map(accountEnterpriseMapper::toResponse)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
     }
 
 
