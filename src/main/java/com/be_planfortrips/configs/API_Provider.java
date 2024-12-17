@@ -68,6 +68,8 @@ public class API_Provider {
             "/api/v1/schedules/getSeatsByScheduleId",
             "/api/v1/cities/getFavoriteCity",
             "/api/v1/cities/getPopularCity",
+            "/api/v1/vehicles/**",
+            "/api/v1/vehicles/all",
     };
 
     public static final String[] ADMIN_API = {
@@ -244,5 +246,7 @@ public class API_Provider {
             "/api/v1/hotels/searchEnterprise",
             "/api/v1/accommodation-dashboard/**",
             "/api/v1/transportation-dashboard/**",
+            "/api/v1/vehicles/search",
+            "/api/v1/vehicles/getSeatsByVehicleId/**",
     };
 }

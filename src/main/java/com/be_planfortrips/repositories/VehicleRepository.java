@@ -1,6 +1,7 @@
 package com.be_planfortrips.repositories;
 
 import com.be_planfortrips.dto.sql.StatisticalResource;
+import com.be_planfortrips.entity.TypeVehicle;
 import com.be_planfortrips.entity.Vehicle;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,12 +13,46 @@ import java.util.List;
 
 public interface VehicleRepository extends JpaRepository<Vehicle,String> {
     Vehicle findByCode(String code);
+
     @Query("select h from Vehicle h " +
             " where (:keyword is null or :keyword = '' or h.carCompany.name like %:keyword%)")
     Page<Vehicle> searchVehicles(Pageable pageable, @Param("keyword") String keyword);
 
     @Query("select v from Vehicle v where v.carCompany.enterprise.accountEnterpriseId = :id")
     List<Vehicle> getVehicleByEnterpriseId(@Param("id") Long id);
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT v.*\n" +
+            "FROM vehicles v\n" +
+            "         JOIN schedules s ON v.code = s.vehicle_code\n" +
+            "         JOIN public.car_company cc ON v.car_company_id = cc.id\n" +
+            "WHERE\n" +
+            "    (s.departure_time::date = CURRENT_DATE OR\n" +
+            "    s.arrival_time::date = CURRENT_DATE)\n" +
+            "    AND cc.enterprise_id = :id;")
+    List<Vehicle> getTheRunningVehicle(@Param("id") Long enterpriseId);
+
+    @Query(nativeQuery = true, value = "SELECT v.*\n" +
+            "FROM vehicles v\n" +
+            "         JOIN car_company cc ON v.car_company_id = cc.id\n" +
+            "WHERE cc.enterprise_id = :enterpriseId\n" +
+            "  AND NOT EXISTS (\n" +
+            "    SELECT 1\n" +
+            "    FROM schedules s\n" +
+            "    WHERE s.vehicle_code = v.code\n" +
+            "      AND (\n" +
+            "        s.departure_time::date BETWEEN CURRENT_DATE AND CURRENT_DATE + 1\n" +
+            "            OR s.arrival_time::date BETWEEN CURRENT_DATE AND CURRENT_DATE + 1\n" +
+            "        )\n" +
+            ");")
+    List<Vehicle> getNotInUseVehicle(@Param("enterpriseId") Long enterpriseId);
+
+    @Query("select v from Vehicle v where v.carCompany.enterprise.accountEnterpriseId = :id " +
+            "and (:keyword is null or v.code ilike %:keyword% or v.driverName ilike %:keyword% " +
+            "or v.driverPhone ilike %:keyword% or v.plateNumber ilike %:keyword%)")
+    List<Vehicle> getVehicleByEntepriseIdAndWithKeyword(@Param("keyword") String keyword, @Param("id") Long id);
+
+    @Query("select v from Vehicle v where v.typeVehicle = :type and v.carCompany.enterprise.accountEnterpriseId = :id")
+    List<Vehicle> getVehicleByTypeAndEnterpriseId(@Param("type") TypeVehicle type, @Param("id") Long id);
 
     @Query(value = "WITH all_months AS (\n" +
             "    SELECT generate_series(1, 12) AS month\n" +

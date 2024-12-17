@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
@@ -40,8 +41,9 @@ public class ScheduleServiceImpl implements IScheduleService {
 
     @Override
     public List<ScheduleResponse> getAllSchedule() {
-        return scheduleRepository.findAll().
-                stream().map(scheduleMapper::toResponse).toList();
+        try (Stream<Schedule> schedules = scheduleRepository.findAllSchedulesAsStream()) {
+            return schedules.map(scheduleMapper::toResponse).toList();
+        }
     }
 
     @Override
@@ -224,8 +226,15 @@ public class ScheduleServiceImpl implements IScheduleService {
     }
 
     @Override
-    public List<Map<String, Object>> getScheduleByEnterpriseId() {
-        List<Schedule> schedules = scheduleRepository.getSchedulesByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken());
+    public List<Map<String, Object>> getScheduleByEnterpriseId(String filter) {
+        List<Schedule> schedules = new ArrayList<>();
+        if (filter.equals("complete")) {
+            schedules = scheduleRepository.getScheduleComplete(tokenMapperImpl.getIdEnterpriseByToken());
+        } else if (filter.equals("uncomplete")) {
+            schedules = scheduleRepository.getScheduleUnComplete(tokenMapperImpl.getIdEnterpriseByToken());
+        } else if (filter.equals("all")) {
+            schedules = scheduleRepository.getSchedulesByEnterpriseId(tokenMapperImpl.getIdEnterpriseByToken());
+        }
         schedules.sort(Comparator.comparing(Schedule::getDepartureTime));
 
         List<Map<String, Object>> response = new ArrayList<>();

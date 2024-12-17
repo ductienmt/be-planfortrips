@@ -13,5 +13,6 @@ public interface IVehicleService {
     Page<VehicleResponse> getVehicles(PageRequest request,String keyword);
     VehicleResponse getByVehicleId(String code) throws Exception;
     void deleteVehicleById(String code) throws Exception;
-    List<VehicleResponse> getVehiclesByEnterpriseId();
+    List<VehicleResponse> getVehiclesByEnterpriseId(String filter);
+    List<VehicleResponse> searchVehicle(String keyword);
 }

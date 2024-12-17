@@ -121,5 +121,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
 
     List<Ticket> findByCreateAtBetween(LocalDateTime startTime, LocalDateTime endTime);
+
+    @Query("SELECT COUNT(t) FROM Ticket t JOIN Schedule s ON t.schedule.id = s.id WHERE s.vehicleCode.code = :vehicleCode")
+    long countTicketsByVehicleCode(@Param("vehicleCode") String vehicleCode);
+
 }
 

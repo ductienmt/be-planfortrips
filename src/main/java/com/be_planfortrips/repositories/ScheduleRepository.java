@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
     @Query("select s from Schedule s " +
@@ -73,6 +74,19 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
     @Query("select s from Schedule s where s.vehicleCode.carCompany.enterprise.accountEnterpriseId = :id")
     List<Schedule> getSchedulesByEnterpriseId(@Param("id") Long id);
 
+    @Query("SELECT s FROM Schedule s " +
+            "JOIN Vehicle v ON s.vehicleCode.code = v.code " +
+            "WHERE v.carCompany.enterprise.accountEnterpriseId = :enterpriseId " +
+            "AND s.departureTime < CURRENT_TIMESTAMP " +
+            "AND s.arrivalTime < CURRENT_TIMESTAMP")
+    List<Schedule> getScheduleComplete(@Param("enterpriseId") Long enterpriseId);
+
+    @Query("SELECT s FROM Schedule s " +
+            "JOIN Vehicle v ON s.vehicleCode.code = v.code " +
+            "WHERE v.carCompany.enterprise.accountEnterpriseId = :enterpriseId " +
+            "AND s.departureTime > CURRENT_TIMESTAMP ")
+    List<Schedule> getScheduleUnComplete(@Param("enterpriseId") Long enterpriseId);
+
 
     @Query("SELECT s FROM Schedule s " +
             "JOIN s.route r " +
@@ -101,4 +115,11 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
             "WHERE\n" +
             "    ss.schedule_id = :scheduleId;")
     List<Map<String, Object>> getSeatsByScheduleId(@Param("scheduleId") Integer scheduleId);
+
+    @Query("SELECT s FROM Schedule s")
+    Stream<Schedule> findAllSchedulesAsStream();
+
+
+    @Query("SELECT COUNT(s) FROM Schedule s WHERE s.vehicleCode.code = :vehicleCode")
+    long countSchedulesByVehicleCode(@Param("vehicleCode") String vehicleCode);
 }
