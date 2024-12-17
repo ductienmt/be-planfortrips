@@ -32,17 +32,19 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "INNER JOIN Route r ON r.originStation.id = s.id OR r.destinationStation.id = s.id \n" +
             "where r.id = :route_id")
     List<Hotel> findHotelByRouteId(@Param("route_id") String routeId);
-    @Query("SELECT h " +
-            "FROM Hotel h " +
-            "INNER JOIN Room r ON h.id = r.hotel.id " +
-            "WHERE (:destination IS NULL OR trim(:destination) = '' " +
-            "   OR lower(r.hotel.accountEnterprise.city.nameCity) LIKE lower(concat('%', :destination, '%')) " +
+    @Query(value = "SELECT DISTINCT h.* FROM hotels h " +
+            "JOIN rooms r ON h.id = r.hotel_id " +
+            "JOIN account_enterprises ae ON ae.id = h.enterprise_id " +
+            "JOIN cities c ON c.id = ae.city_id " +
+            "WHERE (:destination IS NULL OR :destination = '') " +
+            "   OR lower(c.name_city) LIKE lower(concat('%', :destination, '%')) " +
             "   OR lower(h.name) LIKE lower(concat('%', :destination, '%')) " +
-            "   OR lower(h.address) LIKE lower(concat('%', :destination, '%'))) " +
+            "   OR lower(h.address) LIKE lower(concat('%', :destination, '%')) " +
             "AND r.id NOT IN (" +
-            "  SELECT b.room.id FROM BookingHotelDetail b " +
-            "  WHERE b.checkInTime < :checkOutDate AND b.checkOutTime > :checkInDate" +
-            ")")
+            "  SELECT room_id FROM booking_hotels_details " +
+            "  WHERE check_in_time < :checkOutDate AND check_out_time > :checkInDate" +
+            ")",
+            nativeQuery = true)
     Page<Hotel> findAvailableHotels(Pageable pageable,
                                     @Param("checkInDate") LocalDateTime checkInDate,
                                     @Param("checkOutDate") LocalDateTime checkOutDate,
