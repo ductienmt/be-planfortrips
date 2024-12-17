@@ -41,6 +41,7 @@ public class BookingHotelDetailMapper implements MapperInterface<BookingHotelDet
         BookingHotelDetailResponse bookingHotelDetailResponse = modelMapper.map(bookingHotelDetail, BookingHotelDetailResponse.class);
         bookingHotelDetailResponse.setRoomId(bookingHotelDetail.getRoom().getId());
         bookingHotelDetailResponse.setUserId(bookingHotelDetail.getBookingHotel().getUser().getId());
+        bookingHotelDetailResponse.setPaymentName(bookingHotelDetail.getBookingHotel().getPayment().getPaymentMethod());
         return bookingHotelDetailResponse;
     }
 

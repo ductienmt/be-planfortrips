@@ -21,9 +21,11 @@ public class FeedbackDto {
      @Max(value = 5, message = "Rating must not exceed 5")
      Integer rating;
 
-     @NotNull(message = "User ID is required")
-     Long userId;
+     @NotNull(message = "User name is required")
+     String username;
 
      @NotNull(message = "Account Enterprise ID is required")
      Long accountEnterpriseId;
+
+     Long planId;
 }

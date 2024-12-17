@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,7 +100,6 @@ public interface AccountEnterpriseRepository extends JpaRepository<AccountEnterp
             @Param("year") int year, @Param("month") int month);
 
 
-
-
+    List<AccountEnterprise> findByCreateAtBetween(LocalDateTime startTime, LocalDateTime endTime);
 
 }

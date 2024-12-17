@@ -62,4 +62,7 @@ public class Plan {
     @Column(name = "status", length = 20)
     @Enumerated(EnumType.STRING)
     private StatusPlan status;
+
+    Boolean isFbHotel = false;
+    Boolean isFbVehicle = false;
 }

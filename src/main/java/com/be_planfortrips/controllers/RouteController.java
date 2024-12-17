@@ -106,4 +106,13 @@ public class RouteController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("getRouteRelevance")
+    public ResponseEntity<?> searchEnterprise() {
+        try {
+            return ResponseEntity.ok(this.iRouteService.getRoutesByEnterpriseId());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
