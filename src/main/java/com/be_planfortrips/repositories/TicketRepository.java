@@ -125,5 +125,59 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     @Query("SELECT COUNT(t) FROM Ticket t JOIN Schedule s ON t.schedule.id = s.id WHERE s.vehicleCode.code = :vehicleCode")
     long countTicketsByVehicleCode(@Param("vehicleCode") String vehicleCode);
 
+//    @Query(nativeQuery = true, value = "SELECT\n" +
+//            "    t.id AS ticket_id,\n" +
+//            "    u.fullname AS customer_name,\n" +
+//            "    STRING_AGG(seat.seat_number::text, ', ') AS seat_numbers,\n" +
+//            "    u.phonenumber AS customer_phone,\n" +
+//            "    t.total_price AS total_price,\n" +
+//            "    start_station.name AS departure,\n" +
+//            "    end_station.name AS destination,\n" +
+//            "    cc.phone_number AS car_company_phone\n" +
+//            "FROM tickets t\n" +
+//            "         JOIN users u ON t.user_id = u.id\n" +
+//            "         JOIN schedules s ON t.schedule_id = s.id\n" +
+//            "         JOIN routes r ON s.route_id = r.id\n" +
+//            "         JOIN vehicles v ON s.vehicle_code = v.code\n" +
+//            "         JOIN car_company cc ON v.car_company_id = cc.id\n" +
+//            "         JOIN ticket_seats ts ON ts.ticket_id = t.id\n" +
+//            "         JOIN seats seat ON ts.seat_id = seat.id\n" +
+//            "         JOIN stations start_station ON r.origin_station_id = start_station.id\n" +
+//            "         JOIN stations end_station ON r.destination_station_id = end_station.id\n" +
+//            "WHERE cc.enterprise_id = :enterpriseId\n" +
+//            "and  t.status = :status\n" +
+//            "GROUP BY t.id, u.fullname, u.phonenumber, t.total_price, start_station.name, end_station.name, cc.phone_number;")
+//    List<Map<String, Object>> getUsers(@Param(("enterpriseId")) Long enterpriseId, @Param("status") Status status);
+
+    @Query(nativeQuery = true, value = """
+    SELECT
+        t.id AS ticket_id,
+        u.fullname AS customer_name,
+        STRING_AGG(seat.seat_number::text, ', ') AS seat_numbers,
+        u.phonenumber AS customer_phone,
+        t.total_price AS total_price,
+        start_station.name AS departure,
+        end_station.name AS destination,
+        cc.phone_number AS car_company_phone,
+        t.status AS status
+    FROM tickets t
+             JOIN users u ON t.user_id = u.id
+             JOIN schedules s ON t.schedule_id = s.id
+             JOIN routes r ON s.route_id = r.id
+             JOIN vehicles v ON s.vehicle_code = v.code
+             JOIN car_company cc ON v.car_company_id = cc.id
+             JOIN ticket_seats ts ON ts.ticket_id = t.id
+             JOIN seats seat ON ts.seat_id = seat.id
+             JOIN stations start_station ON r.origin_station_id = start_station.id
+             JOIN stations end_station ON r.destination_station_id = end_station.id
+    WHERE cc.enterprise_id = :enterpriseId
+      AND t.status = :status
+    GROUP BY t.id, u.fullname, u.phonenumber, t.total_price, start_station.name, end_station.name, cc.phone_number;
+""")
+    List<Map<String, Object>> getUsers(@Param("enterpriseId") Long enterpriseId, @Param("status") String status);
+
+
+
+
 }
 
