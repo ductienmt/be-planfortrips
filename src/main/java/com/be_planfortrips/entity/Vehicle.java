@@ -33,13 +33,16 @@ public class Vehicle {
     @ManyToOne
     @JoinColumn(name = "car_company_id")
     @JsonBackReference
+    @ToString.Exclude
     CarCompany carCompany;
 
     @Column(name = "type_vehicle")
     @Enumerated(EnumType.STRING)
     TypeVehicle typeVehicle;
+
     @OneToMany(mappedBy = "vehicle",cascade = CascadeType.REMOVE)
     @JsonManagedReference
+    @ToString.Exclude
     List<Seat> seats;
 
 

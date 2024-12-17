@@ -5,6 +5,10 @@ import com.be_planfortrips.dto.VehicleDTO;
 import com.be_planfortrips.dto.response.CarResponse;
 import com.be_planfortrips.dto.response.TListResponse;
 import com.be_planfortrips.dto.response.VehicleResponse;
+import com.be_planfortrips.entity.Seat;
+import com.be_planfortrips.entity.Vehicle;
+import com.be_planfortrips.repositories.TicketRepository;
+import com.be_planfortrips.repositories.VehicleRepository;
 import com.be_planfortrips.services.interfaces.IVehicleService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -18,6 +22,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -27,6 +32,8 @@ import java.util.List;
 public class VehicleController {
 
     IVehicleService iVehicleService;
+    private final TicketRepository ticketRepository;
+    private final VehicleRepository vehicleRepository;
 
     @PostMapping("/create")
     public ResponseEntity<?> createVehicle(@RequestBody @Valid VehicleDTO vehicleDTO,
@@ -100,11 +107,31 @@ public class VehicleController {
     }
 
     @GetMapping("getByEnterpriseId")
-    public ResponseEntity<?> getByEnterpriseId() {
+    public ResponseEntity<?> getByEnterpriseId(@RequestParam(defaultValue = "all", required = false) String filter){
         try {
-            return ResponseEntity.ok(this.iVehicleService.getVehiclesByEnterpriseId());
+            return ResponseEntity.ok(this.iVehicleService.getVehiclesByEnterpriseId(filter));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("search")
+    public ResponseEntity<?> searchVehicle(@RequestParam(defaultValue = "") String keyword){
+        try {
+            return ResponseEntity.ok(this.iVehicleService.searchVehicle(keyword));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("getSeatsByVehicleId/{code}")
+public ResponseEntity<?> getSeatsByVehicleId(@PathVariable String code){
+    try {
+        Vehicle response = vehicleRepository.findByCode(code);
+        response.getSeats().sort(Comparator.comparing(Seat::getSeatNumber));
+        return ResponseEntity.ok(response.getSeats());
+    }catch (Exception e){
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+}
 }
