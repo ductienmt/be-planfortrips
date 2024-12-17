@@ -317,6 +317,7 @@ public class AccountEnterpriseServiceImpl implements IAccountEnterpriseService {
         AccountEnterprise accountEnterprise = accountEnterpriseRepository.findById(tokenMapper.getIdEnterpriseByToken())
                 .orElseThrow(() -> new AppException(ErrorType.notFound));
         accountEnterprise.setPassword(passwordEncoder.encode(newPassWord));
+        System.out.println(newPassWord);
         accountEnterpriseRepository.save(accountEnterprise);
         return true;
     }

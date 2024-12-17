@@ -170,7 +170,7 @@ public class AccountEnterpriseController {
 
     @PostMapping("/change-password")
     public ResponseEntity<?> ChangePassWord(
-            @RequestParam String newPassWord
+            @RequestParam("newPassWord") String newPassWord
     ) {
         Boolean isChange = accountEnterpriseService.changePassWord(newPassWord);
         return ResponseEntity.ok(isChange);
